@@ -1,3 +1,10 @@
+# bazel
+bazel-bin/
+bazel-embedded-project/
+bazel-out/
+bazel-testlogs/
+MODULE.bazel.lock
+
 # Prerequisites
 *.d
 

@@ -5,15 +5,18 @@
 # For more details, please check https://github.com/bazelbuild/bazel/issues/18958
 ###############################################################################
 
-# bazel_dep(name = "platforms", version = "0.0.10")
-# register_toolchains(
-#     "//toolchain:cc_toolchain_for_f2838"
+# External Dependencies
+# http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+# http_archive(
+#     name = "ti_cgt_c2000",
+#     urls = ["https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-xqxJ05PLfM/22.6.2.LTS/ti_cgt_c2000_22.6.2.LTS_osx_installer.app.zip"],
+#     strip_prefix = "ti_cgt_c2000_22.6.2.LTS_osx_installer.app",
+#     sha256 = "b71dfc35247a84cc6a81f70dfdc4bea3ecb70dcd9c409eb61768c915cd7c94f7",
+#     build_file = "//toolchain:c2000.BUILD",
+# )
 
-http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-http_archive(
-    name = "ti_cgt_c2000",
-    urls = ["https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-xqxJ05PLfM/22.6.2.LTS/ti_cgt_c2000_22.6.2.LTS_osx_installer.app.zip"],
-    strip_prefix = "ti_cgt_c2000_22.6.2.LTS_osx_installer.app",
-    sha256 = "b71dfc35247a84cc6a81f70dfdc4bea3ecb70dcd9c409eb61768c915cd7c94f7",
-    build_file = "//toolchain:c2000.BUILD",
+# Toolchain Setup
+bazel_dep(name = "platforms", version = "0.0.10")
+register_toolchains(
+    "//toolchain:cc_toolchain_for_f2838"
 )

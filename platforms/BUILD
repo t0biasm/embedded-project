@@ -1,3 +1,5 @@
+# constraint_setting(name = "f2838_version")
+
 # constraint_value(
 #     name = "f2838",
 #     constraint_setting = "@platforms//cpu:cpu",
@@ -10,9 +12,3 @@
 #         "f2838",
 #     ],
 # )
-
-cc_binary(
-    name = "main",
-    srcs = [ "main.c" ],
-    # target_compatible_with = [":c2000_f2838"]
-)

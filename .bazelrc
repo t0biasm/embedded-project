@@ -1,2 +1,4 @@
 # Enable Bzlmod for every Bazel command
 common --enable_bzlmod
+
+try-import %workspace%/user.bazelrc

@@ -5,7 +5,8 @@
 # For more details, please check https://github.com/bazelbuild/bazel/issues/18958
 ###############################################################################
 
-# External Dependencies
+# # External Dependencies
+# # bazel fetch @ti_cgt_c2000//...
 # http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 # http_archive(
 #     name = "ti_cgt_c2000",
@@ -14,6 +15,17 @@
 #     sha256 = "b71dfc35247a84cc6a81f70dfdc4bea3ecb70dcd9c409eb61768c915cd7c94f7",
 #     build_file = "//toolchain:c2000.BUILD",
 # )
+
+# External Dependencies
+# bazel fetch @ti_cgt_c2000//...
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+http_archive(
+    name = "ti_cgt_c2000",
+    urls = ["file:///C:/tools/cl2000.zip"],
+    strip_prefix = "",
+    sha256 = "37dc48e3b040f439b52c189a043af652b51792e513e47585f3e4973c6909ca08",
+    build_file = "//toolchain:c2000.BUILD",
+)
 
 # Toolchain Setup
 bazel_dep(name = "platforms", version = "0.0.10")

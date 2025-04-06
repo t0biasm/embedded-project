@@ -24,11 +24,11 @@ http_archive(
     urls = ["file:///C:/tools/cl2000.zip"],
     strip_prefix = "",
     sha256 = "37dc48e3b040f439b52c189a043af652b51792e513e47585f3e4973c6909ca08",
-    build_file = "//toolchain:c2000.BUILD",
+    build_file = "//toolchain:c28.BUILD",
 )
 
 # Toolchain Setup
 bazel_dep(name = "platforms", version = "0.0.10")
 register_toolchains(
-    "//toolchain:cc_toolchain_for_f2838"
+    "//toolchain:c28_toolchain_windows"
 )

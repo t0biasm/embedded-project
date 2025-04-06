@@ -5,14 +5,14 @@ load(":cc_toolchain_config.bzl", "cc_toolchain_config")
 filegroup(name = "empty")
 
 cc_toolchain_config(
-    name = "f2838_toolchain_config",
+    name = "c28_toolchain_config",
     # cpu = "TMS320F28388D"
 )
 
 cc_toolchain(
-    name = "f2838_toolchain",
-    toolchain_identifier = "f2838-toolchain",
-    toolchain_config = ":f2838_toolchain_config",
+    name = "c28_toolchain",
+    toolchain_identifier = "c28-toolchain",
+    toolchain_config = ":c28_toolchain_config",
     all_files = ":empty",
     compiler_files = ":empty",
     dwp_files = ":empty",
@@ -23,13 +23,13 @@ cc_toolchain(
 )
 
 toolchain(
-    name = "cc_toolchain_for_f2838",
-    toolchain = ":f2838_toolchain",
+    name = "c28_toolchain_windows",
+    toolchain = ":c28_toolchain",
     toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
     exec_compatible_with = [
-        "@platforms//cpu:x86_64",
+        "@platforms//os:windows",
     ],
     target_compatible_with = [
-        "@platforms//cpu:x86_64",
+        "//platforms:c28",
     ],
 )

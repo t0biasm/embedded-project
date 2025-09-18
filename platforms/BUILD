@@ -1,15 +1,9 @@
-# constraint_setting(name = "f2838_version")
-
-constraint_value(
-    name = "c28",
-    constraint_setting = "@platforms//cpu:cpu",
+platform(
+    name = "f2838",
+    constraint_values = [
+        "@platforms//os:windows",
+        "@platforms//cpu:x86_64",
+        "//constraints:f2838",
+    ],
     visibility = ["//visibility:public"],
 )
-
-# platform(
-#     name = "c2000_f2838",
-#     constraint_values = [
-#         # "@platforms//os:windows",
-#         "f2838",
-#     ],
-# )

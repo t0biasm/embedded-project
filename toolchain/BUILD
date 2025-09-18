@@ -1,7 +1,5 @@
 load(":cc_toolchain_config.bzl", "cc_toolchain_config")
 
-# package(default_visibility = ["//visibility:public"])
-
 filegroup(name = "empty")
 
 cc_toolchain_config(
@@ -28,8 +26,9 @@ toolchain(
     toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
     exec_compatible_with = [
         "@platforms//os:windows",
+        "@platforms//cpu:x86_64",
     ],
     target_compatible_with = [
-        "//platforms:c28",
+        "//constraints:f2838",
     ],
 )

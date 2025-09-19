@@ -24,7 +24,7 @@ def _impl(ctx):
     
     action_configs = [
         action_config (
-            name = ACTION_NAMES.c_compile,
+            action_name = ACTION_NAMES.c_compile,
             tools = [
                 tool(
                     path = "@ti_cgt_c2000//:cl2000",
@@ -50,7 +50,8 @@ def _impl(ctx):
                     actions = [ACTION_NAMES.c_compile],
                     flag_groups = [
                         flag_group(
-                            flags = ["--run_linker --output_file=main.out"],
+                            # flags = ["--run_linker --output_file=main.out"],
+                            flags = ["--output_file=main.out"],
                         ),
                     ],
                 ),
@@ -85,7 +86,7 @@ def _impl(ctx):
     return cc_common.create_cc_toolchain_config_info(
         ctx = ctx,
         features = features,
-        toolchain_identifier = "c28-toolchain",
+        toolchain_identifier = "c2000-toolchain",
         host_system_name = "local",
         target_system_name = "local",
         target_cpu = "TMS320F28388D",

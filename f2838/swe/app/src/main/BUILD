@@ -19,5 +19,8 @@ cc_binary(
     # linkopts = [
     #     "//f2838/swe/app/linker:linker_script",
     # ]
+    # deps = [
+    #     "//f2838/swe/app/linker:linker_script",
+    # ]
     # target_compatible_with = [":c2000_f2838"]
 )

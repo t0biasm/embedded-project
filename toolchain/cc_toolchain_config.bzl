@@ -108,11 +108,11 @@ def _impl(ctx):
                                 flag_group(expand_if_available = "library", flags = ["%{library}"]),
                             ],
                         ),
-                        # # Linker input files (.cmd linker scripts)
-                        # flag_group(
-                        #     iterate_over = "user_link_flags",
-                        #     flag_groups = [flag_group(flags = ["%{user_link_flags}"])],
-                        # ),
+                        # Linker input files (.cmd linker scripts)
+                        flag_group(
+                            iterate_over = "user_link_flags",
+                            flag_groups = [flag_group(flags = ["%{user_link_flags}"])],
+                        ),
                     ],
                 ),
             ],

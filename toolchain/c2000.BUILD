@@ -9,3 +9,15 @@ filegroup(
     srcs = ["bin/ar2000.exe"],
     visibility = ["//visibility:public"],
 )
+
+filegroup(
+    name = "lnk2000",
+    srcs = ["bin/lnk2000.exe"],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "strip2000",
+    srcs = ["bin/strip2000.exe"],
+    visibility = ["//visibility:public"],
+)

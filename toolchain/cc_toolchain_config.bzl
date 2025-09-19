@@ -1,5 +1,6 @@
 load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
 load("@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl", "action_config", "tool", "tool_path", "feature", "flag_group", "flag_set", "env_entry", "env_set")
+load("//toolchain:c2000.bzl", "C2000_COMPILER_FLAGS", "C2000_LINKER_FLAGS")
 
 all_compile_actions = [ # NEW
     ACTION_NAMES.c_compile,
@@ -12,50 +13,18 @@ all_link_actions = [ # NEW
 ]
 
 def _impl(ctx):
-    tool_paths = [
-        # tool_path(
-        #     name = "gcc",    # C2000 compiler
-        #     path = "external/ti_cgt_c2000/bin/cl2000.exe",
-        # ),
-        # tool_path(
-        #     name = "cpp",    # C2000 compiler
-        #     path = "external/ti_cgt_c2000/bin/cl2000.exe",
-        # ),
-        # tool_path(
-        #     name = "ld",    # C2000 compiler
-        #     path = "external/ti_cgt_c2000/bin/cl2000.exe",
-        # ),
-        # tool_path(
-        #     name = "ar",    # C2000 compiler
-        #     path = "external/ti_cgt_c2000/bin/ar2000.exe",
-        # ),
-        # tool_path(
-        #     name = "nm",    # C2000 compiler
-        #     path = "external/ti_cgt_c2000/bin/nm2000.exe",
-        # ),
-        # tool_path(
-        #     name = "objdump",    # C2000 compiler
-        #     path = "external/ti_cgt_c2000/bin/ofd2000.exe",
-        # ),
-        # tool_path(
-        #     name = "strip",    # C2000 compiler
-        #     path = "external/ti_cgt_c2000/bin/strip2000.exe",
-        # ),
-    ]
-
+    tool_paths = []
     builtin_sysroot = "external/ti_cgt_c2000"
-
-    # print("Sysroot: %s" % "%sysroot%/include")
     cxx_builtin_include_directories = [
         "%sysroot%/include",
         "%sysroot%/lib",
         "%sysroot%/lib/src",
     ]
     
-    # print("Compiler path: %s" % ctx.file._compiler.path)
-    # print("Compiler path: %s" % ctx.file._compiler.short_path)
+    # Adjust tool pathes
     compiler = ctx.file._compiler.short_path.replace("+_repo_rules+", "external/+_repo_rules+")
-    # print("Compiler path: %s" % compiler)
+    linker = ctx.file._linker.short_path.replace("+_repo_rules+", "external/+_repo_rules+")
+    strip = ctx.file._strip.short_path.replace("+_repo_rules+", "external/+_repo_rules+")
 
     action_configs = [
         action_config (
@@ -72,9 +41,32 @@ def _impl(ctx):
                 ),
             ],
         ),
+        action_config(
+            action_name = ACTION_NAMES.cpp_link_executable,
+            tools = [
+                tool(
+                    path = linker,
+                ),
+            ],
+        ),
+        action_config(
+            action_name = ACTION_NAMES.strip,
+            tools = [
+                tool(path = strip),
+            ],
+        ),
     ]
 
     features = [
+        feature(name = "no_legacy_features", enabled = True),
+        # feature(name = "random_seed", enabled = False),
+        # feature(name = "dependency_file", enabled = False),
+        # feature(name = "pic", enabled = False),
+        # feature(name = "no_canonical_prefixes", enabled = False),
+        # feature(name = "supports_pic", enabled = False),
+        # feature(name = "user_compile_flags", enabled = False),
+        # feature(name = "default_compile_flags", enabled = False),
+        # feature(name = "output_execpath_flags", enabled = False),
         feature(
             name = "ti_env",
             enabled = True,
@@ -91,20 +83,18 @@ def _impl(ctx):
                     actions = [ACTION_NAMES.c_compile],
                     flag_groups = [
                         flag_group(
-                            flags = ["--run_linker --output_file=main.out"],
-                            # flags = ["--output_file=main.out"],
-                            # flags = ["--run_linker"],
+                            flags = C2000_COMPILER_FLAGS,
                         ),
                     ],
                 ),
-                # flag_set(
-                #     actions = [ACTION_NAMES.cpp_link_executable],
-                #     flag_groups = [
-                #         flag_group(
-                #             flags = ["-Wl", "--gdb-index"],
-                #         ),
-                #     ],
-                # ),
+                flag_set(
+                    actions = [ACTION_NAMES.cpp_link_executable],
+                    flag_groups = [
+                        flag_group(
+                            flags = C2000_LINKER_FLAGS,
+                        ),
+                    ],
+                ),
             ],
         ),
         # feature(
@@ -149,19 +139,24 @@ def _impl(ctx):
 cc_toolchain_config = rule(
     implementation = _impl,
     attrs = {
-        # "_compiler": attr.label(allow_single_file = True, default = "@ti_cgt_c2000//:cl2000"),
         "_compiler": attr.label(
             default = Label("@ti_cgt_c2000//:cl2000"),
             allow_single_file = True,
             executable = True,
             cfg = "exec",
-        )
-        # "_compiler": attr.label(
-        #     default = "@ti_cgt_c2000//:cl2000",
-        #     allow_single_file = True,
-        #     executable = True,
-        #     cfg = "exec",
-        # )
+        ),
+        "_linker": attr.label(
+            default = Label("@ti_cgt_c2000//:lnk2000"),
+            allow_single_file = True,
+            executable = True,
+            cfg = "exec",
+        ),
+        "_strip": attr.label(
+            default = Label("@ti_cgt_c2000//:strip2000"),
+            allow_single_file = True,
+            executable = True,
+            cfg = "exec",
+        ),
     },
     provides = [CcToolchainConfigInfo],
 )

@@ -12,22 +12,63 @@ all_link_actions = [ # NEW
 ]
 
 def _impl(ctx):
-    tool_paths = []
+    tool_paths = [
+        # tool_path(
+        #     name = "gcc",    # C2000 compiler
+        #     path = "external/ti_cgt_c2000/bin/cl2000.exe",
+        # ),
+        # tool_path(
+        #     name = "cpp",    # C2000 compiler
+        #     path = "external/ti_cgt_c2000/bin/cl2000.exe",
+        # ),
+        # tool_path(
+        #     name = "ld",    # C2000 compiler
+        #     path = "external/ti_cgt_c2000/bin/cl2000.exe",
+        # ),
+        # tool_path(
+        #     name = "ar",    # C2000 compiler
+        #     path = "external/ti_cgt_c2000/bin/ar2000.exe",
+        # ),
+        # tool_path(
+        #     name = "nm",    # C2000 compiler
+        #     path = "external/ti_cgt_c2000/bin/nm2000.exe",
+        # ),
+        # tool_path(
+        #     name = "objdump",    # C2000 compiler
+        #     path = "external/ti_cgt_c2000/bin/ofd2000.exe",
+        # ),
+        # tool_path(
+        #     name = "strip",    # C2000 compiler
+        #     path = "external/ti_cgt_c2000/bin/strip2000.exe",
+        # ),
+    ]
 
     builtin_sysroot = "external/ti_cgt_c2000"
 
+    # print("Sysroot: %s" % "%sysroot%/include")
     cxx_builtin_include_directories = [
         "%sysroot%/include",
         "%sysroot%/lib",
         "%sysroot%/lib/src",
     ]
     
+    # print("Compiler path: %s" % ctx.file._compiler.path)
+    # print("Compiler path: %s" % ctx.file._compiler.short_path)
+    compiler = ctx.file._compiler.short_path.replace("+_repo_rules+", "external/+_repo_rules+")
+    # print("Compiler path: %s" % compiler)
+
     action_configs = [
         action_config (
             action_name = ACTION_NAMES.c_compile,
             tools = [
                 tool(
-                    path = "@ti_cgt_c2000//:cl2000",
+                    # path = ctx.executable._compiler.path,
+                    # path = ctx.executable._compiler.short_path,
+                    # path = ctx.file._compiler.short_path
+                    # path = ctx.file._compiler.short_path,
+                    # path = "external/+_repo_rules+ti_cgt_c2000/bin/cl2000.exe",
+                    path = compiler,
+                    # path = "external/ti_cgt_c2000/bin/cl2000.exe"
                 ),
             ],
         ),
@@ -50,8 +91,9 @@ def _impl(ctx):
                     actions = [ACTION_NAMES.c_compile],
                     flag_groups = [
                         flag_group(
-                            # flags = ["--run_linker --output_file=main.out"],
-                            flags = ["--output_file=main.out"],
+                            flags = ["--run_linker --output_file=main.out"],
+                            # flags = ["--output_file=main.out"],
+                            # flags = ["--run_linker"],
                         ),
                     ],
                 ),
@@ -107,9 +149,15 @@ def _impl(ctx):
 cc_toolchain_config = rule(
     implementation = _impl,
     attrs = {
-        "_compiler": attr.label(allow_single_file = True, default = "@ti_cgt_c2000//:cl2000"),
+        # "_compiler": attr.label(allow_single_file = True, default = "@ti_cgt_c2000//:cl2000"),
+        "_compiler": attr.label(
+            default = Label("@ti_cgt_c2000//:cl2000"),
+            allow_single_file = True,
+            executable = True,
+            cfg = "exec",
+        )
         # "_compiler": attr.label(
-        #     default = Label("@ti_cgt_c2000//:cl2000"),
+        #     default = "@ti_cgt_c2000//:cl2000",
         #     allow_single_file = True,
         #     executable = True,
         #     cfg = "exec",

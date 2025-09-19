@@ -93,6 +93,26 @@ def _impl(ctx):
                         flag_group(
                             flags = C2000_LINKER_FLAGS,
                         ),
+                        # # All object files from compilation
+                        # flag_group(
+                        #     iterate_over = "linker_input_files",
+                        #     flag_groups = [
+                        #         flag_group(flags = ["%{linker_input_files}"]),
+                        #     ],
+                        # ),
+                        # All libraries to link
+                        flag_group(
+                            iterate_over = "libraries_to_link",
+                            flag_groups = [
+                                flag_group(expand_if_available = "object", flags = ["%{object}"]),
+                                flag_group(expand_if_available = "library", flags = ["%{library}"]),
+                            ],
+                        ),
+                        # # Linker input files (.cmd linker scripts)
+                        # flag_group(
+                        #     iterate_over = "user_link_flags",
+                        #     flag_groups = [flag_group(flags = ["%{user_link_flags}"])],
+                        # ),
                     ],
                 ),
             ],

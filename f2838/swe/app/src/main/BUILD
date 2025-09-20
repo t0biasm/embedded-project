@@ -1,17 +1,6 @@
-# constraint_value(
-#     name = "f2838",
-#     constraint_setting = "@platforms//cpu:cpu",
-# )
+load("//toolchain:cc_binary_c2000.bzl", "cc_binary_c2000")
 
-# platform(
-#     name = "c2000_f2838",
-#     constraint_values = [
-#         # "@platforms//os:windows",
-#         "f2838",
-#     ],
-# )
-
-cc_binary(
+cc_library(
     name = "main",
     srcs = [
         "main.c",
@@ -22,5 +11,20 @@ cc_binary(
     # deps = [
     #     "//f2838/swe/app/linker:linker_script",
     # ]
+    # target_compatible_with = [":c2000_f2838"]
+)
+
+cc_binary_c2000(
+    name = "app",
+    srcs = [
+        "main.c",
+    ],
+    # linkopts = [
+    #     "//f2838/swe/app/linker:linker_script",
+    # ]
+    deps = [
+        ":main",
+    ],
+    output_name = "app",
     # target_compatible_with = [":c2000_f2838"]
 )

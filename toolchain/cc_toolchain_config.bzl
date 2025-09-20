@@ -43,17 +43,15 @@ def _impl(ctx):
         ),
         action_config(
             action_name = ACTION_NAMES.cpp_link_executable,
-            tools = [
-                tool(
-                    path = linker,
-                ),
-            ],
+            tools = [tool(path = linker)],
+        ),
+        action_config(
+            action_name = ACTION_NAMES.cpp_link_static_library,
+            tools = [tool(path = linker)],
         ),
         action_config(
             action_name = ACTION_NAMES.strip,
-            tools = [
-                tool(path = strip),
-            ],
+            tools = [tool(path = strip)],
         ),
     ]
 

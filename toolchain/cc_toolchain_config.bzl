@@ -1,6 +1,6 @@
 load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
 load("@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl", "action_config", "tool", "tool_path", "feature", "flag_group", "flag_set", "env_entry", "env_set")
-load("//toolchain:c2000.bzl", "C2000_COMPILER_FLAGS", "C2000_LINKER_FLAGS")
+load("//toolchain:c2000.bzl", "C2000_COMPILER_FLAGS", "C2000_LINKER_FLAGS_APP")
 
 all_compile_actions = [ # NEW
     ACTION_NAMES.c_compile,
@@ -89,7 +89,7 @@ def _impl(ctx):
                     actions = [ACTION_NAMES.cpp_link_executable],
                     flag_groups = [
                         flag_group(
-                            flags = C2000_LINKER_FLAGS,
+                            flags = C2000_LINKER_FLAGS_APP,
                         ),
                         # # All object files from compilation
                         # flag_group(

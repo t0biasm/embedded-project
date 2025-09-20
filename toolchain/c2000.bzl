@@ -10,9 +10,10 @@ C2000_COMPILER_FLAGS = [
     "--run_linker",
 ]
 
-C2000_LINKER_FLAGS = [
+C2000_LINKER_FLAGS_APP = [
+    "--opt_level=4",
     # "%{output_file}",
     # "%{linker_input_files}",
     # "%{libraries_to_link}",
-    "--output_file=%{output_execpath}",
+    # "--output_file=%{output_execpath}",
 ]

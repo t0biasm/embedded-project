@@ -1,3 +1,4 @@
+load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
 load("@bazel_tools//tools/cpp:toolchain_utils.bzl", "find_cpp_toolchain")
 
 def cc_binary_c2000_impl(ctx):
@@ -17,7 +18,7 @@ def cc_binary_c2000_impl(ctx):
         actions = ctx.actions,
         srcs = [f for f in ctx.files.srcs if f.extension in srcFileTypes],
         public_hdrs = [f for f in ctx.files.srcs if f.extension not in srcFileTypes],
-        # compilation_contexts = [dep[CcInfo].compilation_context for dep in ctx.attr.deps],
+        compilation_contexts = [dep[CcInfo].compilation_context for dep in ctx.attr.deps],
         name = ctx.attr.output_name,
         user_compile_flags = ctx.fragments.cpp.copts + ctx.fragments.cpp.conlyopts + ctx.attr.copt,
         defines = ctx.attr.defines,
@@ -33,17 +34,44 @@ def cc_binary_c2000_impl(ctx):
     #     alwayslink = True,
     # )
 
+    # print(">>> objects:", [f.path for f in c_output.objects])
+
     executable = ctx.actions.declare_file(ctx.attr.output_name)
-    linking_outputs = cc_common.link(
-        actions = ctx.actions,
+    # linking_outputs = cc_common.link(
+    #     actions = ctx.actions,
+    #     feature_configuration = feature_configuration,
+    #     cc_toolchain = cc_toolchain,
+    #     compilation_outputs = c_output,
+    #     name = ctx.attr.output_name,
+    #     user_link_flags = [],
+    #     output_type = "executable",
+    #     link_deps_statically = True,
+    #     stamp = 0,
+    # )
+
+    linker_path = cc_common.get_tool_for_action(
         feature_configuration = feature_configuration,
-        cc_toolchain = cc_toolchain,
-        compilation_outputs = c_output,
-        name = ctx.attr.output_name,
-        user_link_flags = [],
-        output_type = "executable",
-        link_deps_statically = True,
-        stamp = 0,
+        action_name = ACTION_NAMES.cpp_link_executable,
+    )
+    # print(">>> linker path:", linker_path)
+    # Build up linker arguments/flags
+    args = ctx.actions.args()
+    args.add("-l")
+    args.add_joined([f.path for f in c_output.objects], join_with = ",")
+    args.add("-o")
+    args.add("bazel-out/x64_windows-fastbuild/bin/" + ctx.label.package + "/" + ctx.attr.output_name + ".out")
+    args.add_all(ctx.attr.linker_flags)
+    # ???
+    outputs = []
+    ctx.actions.run(
+        executable = linker_path,
+        arguments = [args],
+        progress_message = "Linking {}".format(ctx.label.name),
+        mnemonic = "CcLink",
+        inputs = depset(
+            direct = ctx.files.linker_files,
+        ),
+        outputs = [executable],
     )
 
     return [DefaultInfo(files = depset([executable]))]
@@ -59,6 +87,8 @@ cc_binary_c2000 = rule(
         "defines": attr.string_list(default = []),
         "deps": attr.label_list(allow_files = True),
         "extension": attr.string(default = "*"),
+        "linker_files": attr.label(allow_files = True),
+        "linker_flags": attr.string_list(default = []),
         "output_name": attr.string(default = "out"),
         "srcs": attr.label_list(allow_files = True),
     },

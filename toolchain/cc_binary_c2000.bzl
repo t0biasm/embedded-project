@@ -24,15 +24,22 @@ def cc_binary_c2000_impl(ctx):
         defines = ctx.attr.defines,
     )
 
-    # user_link_flags = []
-    # c_linking_context = cc_common.create_linking_context_from_compilation_outputs(
-    #     cc_toolchain = cc_toolchain,
-    #     feature_configuration = feature_configuration,
-    #     actions = ctx.actions,
-    #     name = ctx.attr.output_name,
-    #     user_link_flags = user_link_flags,
-    #     alwayslink = True,
-    # )
+    # ???
+    user_link_flags = []
+    user_link_flags.extend([ctx.expand_location(elem, ctx.attr.data) for elem in ctx.attr.linkopts])
+    for lsl_file in ctx.files.lsl:
+        user_link_flags.append("--lsl-file=" + lsl_file.path)
+    for lsl_include in ctx.files.lsl_include:
+        user_link_flags.append("-I" + lsl_include.dirname)
+    
+    c_linking_context = cc_common.create_linking_context_from_compilation_outputs(
+        cc_toolchain = cc_toolchain,
+        feature_configuration = feature_configuration,
+        actions = ctx.actions,
+        name = ctx.attr.output_name,
+        user_link_flags = user_link_flags,
+        alwayslink = True,
+    )
 
     # print(">>> objects:", [f.path for f in c_output.objects])
 
@@ -89,6 +96,9 @@ cc_binary_c2000 = rule(
         "extension": attr.string(default = "*"),
         "linker_files": attr.label(allow_files = True),
         "linker_flags": attr.string_list(default = []),
+        "linker_opts": attr.string_list(default = []),
+        "lsl": attr.label(allow_files = True),
+        "lsl_include": attr.label(allow_files = True),
         "output_name": attr.string(default = "out"),
         "srcs": attr.label_list(allow_files = True),
     },

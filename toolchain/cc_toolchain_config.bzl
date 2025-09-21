@@ -14,6 +14,7 @@ all_link_actions = [ # NEW
 
 def _impl(ctx):
     tool_paths = []
+
     builtin_sysroot = "external/ti_cgt_c2000"
     cxx_builtin_include_directories = [
         "%sysroot%/include",
@@ -22,6 +23,7 @@ def _impl(ctx):
     ]
     
     # Adjust tool pathes
+    archiver = ctx.file._archiver.short_path.replace("+_repo_rules+", "external/+_repo_rules+")
     compiler = ctx.file._compiler.short_path.replace("+_repo_rules+", "external/+_repo_rules+")
     linker = ctx.file._linker.short_path.replace("+_repo_rules+", "external/+_repo_rules+")
     strip = ctx.file._strip.short_path.replace("+_repo_rules+", "external/+_repo_rules+")
@@ -43,11 +45,11 @@ def _impl(ctx):
         ),
         action_config(
             action_name = ACTION_NAMES.cpp_link_executable,
-            tools = [tool(path = linker)],
+            tools = [tool(path = compiler)],
         ),
         action_config(
             action_name = ACTION_NAMES.cpp_link_static_library,
-            tools = [tool(path = linker)],
+            tools = [tool(path = archiver)],
         ),
         action_config(
             action_name = ACTION_NAMES.strip,
@@ -82,6 +84,22 @@ def _impl(ctx):
                     flag_groups = [
                         flag_group(
                             flags = C2000_COMPILER_FLAGS,
+                        ),
+                        # Normal include paths (-I)
+                        flag_group(
+                            iterate_over = "system_include_paths",
+                            flags = ["-I", "%{system_include_paths}"],
+                        ),
+                        # flag_group(
+                        #     iterate_over = "quote_include_paths",
+                        #     flags = ["-I", "%{quote_include_paths}"],
+                        # ),
+                        flag_group(
+                            iterate_over = "include_paths",
+                            flags = ["-I", "%{include_paths}"],
+                        ),
+                        flag_group(
+                            flags = ["-I %{sysroot}/include"],
                         ),
                     ],
                 ),
@@ -157,6 +175,12 @@ def _impl(ctx):
 cc_toolchain_config = rule(
     implementation = _impl,
     attrs = {
+        "_archiver": attr.label(
+            default = Label("@ti_cgt_c2000//:ar2000"),
+            allow_single_file = True,
+            executable = True,
+            cfg = "exec",
+        ),
         "_compiler": attr.label(
             default = Label("@ti_cgt_c2000//:cl2000"),
             allow_single_file = True,

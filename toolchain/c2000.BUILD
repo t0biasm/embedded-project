@@ -1,12 +1,18 @@
 filegroup(
+    name = "ar2000",
+    srcs = ["bin/ar2000.exe"],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
     name = "cl2000",
     srcs = ["bin/cl2000.exe"],
     visibility = ["//visibility:public"],
 )
 
 filegroup(
-    name = "ar2000",
-    srcs = ["bin/ar2000.exe"],
+    name = "include",
+    srcs = glob(["include/**"]),
     visibility = ["//visibility:public"],
 )
 

@@ -25,6 +25,7 @@ cc_binary_c2000(
     # ]
     deps = [
         ":main",
+        "//f2838/public:public_types_h"
     ],
     linker_files = "//f2838/swe/linker:linker_scripts_app",
     linker_flags = C2000_LINKER_FLAGS_APP,

@@ -1,8 +1,8 @@
 #include "public_types.h"
-// #include <stdint.h>
 
 void main(void) 
 {
     // Main
-    uint8_t i = 8U;
+    uint16_t i = 8U;
+    i += 1;
 }

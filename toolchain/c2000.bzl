@@ -3,6 +3,7 @@ C2000_COMPILER_FLAGS = [
     "--compile_only",
     "%{source_file}", 
     "--define=CPU1",
+    "--define=__TMS320C2000__",
     "--float_support=fpu32",
     # "-I=%{include_paths}",
     "--output_file=%{output_file}",

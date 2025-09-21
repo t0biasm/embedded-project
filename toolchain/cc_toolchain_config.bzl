@@ -15,11 +15,13 @@ all_link_actions = [ # NEW
 def _impl(ctx):
     tool_paths = []
 
-    builtin_sysroot = "external/ti_cgt_c2000"
+    builtin_sysroot = "external/+_repo_rules+ti_cgt_c2000"
     cxx_builtin_include_directories = [
         "%sysroot%/include",
         "%sysroot%/lib",
         "%sysroot%/lib/src",
+        # "%package(@ti_cgt_c2000)%"
+        # "@ti_cgt_c2000//:include",
     ]
     
     # Adjust tool pathes
@@ -99,7 +101,7 @@ def _impl(ctx):
                             flags = ["-I", "%{include_paths}"],
                         ),
                         flag_group(
-                            flags = ["-I %{sysroot}/include"],
+                            flags = ["-I external/+_repo_rules+ti_cgt_c2000/include"],
                         ),
                     ],
                 ),

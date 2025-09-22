@@ -100,18 +100,35 @@ def _impl(ctx):
                         #     ],
                         # ),
                         # All libraries to link
-                        flag_group(
+                        flag_group (
                             iterate_over = "libraries_to_link",
                             flag_groups = [
-                                flag_group(expand_if_available = "object", flags = ["%{object}"]),
-                                flag_group(expand_if_available = "library", flags = ["%{library}"]),
+                                flag_group (
+                                    iterate_over = "libraries_to_link.shared_libraries",
+                                    flag_groups = [
+                                        flag_group (
+                                            flags = ["-l%{libraries_to_link.shared_libraries.name}"],
+                                        ),
+                                    ],
+                                ),
                             ],
-                        ),
-                        # Linker input files (.cmd linker scripts)
-                        flag_group(
-                            iterate_over = "user_link_flags",
-                            flag_groups = [flag_group(flags = ["%{user_link_flags}"])],
-                        ),
+                        )
+                        # flag_group(
+                        #     iterate_over = "libraries_to_link",
+                        #     flags = ["%{libraries_to_link.shared_libraries.name}"],
+                        # ),
+                        # flag_group(
+                        #     iterate_over = "libraries_to_link",
+                        #     flag_groups = [
+                        #         flag_group(expand_if_available = "object", flags = ["%{object}"]),
+                        #         flag_group(expand_if_available = "library", flags = ["%{library}"]),
+                        #     ],
+                        # ),
+                        # # Linker input files (.cmd linker scripts)
+                        # flag_group(
+                        #     iterate_over = "user_link_flags",
+                        #     flag_groups = [flag_group(flags = ["%{user_link_flags}"])],
+                        # ),
                     ],
                 ),
             ],

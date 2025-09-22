@@ -1,5 +1,6 @@
 load("//toolchain:cc_binary_c2000.bzl", "cc_binary_c2000")
 load("//toolchain:c2000.bzl", "C2000_COMPILER_FLAGS", "C2000_LINKER_FLAGS_APP")
+load("//toolchain:debug.bzl", "debug_rule")
 
 # cc_library(
 #     name = "main",
@@ -41,4 +42,9 @@ cc_binary(
     deps = [
         "//f2838/public:public_types_h",
     ],
+)
+
+debug_rule(
+    name = "check_libraries",
+    dep = ":app",
 )

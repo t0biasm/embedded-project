@@ -9,12 +9,13 @@ C2000_COMPILER_FLAGS = [
     "--output_file=%{output_file}",
     "--preproc_dependency=%{dependency_file}",
     "--preproc_with_compile",
-    # "--run_linker",
 ]
 
 C2000_LINKER_FLAGS_APP = [
-    "--opt_level=4",
     # "%{output_file}",
+    # "%{object}",
+    "--opt_level=4",
+    "--run_linker",
     # "%{linker_input_files}",
     # "%{libraries_to_link}",
     # "--output_file=%{output_execpath}",
@@ -22,7 +23,6 @@ C2000_LINKER_FLAGS_APP = [
 
 C2000_LINKER_OPTIONS_APP = [
     "--opt_level=4",
-    # "%{output_file}",
     # "%{linker_input_files}",
     # "%{libraries_to_link}",
     # "--output_file=%{output_execpath}",

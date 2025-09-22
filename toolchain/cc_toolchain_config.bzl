@@ -14,34 +14,20 @@ all_link_actions = [ # NEW
 
 def _impl(ctx):
     tool_paths = []
-
-    builtin_sysroot = "external/+_repo_rules+ti_cgt_c2000"
-    cxx_builtin_include_directories = [
-        "%sysroot%/include",
-        "%sysroot%/lib",
-        "%sysroot%/lib/src",
-        # "%package(@ti_cgt_c2000)%"
-        # "@ti_cgt_c2000//:include",
-    ]
-    
-    # Adjust tool pathes
-    archiver = ctx.file._archiver.short_path.replace("+_repo_rules+", "external/+_repo_rules+")
-    compiler = ctx.file._compiler.short_path.replace("+_repo_rules+", "external/+_repo_rules+")
-    linker = ctx.file._linker.short_path.replace("+_repo_rules+", "external/+_repo_rules+")
-    strip = ctx.file._strip.short_path.replace("+_repo_rules+", "external/+_repo_rules+")
+    builtin_sysroot = None
+    cxx_builtin_include_directories = []
+    # Build tool pathes
+    archiver = "../" + ctx.file._archiver.dirname + "/" + ctx.file._compiler.basename
+    compiler = "../" + ctx.file._compiler.dirname + "/" + ctx.file._compiler.basename
+    linker = "../" + ctx.file._linker.dirname + "/" + ctx.file._linker.basename
+    strip = "../" + ctx.file._strip.dirname + "/" + ctx.file._strip.basename
 
     action_configs = [
         action_config (
             action_name = ACTION_NAMES.c_compile,
             tools = [
                 tool(
-                    # path = ctx.executable._compiler.path,
-                    # path = ctx.executable._compiler.short_path,
-                    # path = ctx.file._compiler.short_path
-                    # path = ctx.file._compiler.short_path,
-                    # path = "external/+_repo_rules+ti_cgt_c2000/bin/cl2000.exe",
                     path = compiler,
-                    # path = "external/ti_cgt_c2000/bin/cl2000.exe"
                 ),
             ],
         ),
@@ -61,14 +47,6 @@ def _impl(ctx):
 
     features = [
         feature(name = "no_legacy_features", enabled = True),
-        # feature(name = "random_seed", enabled = False),
-        # feature(name = "dependency_file", enabled = False),
-        # feature(name = "pic", enabled = False),
-        # feature(name = "no_canonical_prefixes", enabled = False),
-        # feature(name = "supports_pic", enabled = False),
-        # feature(name = "user_compile_flags", enabled = False),
-        # feature(name = "default_compile_flags", enabled = False),
-        # feature(name = "output_execpath_flags", enabled = False),
         feature(
             name = "ti_env",
             enabled = True,
@@ -84,24 +62,27 @@ def _impl(ctx):
                 flag_set(
                     actions = [ACTION_NAMES.c_compile],
                     flag_groups = [
+                        # ---- General Compiler Flags ----- #
                         flag_group(
                             flags = C2000_COMPILER_FLAGS,
                         ),
-                        # Normal include paths (-I)
+                        # ---------- Include Paths -------- #
+                        # Compilers built in path
+                        flag_group(
+                            flags = [
+                                "-I", Label("@ti_cgt_c2000//:include").workspace_root + "/include",
+                                "-I", Label("@ti_cgt_c2000//:lib").workspace_root + "/lib",
+                            ]
+                        ),
+                        # System include paths
                         flag_group(
                             iterate_over = "system_include_paths",
                             flags = ["-I", "%{system_include_paths}"],
                         ),
-                        # flag_group(
-                        #     iterate_over = "quote_include_paths",
-                        #     flags = ["-I", "%{quote_include_paths}"],
-                        # ),
+                        # Normal include paths
                         flag_group(
                             iterate_over = "include_paths",
                             flags = ["-I", "%{include_paths}"],
-                        ),
-                        flag_group(
-                            flags = ["-I external/+_repo_rules+ti_cgt_c2000/include"],
                         ),
                     ],
                 ),
@@ -135,22 +116,6 @@ def _impl(ctx):
                 ),
             ],
         ),
-        # feature(
-        #     name = "default_linker_flags",
-        #     enabled = True,
-        #     flag_sets = [
-        #         flag_set(
-        #             actions = all_link_actions,
-        #             flag_groups = ([
-        #                 flag_group(
-        #                     flags = [
-        #                         "-lstdc++",
-        #                     ],
-        #                 ),
-        #             ]),
-        #         ),
-        #     ],
-        # ),
     ]
 
     return cc_common.create_cc_toolchain_config_info(
@@ -167,10 +132,6 @@ def _impl(ctx):
         tool_paths = tool_paths,
         builtin_sysroot = builtin_sysroot,
         cxx_builtin_include_directories = cxx_builtin_include_directories,
-        # action_configs = declare_actions(
-        #     # ctx.file._compiler.path,
-        #     ctx.file._executable.path
-        # )
         action_configs = action_configs,
     )
 

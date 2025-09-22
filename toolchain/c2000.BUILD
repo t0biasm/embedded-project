@@ -17,6 +17,12 @@ filegroup(
 )
 
 filegroup(
+    name = "lib",
+    srcs = glob(["lib/**"]),
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
     name = "lnk2000",
     srcs = ["bin/lnk2000.exe"],
     visibility = ["//visibility:public"],

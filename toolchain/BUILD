@@ -2,9 +2,19 @@ load(":cc_toolchain_config.bzl", "cc_toolchain_config")
 
 filegroup(name = "empty")
 
+cc_library(
+    name = "c2000_builtin_directories",
+    srcs = [],
+    hdrs = [
+        "@ti_cgt_c2000//:include",
+        "@ti_cgt_c2000//:lib",
+    ],
+    includes = ["."],
+    visibility = ["//visibility:public"],
+)
+
 cc_toolchain_config(
     name = "c2000_toolchain_config",
-    # cpu = "TMS320F28388D"
 )
 
 cc_toolchain(

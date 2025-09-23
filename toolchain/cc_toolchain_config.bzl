@@ -8,8 +8,8 @@ all_compile_actions = [ # NEW
 
 all_link_actions = [ # NEW
     ACTION_NAMES.cpp_link_executable,
-    ACTION_NAMES.cpp_link_dynamic_library,
-    ACTION_NAMES.cpp_link_nodeps_dynamic_library,
+    # ACTION_NAMES.cpp_link_dynamic_library,
+    # ACTION_NAMES.cpp_link_nodeps_dynamic_library,
 ]
 
 def _impl(ctx):
@@ -48,7 +48,7 @@ def _impl(ctx):
     features = [
         feature(name = "no_legacy_features", enabled = True),
         feature(
-            name = "ti_env",
+            name = "ti_compilation",
             enabled = True,
             # env_sets = [
             #     env_set(
@@ -86,54 +86,105 @@ def _impl(ctx):
                         ),
                     ],
                 ),
+            ],
+        ),
+        feature(
+            name = "ti_linking",
+            enabled = True,
+            flag_sets = [
                 flag_set(
-                    actions = [ACTION_NAMES.cpp_link_executable],
+                    actions = [
+                        ACTION_NAMES.cpp_link_static_library,
+                        ACTION_NAMES.cpp_link_executable,
+                    ],
                     flag_groups = [
                         flag_group(
                             flags = C2000_LINKER_FLAGS_APP,
                         ),
-                        # # All object files from compilation
-                        # flag_group(
-                        #     iterate_over = "linker_input_files",
-                        #     flag_groups = [
-                        #         flag_group(flags = ["%{linker_input_files}"]),
-                        #     ],
-                        # ),
-                        # All libraries to link
-                        flag_group (
-                            iterate_over = "libraries_to_link",
+                        # Libraries to link
+                        flag_group(
+                            expand_if_available = "linker_inputs",
+                            iterate_over = "linker_inputs",
                             flag_groups = [
-                                flag_group (
-                                    iterate_over = "libraries_to_link.shared_libraries",
+                                flag_group(
+                                    expand_if_available = "linker_inputs.libraries",
+                                    iterate_over = "linker_inputs.libraries",
                                     flag_groups = [
-                                        flag_group (
-                                            flags = ["-l%{libraries_to_link.shared_libraries.name}"],
-                                        ),
+                                        flag_group(
+                                            iterate_over = "linker_inputs.libraries.objects",
+                                            flags = ["%{linker_inputs.libraries.objects}"],
+                                        )
                                     ],
                                 ),
                             ],
                         )
                         # flag_group(
-                        #     iterate_over = "libraries_to_link",
-                        #     flags = ["%{libraries_to_link.shared_libraries.name}"],
-                        # ),
-                        # flag_group(
-                        #     iterate_over = "libraries_to_link",
+                        #     expand_if_available = "linker_inputs",
+                        #     iterate_over = "linker_inputs",
                         #     flag_groups = [
-                        #         flag_group(expand_if_available = "object", flags = ["%{object}"]),
-                        #         flag_group(expand_if_available = "library", flags = ["%{library}"]),
+                        #         flag_group(
+                        #             expand_if_available = "linker_inputs.additional_inputs",
+                        #             iterate_over = "linker_inputs.additional_inputs",
+                        #             flag_groups = [
+                        #                 flag_group(
+                        #                     iterate_over = "linker_inputs.additional_inputs.objects",
+                        #                     flags = ["%{linker_inputs.additional_inputs.objects}"],
+                        #                 )
+                        #             ],
+                        #         ),
                         #     ],
                         # ),
-                        # # Linker input files (.cmd linker scripts)
+                        # flag_group (
+                        #     iterate_over = 'object_files',
+                        #     flag_groups = [
+                        #         flag_group (
+                        #             iterate_over = 'object_files.path',
+                        #             flags = ['%{object_files.path}'],
+                        #         ),
+                        #     ],
+                        # )
                         # flag_group(
-                        #     iterate_over = "user_link_flags",
-                        #     flag_groups = [flag_group(flags = ["%{user_link_flags}"])],
-                        # ),
+                        #     expand_if_available = "compilation_outputs",
+                        #     iterate_over = "compilation_outputs",
+                        #     flag_groups = [
+                        #         flag_group(
+                        #             iterate_over = "compilation_outputs.objects",
+                        #             flags = ["%{compilation_outputs.objects}"],
+                        #         )
+                        #     ],
+                        # )
                     ],
                 ),
             ],
-        ),
+        )
     ]
+
+    # feature_conf = cc_common.configure_features(
+    #     ctx = ctx,
+    #     cc_toolchain = ctx.attr._cc_toolchain[cc_common.CcToolchainInfo],
+    #     requested_features = ctx.features,
+    #     unsupported_features = ctx.disabled_features,
+    # )
+
+    # compilation_outputs = cc_common.compile(
+    #     actions = ctx.actions,
+    #     feature_configuration = feature_conf,
+    #     cc_toolchain = ctx.attr._cc_toolchain[cc_common.CcToolchainInfo],
+    #     srcs = ctx.files.srcs,
+    #     public_hdrs = ctx.files.hdrs,
+    # )
+
+    # linking_context = cc_common.create_linking_context_from_compilation_outputs(
+    #     actions = ctx.actions,
+    #     feature_configuration = feature_conf,
+    #     cc_toolchain = ctx.attr._cc_toolchain[cc_common.CcToolchainInfo],
+    #     compilation_outputs = compilation_outputs,
+    # )
+
+    # ctx.attr.dep[CcInfo] = CcInfo(
+    #     compilation_context = compilation_outputs.compilation_context,
+    #     linking_context = linking_context,
+    # )
 
     return cc_common.create_cc_toolchain_config_info(
         ctx = ctx,

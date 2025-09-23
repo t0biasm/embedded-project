@@ -34,29 +34,29 @@ load("//toolchain:debug.bzl", "debug_rule")
 #     # target_compatible_with = [":c2000_f2838"]
 # )
 
-# cc_binary(
-#     name = "app",
-#     srcs = [
-#         "main.c",
-#     ],
-#     deps = [
-#         "//f2838/public:public_types_h",
-#     ],
-# )
-
-cc_binary_c2000(
+cc_binary(
     name = "app",
     srcs = [
         "main.c",
     ],
     deps = [
-        "//f2838/public:public_types_h"
+        "//f2838/public:public_types_h",
     ],
-    # linker_files = "//f2838/swe/linker:linker_scripts_app",
-    # linker_flags = C2000_LINKER_FLAGS_APP,
-    # output_name = "app",
-    # target_compatible_with = [":c2000_f2838"]
 )
+
+# cc_binary_c2000(
+#     name = "app",
+#     srcs = [
+#         "main.c",
+#     ],
+#     deps = [
+#         "//f2838/public:public_types_h"
+#     ],
+#     # linker_files = "//f2838/swe/linker:linker_scripts_app",
+#     # linker_flags = C2000_LINKER_FLAGS_APP,
+#     # output_name = "app",
+#     # target_compatible_with = [":c2000_f2838"]
+# )
 
 debug_rule(
     name = "check_libraries",

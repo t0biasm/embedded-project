@@ -14,7 +14,7 @@ C2000_COMPILER_FLAGS = [
 C2000_LINKER_FLAGS_APP = [
     # "%{output_file}",
     # "%{object}",
-    "--opt_level=4",
+    # "--opt_level=4",
     "--run_linker",
     # "%{linker_input_files}",
     # "%{libraries_to_link}",

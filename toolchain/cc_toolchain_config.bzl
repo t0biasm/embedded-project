@@ -1,5 +1,14 @@
 load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
-load("@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl", "action_config", "tool", "tool_path", "feature", "flag_group", "flag_set", "env_entry", "env_set")
+load("@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl", 
+     "action_config", 
+     "tool", 
+     "tool_path", 
+     "feature", 
+     "flag_group", 
+     "flag_set", 
+     "env_entry", 
+     "env_set",
+     "variable_with_value")
 load("//toolchain:c2000.bzl", "C2000_COMPILER_FLAGS", "C2000_LINKER_FLAGS_APP")
 
 all_compile_actions = [ # NEW
@@ -98,26 +107,58 @@ def _impl(ctx):
                         ACTION_NAMES.cpp_link_executable,
                     ],
                     flag_groups = [
+                        flag_group (
+                            expand_if_available = "libraries_to_link",
+                            iterate_over = "libraries_to_link",
+                            flag_groups = [
+                                # flag_group(
+                                #     iterate_over = "libraries_to_link.objects",
+                                #     flag_groups = [
+                                #         flag_group(
+                                #             flags = ["-Wl,--as-needed", "%{libraries_to_link.objects}"],
+                                #         ),
+                                #     ],
+                                #     expand_if_equal = variable_with_value(
+                                #         name = "libraries_to_link.type",
+                                #         value = "object_file_group",
+                                #     ),
+                                # ),
+                                flag_group(
+                                    flag_groups = [
+                                        flag_group(
+                                            flags = ["%{libraries_to_link.name}"],
+                                        ),
+                                    ],
+                                    expand_if_equal = variable_with_value(
+                                        name = "libraries_to_link.type",
+                                        value = "object_file",
+                                    ),
+                                ),
+                            ],
+                        ),
                         flag_group(
                             flags = C2000_LINKER_FLAGS_APP,
                         ),
-                        # Libraries to link
                         flag_group(
-                            expand_if_available = "linker_inputs",
-                            iterate_over = "linker_inputs",
-                            flag_groups = [
-                                flag_group(
-                                    expand_if_available = "linker_inputs.libraries",
-                                    iterate_over = "linker_inputs.libraries",
-                                    flag_groups = [
-                                        flag_group(
-                                            iterate_over = "linker_inputs.libraries.objects",
-                                            flags = ["%{linker_inputs.libraries.objects}"],
-                                        )
-                                    ],
-                                ),
-                            ],
-                        )
+                            flags = ["--output_file=%{output_execpath}"],
+                        ),
+                        # Libraries to link
+                        # flag_group(
+                        #     expand_if_available = "linker_inputs",
+                        #     iterate_over = "linker_inputs",
+                        #     flag_groups = [
+                        #         flag_group(
+                        #             expand_if_available = "linker_inputs.libraries",
+                        #             iterate_over = "linker_inputs.libraries",
+                        #             flag_groups = [
+                        #                 flag_group(
+                        #                     iterate_over = "linker_inputs.libraries.objects",
+                        #                     flags = ["%{linker_inputs.libraries.objects}"],
+                        #                 )
+                        #             ],
+                        #         ),
+                        #     ],
+                        # ),
                         # flag_group(
                         #     expand_if_available = "linker_inputs",
                         #     iterate_over = "linker_inputs",
@@ -131,6 +172,26 @@ def _impl(ctx):
                         #                     flags = ["%{linker_inputs.additional_inputs.objects}"],
                         #                 )
                         #             ],
+                        #         ),
+                        #     ],
+                        # ),
+                        # flag_group(
+                        #     expand_if_available = "library_to_link",
+                        #     iterate_over = "library_to_link",
+                        #     flag_groups = [
+                        #         flag_group(
+                        #             expand_if_available = "library_to_link.objects",
+                        #             iterate_over = "library_to_link.objects",
+                        #             flags = ["%{library_to_link.libraries.objects}"],
+                        #         ),
+                        #     ],
+                        # ),
+                        # flag_group (
+                        #     iterate_over = "libraries_to_link",
+                        #     flag_groups = [
+                        #         flag_group (
+                        #             iterate_over = "libraries_to_link.shared_libraries",
+                        #             flags = ["-Wl,--as-needed", "%{libraries_to_link.shared_libraries.path}"],
                         #         ),
                         #     ],
                         # ),
@@ -158,33 +219,6 @@ def _impl(ctx):
             ],
         )
     ]
-
-    # feature_conf = cc_common.configure_features(
-    #     ctx = ctx,
-    #     cc_toolchain = ctx.attr._cc_toolchain[cc_common.CcToolchainInfo],
-    #     requested_features = ctx.features,
-    #     unsupported_features = ctx.disabled_features,
-    # )
-
-    # compilation_outputs = cc_common.compile(
-    #     actions = ctx.actions,
-    #     feature_configuration = feature_conf,
-    #     cc_toolchain = ctx.attr._cc_toolchain[cc_common.CcToolchainInfo],
-    #     srcs = ctx.files.srcs,
-    #     public_hdrs = ctx.files.hdrs,
-    # )
-
-    # linking_context = cc_common.create_linking_context_from_compilation_outputs(
-    #     actions = ctx.actions,
-    #     feature_configuration = feature_conf,
-    #     cc_toolchain = ctx.attr._cc_toolchain[cc_common.CcToolchainInfo],
-    #     compilation_outputs = compilation_outputs,
-    # )
-
-    # ctx.attr.dep[CcInfo] = CcInfo(
-    #     compilation_context = compilation_outputs.compilation_context,
-    #     linking_context = linking_context,
-    # )
 
     return cc_common.create_cc_toolchain_config_info(
         ctx = ctx,

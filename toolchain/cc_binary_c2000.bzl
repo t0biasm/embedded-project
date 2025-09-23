@@ -58,9 +58,10 @@ def cc_binary_c2000_impl(ctx):
         cc_toolchain = cc_toolchain,
         compilation_outputs = compilation_outputs,
         disallow_dynamic_library = True,
+        alwayslink = True,
     )
 
-    linking_outputs = cc_common.link(
+    c_linking_outputs = cc_common.link(
         name = ctx.attr.name,
         actions = ctx.actions,
         feature_configuration = feature_configuration,
@@ -108,9 +109,12 @@ def cc_binary_c2000_impl(ctx):
     # )
 
     return [
-        CcInfo(
-            compilation_context = compilation_contexts,
-            linking_context = linking_contexts,
+        cc_common.merge_cc_infos(
+            cc_infos = 
+                [CcInfo(
+                    compilation_context = compilation_contexts,
+                    linking_context = linking_contexts,)] +
+                [dep[CcInfo] for dep in ctx.attr.deps]
         ),
         DefaultInfo(
             files = depset([executable])
@@ -121,6 +125,7 @@ def cc_binary_c2000_impl(ctx):
 cc_binary_c2000 = rule(
     cc_binary_c2000_impl,
     attrs = {
+        "_cc_toolchain": attr.label(default = Label("@bazel_tools//tools/cpp:current_cc_toolchain")),
         # "copt": attr.string_list(default = []),
         # "defines": attr.string_list(default = []),
         "deps": attr.label_list(allow_files = True),
@@ -134,6 +139,10 @@ cc_binary_c2000 = rule(
         "srcs": attr.label_list(allow_files = True),
         "hdrs": attr.label_list(allow_files = True),
     },
+    provides = [
+        CcInfo,
+        DefaultInfo,
+    ],
     fragments = ["cpp"],
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
 )

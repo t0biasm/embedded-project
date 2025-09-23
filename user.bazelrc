@@ -1,4 +1,0 @@
-startup --output_user_root='C:\\_git\\embedded-project_v1\\user'
-startup --output_base='C:\\_git\\embedded-project_v1\\output'
-
-build:f2838 --platforms=platforms:f2838

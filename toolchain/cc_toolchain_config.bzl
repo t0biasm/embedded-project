@@ -17,8 +17,8 @@ all_compile_actions = [ # NEW
 
 all_link_actions = [ # NEW
     ACTION_NAMES.cpp_link_executable,
-    # ACTION_NAMES.cpp_link_dynamic_library,
-    # ACTION_NAMES.cpp_link_nodeps_dynamic_library,
+    ACTION_NAMES.cpp_link_dynamic_library,
+    ACTION_NAMES.cpp_link_nodeps_dynamic_library,
 ]
 
 def _impl(ctx):
@@ -59,14 +59,6 @@ def _impl(ctx):
         feature(
             name = "ti_compilation",
             enabled = True,
-            # env_sets = [
-            #     env_set(
-            #         actions = all_compile_actions,
-            #         env_entries = [
-            #             env_entry(key = "TI_COMPILER", value = ctx.file._compiler.path),
-            #         ]
-            #     ),
-            # ],
             flag_sets = [
                 flag_set(
                     actions = [ACTION_NAMES.c_compile],
@@ -107,22 +99,15 @@ def _impl(ctx):
                         ACTION_NAMES.cpp_link_executable,
                     ],
                     flag_groups = [
+                        # ---------- Linker flags --------- #
+                        flag_group(
+                            flags = C2000_LINKER_FLAGS_APP,
+                        ),
+                        # ----- Libraries to be linked ---- #
                         flag_group (
                             expand_if_available = "libraries_to_link",
                             iterate_over = "libraries_to_link",
                             flag_groups = [
-                                # flag_group(
-                                #     iterate_over = "libraries_to_link.objects",
-                                #     flag_groups = [
-                                #         flag_group(
-                                #             flags = ["-Wl,--as-needed", "%{libraries_to_link.objects}"],
-                                #         ),
-                                #     ],
-                                #     expand_if_equal = variable_with_value(
-                                #         name = "libraries_to_link.type",
-                                #         value = "object_file_group",
-                                #     ),
-                                # ),
                                 flag_group(
                                     flag_groups = [
                                         flag_group(
@@ -136,84 +121,6 @@ def _impl(ctx):
                                 ),
                             ],
                         ),
-                        flag_group(
-                            flags = C2000_LINKER_FLAGS_APP,
-                        ),
-                        flag_group(
-                            flags = ["--output_file=%{output_execpath}"],
-                        ),
-                        # Libraries to link
-                        # flag_group(
-                        #     expand_if_available = "linker_inputs",
-                        #     iterate_over = "linker_inputs",
-                        #     flag_groups = [
-                        #         flag_group(
-                        #             expand_if_available = "linker_inputs.libraries",
-                        #             iterate_over = "linker_inputs.libraries",
-                        #             flag_groups = [
-                        #                 flag_group(
-                        #                     iterate_over = "linker_inputs.libraries.objects",
-                        #                     flags = ["%{linker_inputs.libraries.objects}"],
-                        #                 )
-                        #             ],
-                        #         ),
-                        #     ],
-                        # ),
-                        # flag_group(
-                        #     expand_if_available = "linker_inputs",
-                        #     iterate_over = "linker_inputs",
-                        #     flag_groups = [
-                        #         flag_group(
-                        #             expand_if_available = "linker_inputs.additional_inputs",
-                        #             iterate_over = "linker_inputs.additional_inputs",
-                        #             flag_groups = [
-                        #                 flag_group(
-                        #                     iterate_over = "linker_inputs.additional_inputs.objects",
-                        #                     flags = ["%{linker_inputs.additional_inputs.objects}"],
-                        #                 )
-                        #             ],
-                        #         ),
-                        #     ],
-                        # ),
-                        # flag_group(
-                        #     expand_if_available = "library_to_link",
-                        #     iterate_over = "library_to_link",
-                        #     flag_groups = [
-                        #         flag_group(
-                        #             expand_if_available = "library_to_link.objects",
-                        #             iterate_over = "library_to_link.objects",
-                        #             flags = ["%{library_to_link.libraries.objects}"],
-                        #         ),
-                        #     ],
-                        # ),
-                        # flag_group (
-                        #     iterate_over = "libraries_to_link",
-                        #     flag_groups = [
-                        #         flag_group (
-                        #             iterate_over = "libraries_to_link.shared_libraries",
-                        #             flags = ["-Wl,--as-needed", "%{libraries_to_link.shared_libraries.path}"],
-                        #         ),
-                        #     ],
-                        # ),
-                        # flag_group (
-                        #     iterate_over = 'object_files',
-                        #     flag_groups = [
-                        #         flag_group (
-                        #             iterate_over = 'object_files.path',
-                        #             flags = ['%{object_files.path}'],
-                        #         ),
-                        #     ],
-                        # )
-                        # flag_group(
-                        #     expand_if_available = "compilation_outputs",
-                        #     iterate_over = "compilation_outputs",
-                        #     flag_groups = [
-                        #         flag_group(
-                        #             iterate_over = "compilation_outputs.objects",
-                        #             flags = ["%{compilation_outputs.objects}"],
-                        #         )
-                        #     ],
-                        # )
                     ],
                 ),
             ],

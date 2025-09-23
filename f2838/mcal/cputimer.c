@@ -2,7 +2,7 @@
 //
 // FILE:   cputimer.c
 //
-// TITLE:   CM CPU timer Driver
+// TITLE:   C28x CPU timer Driver
 //
 //#############################################################################
 // 

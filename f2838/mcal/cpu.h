@@ -2,8 +2,7 @@
 //
 // FILE:   cpu.h
 //
-// TITLE:  Instruction wrappers for special CPU instructions needed by the
-//         drivers.
+// TITLE:  Useful C28x CPU defines.
 //
 //###########################################################################
 // 
@@ -55,14 +54,85 @@ extern "C"
 {
 #endif
 
-//*****************************************************************************
+#include "stdint.h"
+
 //
-//! \addtogroup cpu_api CPU
-//! \brief The module is used for configuring Cortex-M core registers
-//! @{
+// External reference to the interrupt flag register (IFR) register
 //
-//*****************************************************************************
-#include <stdint.h>
+#ifndef __TMS320C28XX_CLA__
+extern __cregister volatile uint16_t IFR;
+#endif
+
+//
+// External reference to the interrupt enable register (IER) register
+//
+#ifndef __TMS320C28XX_CLA__
+extern __cregister volatile uint16_t IER;
+#endif
+
+//
+// Define to enable interrupts
+//
+#ifndef EINT
+#define EINT   __asm(" clrc INTM")
+#endif
+
+//
+// Define to disable interrupts
+//
+#ifndef DINT
+#define DINT   __asm(" setc INTM")
+#endif
+
+//
+// Define to enable debug events
+//
+#ifndef ERTM
+#define ERTM   __asm(" clrc DBGM")
+#endif
+
+//
+// Define to disable debug events
+//
+#ifndef DRTM
+#define DRTM   __asm(" setc DBGM")
+#endif
+
+//
+// Define to allow writes to protected registers
+//
+#ifndef EALLOW
+#ifndef __TMS320C28XX_CLA__
+#define EALLOW __eallow()
+#else
+#define EALLOW __meallow()
+#endif // __TMS320C28XX_CLA__
+#endif // EALLOW
+
+//
+// Define to disable writes to protected registers
+//
+#ifndef EDIS
+#ifndef __TMS320C28XX_CLA__
+#define EDIS   __edis()
+#else
+#define EDIS   __medis()
+#endif // __TMS320C28XX_CLA__
+#endif // EDIS
+
+//
+// Define for emulation stop
+//
+#ifndef ESTOP0
+#define ESTOP0 __asm(" ESTOP0")
+#endif
+
+//
+// Define for emulation stop
+//
+#ifndef ESTOP1
+#define ESTOP1 __asm(" ESTOP1")
+#endif
 
 //
 // Define for no operation
@@ -71,218 +141,24 @@ extern "C"
 #define NOP    __asm(" NOP")
 #endif
 
-//*****************************************************************************
 //
-//! Returns the state of FAULTMASK register on entry and disable all
-//! interrupts except NMI.
-//!
-//! This function is wrapper function for the CPSID instruction. It returns
-//! the state of FAULTMASK on entry and disable all interrupts except NMI.
-//!
-//! \return Returns the state of FAULTMASK register.
+// Define for putting processor into a low-power mode
 //
-//*****************************************************************************
-static inline uint32_t
-CPU_setFAULTMASK(void)
-{
-    //
-    // Disable interrupts and return previous FAULTMASK.
-    //
-    return(_disable_interrupts());
-}
-
-//*****************************************************************************
-//
-//! Returns the state of FAULTMASK register
-//!
-//! This function is wrapper function for returning the state of FAULTMASK
-//! register(indicating whether interrupts except NMI are enabled or disabled).
-//!
-//! \return Returns the state of FAULTMASK register.
-//
-//*****************************************************************************
-static inline uint32_t
-CPU_getFAULTMASK(void)
-{
-    //
-    // Read FAULTMASK register.
-    //
-    __asm("    mrs     r0, FAULTMASK\n"
-          "    bx      lr\n");
-
-    //
-    // The following keeps the compiler happy, because it wants to see a
-    // return value from this function.  It will generate code to return
-    // a zero.  However, the real return is the "bx lr" above, so the
-    // return(0) is never executed and the function returns with the value
-    // you expect in R0.
-    //
-    return(0U);
-}
-
-//*****************************************************************************
-//
-//! Returns the state of FAULTMASK register and enable the interrupts
-//!
-//! This function is wrapper function for returning the state of FAULTMASK
-//! register and enabling the interrupts.
-//!
-//! \return Returns the state of FAULTMASK register.
-//
-//*****************************************************************************
-static inline uint32_t
-CPU_clearFAULTMASK(void)
-{
-    //
-    // Enable interrupts and return previous FAULTMASK status.
-    //
-    return(_enable_interrupts());
-}
-
-//*****************************************************************************
-//
-//! Returns the state of PRIMASK register on entry and disable interrupts
-//!
-//! This function is wrapper function for the CPSID instruction. It returns
-//! the state of PRIMASK on entry and disable interrupts.
-//!
-//! \return Returns the state of PRIMASK register.
-//
-//*****************************************************************************
-static inline uint32_t
-CPU_setPRIMASK(void)
-{
-    //
-    // Read PRIMASK and Disable interrupts.
-    //
-    return(_disable_IRQ());
-}
-
-//*****************************************************************************
-//
-//! Returns the state of PRIMASK register
-//!
-//! This function is wrapper function for returning the state of PRIMASK
-//! register(indicating whether interrupts are enabled or disabled).
-//!
-//! \return Returns the state of PRIMASK register.
-//
-//*****************************************************************************
-static inline uint32_t
-CPU_getPRIMASK(void)
-{
-    //
-    // Return PRIMASK register status.
-    //
-    return(__get_PRIMASK());
-}
-
-//*****************************************************************************
-//
-//! Returns the state of PRIMASK register and enable the interrupts
-//!
-//! This function is wrapper function for returning the state of PRIMASK
-//! register and enabling the interrupts.
-//!
-//! \return Returns the state of PRIMASK register.
-//
-//*****************************************************************************
-static inline uint32_t
-CPU_clearPRIMASK(void)
-{
-    //
-    // Enable interrupts and return previous PRIMASK setting.
-    //
-    return(_enable_IRQ());
-}
-
-//*****************************************************************************
-//
-//! Wrapper function for the WFI instruction
-//!
-//! This function is wrapper function for the WFI instruction.
-//!
-//! \return None
-//
-//*****************************************************************************
-static inline void
-CPU_wfi(void)
-{
-    //
-    // Wait for the next interrupt.
-    //
-    __asm("    wfi\n");
-}
-
-//*****************************************************************************
-//
-//! Writes the BASEPRI register
-//!
-//! \param basePriority is the value to be set
-//!
-//! This function is wrapper function for writing the BASEPRI register. MSB
-//! 3-bits are enabled for setting the priority and non-implemented low-order
-//! bits read as zero and ignore writes. To set the base priority of 0x2U,
-//! the param \e basePriority to be passed should be 0x20U.
-//!
-//! \return None.
-//
-//*****************************************************************************
-static inline void
-CPU_setBASEPRI(uint32_t basePriority)
-{
-    //
-    // Set the BASEPRI register
-    //
-    _set_interrupt_priority(basePriority);
-}
-
-//*****************************************************************************
-//
-//! Returns the state of BASEPRI register
-//!
-//! This function is wrapper function for reading the BASEPRI register.
-//!
-//! \return Returns the state of BASEPRI register
-//
-//*****************************************************************************
-static inline uint32_t
-CPU_getBASEPRI(void)
-{
-    //
-    // Read BASEPRI register.
-    //
-    __asm("    mrs     r0, BASEPRI\n"
-          "    bx      lr\n");
-
-    //
-    // The following keeps the compiler happy, because it wants to see a
-    // return value from this function.  It will generate code to return
-    // a zero.  However, the real return is the "bx lr" above, so the
-    // return(0) is never executed and the function returns with the value
-    // you expect in R0.
-    //
-    return(0U);
-}
+#ifndef _DUAL_HEADERS
+#ifndef IDLE
+#define IDLE   __asm(" IDLE")
+#endif
+#else
+#define IDLE_ASM __asm(" IDLE");
+#endif
 
 //*****************************************************************************
 //
 // Extern compiler intrinsic prototypes. See compiler User's Guide for details.
 //
 //*****************************************************************************
-extern uint32_t __get_PRIMASK(void);
-extern uint32_t _disable_interrupts(void);
-extern uint32_t _enable_interrupts();
-extern uint32_t _disable_IRQ();
-extern uint32_t _enable_IRQ();
-extern uint32_t _set_interrupt_priority(uint32_t priority);
-
-//*****************************************************************************
-//
-// Close the Doxygen group.
-//! @}
-//
-//*****************************************************************************
+extern void __eallow(void);
+extern void __edis(void);
 
 //*****************************************************************************
 //

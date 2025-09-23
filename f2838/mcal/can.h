@@ -2,7 +2,7 @@
 //
 // FILE:   can.h
 //
-// TITLE:  CM CAN driver.
+// TITLE:  C28x CAN driver.
 //
 //###########################################################################
 // 
@@ -54,6 +54,7 @@ extern "C"
 {
 #endif
 
+#ifdef __TMS320C28XX__
 
 //*****************************************************************************
 //
@@ -339,7 +340,7 @@ CAN_isBaseValid(uint32_t base)
 //
 //*****************************************************************************
 static inline void
-CAN_writeDataReg(const uint8_t *const data, uint32_t address,
+CAN_writeDataReg(const uint16_t *const data, uint32_t address,
                  uint32_t size)
 {
     uint32_t idx;
@@ -483,7 +484,7 @@ CAN_writeDataReg_32bit(const uint32_t *const data, uint32_t address,
 //
 //*****************************************************************************
 static inline void
-CAN_readDataReg(uint8_t *data, const uint32_t address, uint32_t size)
+CAN_readDataReg(uint16_t *data, const uint32_t address, uint32_t size)
 {
     uint32_t idx;
     uint32_t dataReg = address;
@@ -534,6 +535,63 @@ CAN_initRAM(uint32_t base)
     }
 }
 
+//*****************************************************************************
+//
+//! Select CAN Clock Source
+//!
+//! \param base is the base address of the CAN controller.
+//! \param source is the clock source to use for the CAN controller.
+//!
+//! This function selects the specified clock source for the CAN controller.
+//!
+//! The \e source parameter can be any one of the following:
+//! - \b CAN_CLOCK_SOURCE_SYS  - Peripheral System Clock
+//! - \b CAN_CLOCK_SOURCE_XTAL - External Oscillator
+//! - \b CAN_CLOCK_SOURCE_AUX  - Auxiliary Clock Input from GPIO
+//!
+//! \return None.
+//
+//*****************************************************************************
+static inline void
+CAN_selectClockSource(uint32_t base, CAN_ClockSource source)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(CAN_isBaseValid(base));
+
+    //
+    // Determine the CAN controller and set specified clock source
+    //
+    EALLOW;
+
+    switch(base)
+    {
+        case CANA_BASE:
+            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL2) =
+                    (HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL2) &
+                     ~SYSCTL_CLKSRCCTL2_CANABCLKSEL_M) |
+                    ((uint16_t)source << SYSCTL_CLKSRCCTL2_CANABCLKSEL_S);
+            break;
+
+        case CANB_BASE:
+            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL2) =
+                    (HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL2) &
+                     ~SYSCTL_CLKSRCCTL2_CANBBCLKSEL_M) |
+                    ((uint16_t)source << SYSCTL_CLKSRCCTL2_CANBBCLKSEL_S);
+            break;
+
+        default:
+
+            //
+            // Do nothing. Not a valid mode value.
+            //
+            break;
+    }
+
+    EDIS;
+    SYSCTL_CLKSRCCTL_DELAY;
+}
 
 //*****************************************************************************
 //
@@ -1671,7 +1729,7 @@ CAN_setupMessageObject(uint32_t base, uint32_t objID, uint32_t msgID,
 //*****************************************************************************
 extern void
 CAN_sendMessage(uint32_t base, uint32_t objID, uint16_t msgLen,
-                const uint8_t *msgData);
+                const uint16_t *msgData);
 
 //*****************************************************************************
 //
@@ -1741,7 +1799,7 @@ CAN_sendMessage_32bit(uint32_t base, uint32_t objID, uint16_t msgLen,
 
 extern void
 CAN_sendMessage_updateDLC(uint32_t base, uint32_t objID, uint16_t msgLen,
-                  const uint8_t *msgData);
+                  const uint16_t *msgData);
 
 //*****************************************************************************
 //
@@ -1786,7 +1844,7 @@ CAN_sendRemoteRequestMessage(uint32_t base, uint32_t objID);
 //*****************************************************************************
 extern bool
 CAN_readMessage(uint32_t base, uint32_t objID,
-                uint8_t *msgData);
+                uint16_t *msgData);
 
 //*****************************************************************************
 //
@@ -1822,7 +1880,7 @@ extern bool CAN_readMessageWithID(uint32_t base,
                                   uint32_t objID,
                                   CAN_MsgFrameType *frameType,
                                   uint32_t *msgID,
-                                  uint8_t *msgData);
+                                  uint16_t *msgData);
 
 
 //*****************************************************************************
@@ -1909,6 +1967,7 @@ CAN_disableAllMessageObjects(uint32_t base);
 //
 //*****************************************************************************
 
+#endif // #ifdef __TMS320C28XX__
 
 //*****************************************************************************
 //

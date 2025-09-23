@@ -49,95 +49,95 @@
 //
 //*************************************************************************************************
 #define DCSM_O_Z1OTP_LINKPOINTER1   0x0U    // Zone 1 Link Pointer1
-#define DCSM_O_Z1OTP_LINKPOINTER2   0x4U    // Zone 1 Link Pointer2
-#define DCSM_O_Z1OTP_LINKPOINTER3   0x8U    // Zone 1 Link Pointer3
-#define DCSM_O_Z1OTP_JLM_ENABLE     0xCU    // Zone 1 JTAGLOCK Enable Register
-#define DCSM_O_Z1OTP_GPREG1         0x10U   // Zone 1 General Purpose Register 1
-#define DCSM_O_Z1OTP_GPREG2         0x14U   // Zone 1 General Purpose Register 2
-#define DCSM_O_Z1OTP_GPREG3         0x18U   // Zone 1 General Purpose Register 3
-#define DCSM_O_Z1OTP_GPREG4         0x1CU   // Zone 1 General Purpose Register 4
-#define DCSM_O_Z1OTP_PSWDLOCK       0x20U   // Secure Password Lock
-#define DCSM_O_Z1OTP_CRCLOCK        0x24U   // Secure CRC Lock
-#define DCSM_O_Z1OTP_JTAGPSWDH0     0x28U   // JTAG Lock Permanent Password 0
-#define DCSM_O_Z1OTP_JTAGPSWDH1     0x2CU   // JTAG Lock Permanent Password 1
-#define DCSM_O_Z1OTP_CMACKEY0       0x30U   // Secure Boot CMAC Key 0
-#define DCSM_O_Z1OTP_CMACKEY1       0x34U   // Secure Boot CMAC Key 1
-#define DCSM_O_Z1OTP_CMACKEY2       0x38U   // Secure Boot CMAC Key 2
-#define DCSM_O_Z1OTP_CMACKEY3       0x3CU   // Secure Boot CMAC Key 3
+#define DCSM_O_Z1OTP_LINKPOINTER2   0x2U    // Zone 1 Link Pointer2
+#define DCSM_O_Z1OTP_LINKPOINTER3   0x4U    // Zone 1 Link Pointer3
+#define DCSM_O_Z1OTP_JLM_ENABLE     0x6U    // Zone 1 JTAGLOCK Enable Register
+#define DCSM_O_Z1OTP_GPREG1         0x8U    // Zone 1 General Purpose Register 1
+#define DCSM_O_Z1OTP_GPREG2         0xAU    // Zone 1 General Purpose Register 2
+#define DCSM_O_Z1OTP_GPREG3         0xCU    // Zone 1 General Purpose Register 3
+#define DCSM_O_Z1OTP_GPREG4         0xEU    // Zone 1 General Purpose Register 4
+#define DCSM_O_Z1OTP_PSWDLOCK       0x10U   // Secure Password Lock
+#define DCSM_O_Z1OTP_CRCLOCK        0x12U   // Secure CRC Lock
+#define DCSM_O_Z1OTP_JTAGPSWDH0     0x14U   // JTAG Lock Permanent Password 0
+#define DCSM_O_Z1OTP_JTAGPSWDH1     0x16U   // JTAG Lock Permanent Password 1
+#define DCSM_O_Z1OTP_CMACKEY0       0x18U   // Secure Boot CMAC Key 0
+#define DCSM_O_Z1OTP_CMACKEY1       0x1AU   // Secure Boot CMAC Key 1
+#define DCSM_O_Z1OTP_CMACKEY2       0x1CU   // Secure Boot CMAC Key 2
+#define DCSM_O_Z1OTP_CMACKEY3       0x1EU   // Secure Boot CMAC Key 3
 
 #define DCSM_O_Z2OTP_LINKPOINTER1   0x0U    // Zone 2 Link Pointer1
-#define DCSM_O_Z2OTP_LINKPOINTER2   0x4U    // Zone 2 Link Pointer2
-#define DCSM_O_Z2OTP_LINKPOINTER3   0x8U    // Zone 2 Link Pointer3
-#define DCSM_O_Z2OTP_GPREG1         0x10U   // Zone 2 General Purpose Register 1
-#define DCSM_O_Z2OTP_GPREG2         0x14U   // Zone 2 General Purpose Register 2
-#define DCSM_O_Z2OTP_GPREG3         0x18U   // Zone 2 General Purpose Register 3
-#define DCSM_O_Z2OTP_GPREG4         0x1CU   // Zone 2 General Purpose Register 4
-#define DCSM_O_Z2OTP_PSWDLOCK       0x20U   // Secure Password Lock
-#define DCSM_O_Z2OTP_CRCLOCK        0x24U   // Secure CRC Lock
+#define DCSM_O_Z2OTP_LINKPOINTER2   0x2U    // Zone 2 Link Pointer2
+#define DCSM_O_Z2OTP_LINKPOINTER3   0x4U    // Zone 2 Link Pointer3
+#define DCSM_O_Z2OTP_GPREG1         0x8U    // Zone 2 General Purpose Register 1
+#define DCSM_O_Z2OTP_GPREG2         0xAU    // Zone 2 General Purpose Register 2
+#define DCSM_O_Z2OTP_GPREG3         0xCU    // Zone 2 General Purpose Register 3
+#define DCSM_O_Z2OTP_GPREG4         0xEU    // Zone 2 General Purpose Register 4
+#define DCSM_O_Z2OTP_PSWDLOCK       0x10U   // Secure Password Lock
+#define DCSM_O_Z2OTP_CRCLOCK        0x12U   // Secure CRC Lock
 
 #define DCSM_O_Z1_LINKPOINTER      0x0U    // Zone 1 Link Pointer
-#define DCSM_O_Z1_OTPSECLOCK       0x4U    // Zone 1 OTP Secure Lock
-#define DCSM_O_Z1_JLM_ENABLE       0x8U    // Zone 1 JTAGLOCK Enable Register
-#define DCSM_O_Z1_LINKPOINTERERR   0xCU    // Link Pointer Error
-#define DCSM_O_Z1_GPREG1           0x10U   // Zone 1 General Purpose Register-1
-#define DCSM_O_Z1_GPREG2           0x14U   // Zone 1 General Purpose Register-2
-#define DCSM_O_Z1_GPREG3           0x18U   // Zone 1 General Purpose Register-3
-#define DCSM_O_Z1_GPREG4           0x1CU   // Zone 1 General Purpose Register-4
-#define DCSM_O_Z1_CSMKEY0          0x20U   // Zone 1 CSM Key 0
-#define DCSM_O_Z1_CSMKEY1          0x24U   // Zone 1 CSM Key 1
-#define DCSM_O_Z1_CSMKEY2          0x28U   // Zone 1 CSM Key 2
-#define DCSM_O_Z1_CSMKEY3          0x2CU   // Zone 1 CSM Key 3
-#define DCSM_O_Z1_CR               0x30U   // Zone 1 CSM Control Register
-#define DCSM_O_Z1_GRABSECT1R       0x34U   // Zone 1 Grab Flash Status Register 1
-#define DCSM_O_Z1_GRABSECT2R       0x38U   // Zone 1 Grab Flash Status Register 2
-#define DCSM_O_Z1_GRABSECT3R       0x3CU   // Zone 1 Grab Flash Status Register 3
-#define DCSM_O_Z1_GRABRAM1R        0x40U   // Zone 1 Grab RAM Status Register 1
-#define DCSM_O_Z1_GRABRAM2R        0x44U   // Zone 1 Grab RAM Status Register 2
-#define DCSM_O_Z1_GRABRAM3R        0x48U   // Zone 1 Grab RAM Status Register 3
-#define DCSM_O_Z1_EXEONLYSECT1R    0x4CU   // Zone 1 Execute Only Flash Status Register 1
-#define DCSM_O_Z1_EXEONLYSECT2R    0x50U   // Zone 1 Execute Only Flash Status Register 2
-#define DCSM_O_Z1_EXEONLYRAM1R     0x54U   // Zone 1 Execute Only RAM Status Register 1
-#define DCSM_O_Z1_JTAGKEY0         0x5CU   // JTAG Unlock Key Register 0
-#define DCSM_O_Z1_JTAGKEY1         0x60U   // JTAG Unlock Key Register 1
-#define DCSM_O_Z1_JTAGKEY2         0x64U   // JTAG Unlock Key Register 2
-#define DCSM_O_Z1_JTAGKEY3         0x68U   // JTAG Unlock Key Register 3
-#define DCSM_O_Z1_CMACKEY0         0x6CU   // Secure Boot CMAC Key Status Register 0
-#define DCSM_O_Z1_CMACKEY1         0x70U   // Secure Boot CMAC Key Status Register 1
-#define DCSM_O_Z1_CMACKEY2         0x74U   // Secure Boot CMAC Key Status Register 2
-#define DCSM_O_Z1_CMACKEY3         0x78U   // Secure Boot CMAC Key Status Register 3
+#define DCSM_O_Z1_OTPSECLOCK       0x2U    // Zone 1 OTP Secure Lock
+#define DCSM_O_Z1_JLM_ENABLE       0x4U    // Zone 1 JTAGLOCK Enable Register
+#define DCSM_O_Z1_LINKPOINTERERR   0x6U    // Link Pointer Error
+#define DCSM_O_Z1_GPREG1           0x8U    // Zone 1 General Purpose Register-1
+#define DCSM_O_Z1_GPREG2           0xAU    // Zone 1 General Purpose Register-2
+#define DCSM_O_Z1_GPREG3           0xCU    // Zone 1 General Purpose Register-3
+#define DCSM_O_Z1_GPREG4           0xEU    // Zone 1 General Purpose Register-4
+#define DCSM_O_Z1_CSMKEY0          0x10U   // Zone 1 CSM Key 0
+#define DCSM_O_Z1_CSMKEY1          0x12U   // Zone 1 CSM Key 1
+#define DCSM_O_Z1_CSMKEY2          0x14U   // Zone 1 CSM Key 2
+#define DCSM_O_Z1_CSMKEY3          0x16U   // Zone 1 CSM Key 3
+#define DCSM_O_Z1_CR               0x18U   // Zone 1 CSM Control Register
+#define DCSM_O_Z1_GRABSECT1R       0x1AU   // Zone 1 Grab Flash Status Register 1
+#define DCSM_O_Z1_GRABSECT2R       0x1CU   // Zone 1 Grab Flash Status Register 2
+#define DCSM_O_Z1_GRABSECT3R       0x1EU   // Zone 1 Grab Flash Status Register 3
+#define DCSM_O_Z1_GRABRAM1R        0x20U   // Zone 1 Grab RAM Status Register 1
+#define DCSM_O_Z1_GRABRAM2R        0x22U   // Zone 1 Grab RAM Status Register 2
+#define DCSM_O_Z1_GRABRAM3R        0x24U   // Zone 1 Grab RAM Status Register 3
+#define DCSM_O_Z1_EXEONLYSECT1R    0x26U   // Zone 1 Execute Only Flash Status Register 1
+#define DCSM_O_Z1_EXEONLYSECT2R    0x28U   // Zone 1 Execute Only Flash Status Register 2
+#define DCSM_O_Z1_EXEONLYRAM1R     0x2AU   // Zone 1 Execute Only RAM Status Register 1
+#define DCSM_O_Z1_JTAGKEY0         0x2EU   // JTAG Unlock Key Register 0
+#define DCSM_O_Z1_JTAGKEY1         0x30U   // JTAG Unlock Key Register 1
+#define DCSM_O_Z1_JTAGKEY2         0x32U   // JTAG Unlock Key Register 2
+#define DCSM_O_Z1_JTAGKEY3         0x34U   // JTAG Unlock Key Register 3
+#define DCSM_O_Z1_CMACKEY0         0x36U   // Secure Boot CMAC Key Status Register 0
+#define DCSM_O_Z1_CMACKEY1         0x38U   // Secure Boot CMAC Key Status Register 1
+#define DCSM_O_Z1_CMACKEY2         0x3AU   // Secure Boot CMAC Key Status Register 2
+#define DCSM_O_Z1_CMACKEY3         0x3CU   // Secure Boot CMAC Key Status Register 3
 
 #define DCSM_O_Z2_LINKPOINTER      0x0U    // Zone 2 Link Pointer
-#define DCSM_O_Z2_OTPSECLOCK       0x4U    // Zone 2 OTP Secure Lock
-#define DCSM_O_Z2_LINKPOINTERERR   0xCU    // Link Pointer Error
-#define DCSM_O_Z2_GPREG1           0x10U   // Zone 2 General Purpose Register-1
-#define DCSM_O_Z2_GPREG2           0x14U   // Zone 2 General Purpose Register-2
-#define DCSM_O_Z2_GPREG3           0x18U   // Zone 2 General Purpose Register-3
-#define DCSM_O_Z2_GPREG4           0x1CU   // Zone 2 General Purpose Register-4
-#define DCSM_O_Z2_CSMKEY0          0x20U   // Zone 2 CSM Key 0
-#define DCSM_O_Z2_CSMKEY1          0x24U   // Zone 2 CSM Key 1
-#define DCSM_O_Z2_CSMKEY2          0x28U   // Zone 2 CSM Key 2
-#define DCSM_O_Z2_CSMKEY3          0x2CU   // Zone 2 CSM Key 3
-#define DCSM_O_Z2_CR               0x30U   // Zone 2 CSM Control Register
-#define DCSM_O_Z2_GRABSECT1R       0x34U   // Zone 2 Grab Flash Status Register 1
-#define DCSM_O_Z2_GRABSECT2R       0x38U   // Zone 2 Grab Flash Status Register 2
-#define DCSM_O_Z2_GRABSECT3R       0x3CU   // Zone 2 Grab Flash Status Register 3
-#define DCSM_O_Z2_GRABRAM1R        0x40U   // Zone 2 Grab RAM Status Register 1
-#define DCSM_O_Z2_GRABRAM2R        0x44U   // Zone 2 Grab RAM Status Register 2
-#define DCSM_O_Z2_GRABRAM3R        0x48U   // Zone 2 Grab RAM Status Register 3
-#define DCSM_O_Z2_EXEONLYSECT1R    0x4CU   // Zone 2 Execute Only Flash Status Register 1
-#define DCSM_O_Z2_EXEONLYSECT2R    0x50U   // Zone 2 Execute Only Flash Status Register 2
-#define DCSM_O_Z2_EXEONLYRAM1R     0x54U   // Zone 2 Execute Only RAM Status Register 1
+#define DCSM_O_Z2_OTPSECLOCK       0x2U    // Zone 2 OTP Secure Lock
+#define DCSM_O_Z2_LINKPOINTERERR   0x6U    // Link Pointer Error
+#define DCSM_O_Z2_GPREG1           0x8U    // Zone 2 General Purpose Register-1
+#define DCSM_O_Z2_GPREG2           0xAU    // Zone 2 General Purpose Register-2
+#define DCSM_O_Z2_GPREG3           0xCU    // Zone 2 General Purpose Register-3
+#define DCSM_O_Z2_GPREG4           0xEU    // Zone 2 General Purpose Register-4
+#define DCSM_O_Z2_CSMKEY0          0x10U   // Zone 2 CSM Key 0
+#define DCSM_O_Z2_CSMKEY1          0x12U   // Zone 2 CSM Key 1
+#define DCSM_O_Z2_CSMKEY2          0x14U   // Zone 2 CSM Key 2
+#define DCSM_O_Z2_CSMKEY3          0x16U   // Zone 2 CSM Key 3
+#define DCSM_O_Z2_CR               0x18U   // Zone 2 CSM Control Register
+#define DCSM_O_Z2_GRABSECT1R       0x1AU   // Zone 2 Grab Flash Status Register 1
+#define DCSM_O_Z2_GRABSECT2R       0x1CU   // Zone 2 Grab Flash Status Register 2
+#define DCSM_O_Z2_GRABSECT3R       0x1EU   // Zone 2 Grab Flash Status Register 3
+#define DCSM_O_Z2_GRABRAM1R        0x20U   // Zone 2 Grab RAM Status Register 1
+#define DCSM_O_Z2_GRABRAM2R        0x22U   // Zone 2 Grab RAM Status Register 2
+#define DCSM_O_Z2_GRABRAM3R        0x24U   // Zone 2 Grab RAM Status Register 3
+#define DCSM_O_Z2_EXEONLYSECT1R    0x26U   // Zone 2 Execute Only Flash Status Register 1
+#define DCSM_O_Z2_EXEONLYSECT2R    0x28U   // Zone 2 Execute Only Flash Status Register 2
+#define DCSM_O_Z2_EXEONLYRAM1R     0x2AU   // Zone 2 Execute Only RAM Status Register 1
 
 #define DCSM_O_FLSEM        0x0U    // Flash Wrapper Semaphore Register
-#define DCSM_O_SECTSTAT1    0x10U   // Flash Sectors Status Register 1
-#define DCSM_O_SECTSTAT2    0x14U   // Flash Sectors Status Register 2
-#define DCSM_O_SECTSTAT3    0x18U   // Flash Sectors Status Register 3
-#define DCSM_O_RAMSTAT1     0x20U   // RAM Status Register 1
-#define DCSM_O_RAMSTAT2     0x24U   // RAM Status Register 2
-#define DCSM_O_RAMSTAT3     0x28U   // RAM Status Register 3
-#define DCSM_O_SECERRSTAT   0x30U   // Security Error Status Register
-#define DCSM_O_SECERRCLR    0x34U   // Security Error Clear Register
-#define DCSM_O_SECERRFRC    0x38U   // Security Error Force Register
+#define DCSM_O_SECTSTAT1    0x8U    // Flash Sectors Status Register 1
+#define DCSM_O_SECTSTAT2    0xAU    // Flash Sectors Status Register 2
+#define DCSM_O_SECTSTAT3    0xCU    // Flash Sectors Status Register 3
+#define DCSM_O_RAMSTAT1     0x10U   // RAM Status Register 1
+#define DCSM_O_RAMSTAT2     0x12U   // RAM Status Register 2
+#define DCSM_O_RAMSTAT3     0x14U   // RAM Status Register 3
+#define DCSM_O_SECERRSTAT   0x18U   // Security Error Status Register
+#define DCSM_O_SECERRCLR    0x1AU   // Security Error Clear Register
+#define DCSM_O_SECERRFRC    0x1CU   // Security Error Force Register
 
 
 

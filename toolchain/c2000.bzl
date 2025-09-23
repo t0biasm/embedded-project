@@ -4,6 +4,7 @@ C2000_COMPILER_FLAGS = [
     "%{source_file}", 
     "--define=CPU1",
     "--define=__TMS320C2000__",
+    "--define=__TMS320C28XX__",
     "--float_support=fpu32",
     # "-I=%{include_paths}",
     "--output_file=%{output_file}",

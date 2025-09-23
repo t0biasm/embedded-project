@@ -2,6 +2,7 @@ cc_library(
     name = "mcal_f2838x_h",
     srcs = glob(["*.h"]),
     deps = [],
+    includes = ["."],
     visibility = ["//visibility:public"],
 )
 
@@ -12,5 +13,6 @@ cc_library(
         ":mcal_f2838x_h",
         "//f2838/mcal/inc:mcal_f2838x_inc_h",
     ],
+    includes = ["."],
     visibility = ["//visibility:public"],
 )

@@ -406,18 +406,6 @@ extern "C"
                                             // the cable.
 #define USB_OTG_MODE_NONE       0x00000080UL  // OTG controller mode is not set.
 
-//*****************************************************************************
-//
-//! The definition values are there to select the mask to pass as a parameter
-//! to USBDMARawInterruptStatus().
-//
-//*****************************************************************************
-# define USB_DMAA_RX_DONE    0x0U   //!< USB uDMA A Rx Trigger Indication.
-# define USB_DMAA_TX_DONE    0x1U   //!< USB uDMA A Tx Trigger Indication.
-# define USB_DMAB_RX_DONE    0x2U   //!< USB uDMA B Rx Trigger Indication.
-# define USB_DMAB_TX_DONE    0x3U   //!< USB uDMA B Tx Trigger Indication.
-# define USB_DMAC_RX_DONE    0x4U   //!< USB uDMA C Rx Trigger Indication.
-# define USB_DMAC_TX_DONE    0x5U   //!< USB uDMA C Tx Trigger Indication.
 
 //*****************************************************************************
 //
@@ -520,11 +508,10 @@ extern void USBOTGMode(uint32_t ui32Base);
 extern void USBPHYPowerOff(uint32_t ui32Base);
 extern void USBPHYPowerOn(uint32_t ui32Base);
 extern uint32_t USBNumEndpointsGet(uint32_t ui32Base);
-extern uint16_t USBDMARawInterruptStatus(uint32_t ui32Base);
-extern void USBDMAInterruptMaskSet(uint32_t ui32Base, uint16_t intMaskValue);
-extern void USBDMAInterruptMaskReset(uint32_t ui32Base, uint16_t intMaskValue);
-extern uint16_t USBDMAInterruptStatus(uint32_t ui32Base);
-extern void USBDMAInterruptStatusClear(uint32_t ui32Base, uint16_t intMask);
+extern void USBEnableGlobalInterrupt(uint32_t ui32Base);
+extern void USBDisableGlobalInterrupt(uint32_t ui32Base);
+extern uint16_t USBGlobalInterruptFlagStatus(uint32_t ui32Base);
+extern void USBClearGlobalInterruptFlag(uint32_t ui32Base);
 
 //*****************************************************************************
 //

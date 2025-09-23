@@ -2,7 +2,7 @@
 //
 // FILE:   cputimer.h
 //
-// TITLE:   CM CPU timer Driver
+// TITLE:   C28x CPU timer Driver
 //
 //#############################################################################
 // 
@@ -54,6 +54,7 @@ extern "C"
 {
 #endif
 
+#ifdef __TMS320C28XX__
 
 //*****************************************************************************
 //
@@ -90,6 +91,26 @@ typedef enum
   //! Denotes that the timer will run free
   CPUTIMER_EMULATIONMODE_RUNFREE = 0x0800
 }CPUTimer_EmulationMode;
+
+//*****************************************************************************
+//
+//! The following are values that can be passed to
+//! CPUTimer_selectClockSource() as the \e source parameter.
+//
+//*****************************************************************************
+typedef enum
+{
+    //! System Clock Source
+    CPUTIMER_CLOCK_SOURCE_SYS     = 0x0,
+    //! Internal Oscillator 1 Clock Source
+    CPUTIMER_CLOCK_SOURCE_INTOSC1 = 0x1,
+    //! Internal Oscillator 2 Clock Source
+    CPUTIMER_CLOCK_SOURCE_INTOSC2 = 0x2,
+    //! External Clock Source
+    CPUTIMER_CLOCK_SOURCE_XTAL    = 0x3,
+    //! Auxiliary PLL Clock Source
+    CPUTIMER_CLOCK_SOURCE_AUX     = 0x6
+} CPUTimer_ClockSource;
 
 //*****************************************************************************
 //
@@ -353,13 +374,10 @@ static inline void CPUTimer_setPreScaler(uint32_t base, uint16_t prescaler)
     ASSERT(CPUTimer_isBaseValid(base));
 
     //
-    // Writes to TPR.TDDRL and TPR.TDDRH bits
+    // Writes to TPR.TDDR and TPRH.TDDRH bits
     //
-    HWREGH(base + CPUTIMER_O_TPR) = (prescaler & CPUTIMER_TPR_TDDRL_M);
-
-    HWREG(base + CPUTIMER_O_TPR) =
-    (HWREG(base + CPUTIMER_O_TPR) & ~CPUTIMER_TPR_TDDRH_M) |
-    (((uint32_t)prescaler << CPUTIMER_TPR_PSCL_S) & CPUTIMER_TPR_TDDRH_M);
+    HWREGH(base + CPUTIMER_O_TPRH) = prescaler >> 8U;
+    HWREGH(base + CPUTIMER_O_TPR) = (prescaler & CPUTIMER_TPR_TDDR_M) ;
 }
 
 //*****************************************************************************
@@ -384,6 +402,68 @@ static inline bool CPUTimer_getTimerOverflowStatus(uint32_t base)
             CPUTIMER_TCR_TIF) ? true : false);
 }
 
+//*****************************************************************************
+//
+//! Select CPU Timer 2 Clock Source and Prescaler
+//!
+//! \param base is the base address of the timer module.
+//! \param source is the clock source to use for CPU Timer 2
+//! \param prescaler is the value that configures the selected clock source
+//! relative to the system clock
+//!
+//! This function selects the specified clock source and prescaler value
+//! for the CPU timer (CPU timer 2 only).
+//!
+//! The \e source parameter can be any one of the following:
+//! - \b CPUTIMER_CLOCK_SOURCE_SYS     - System Clock
+//! - \b CPUTIMER_CLOCK_SOURCE_INTOSC1 - Internal Oscillator 1 Clock
+//! - \b CPUTIMER_CLOCK_SOURCE_INTOSC2 - Internal Oscillator 2 Clock
+//! - \b CPUTIMER_CLOCK_SOURCE_XTAL    - External Clock
+//! - \b CPUTIMER_CLOCK_SOURCE_AUX     - Auxiliary PLL Clock
+//!
+//! The \e prescaler parameter can be any one of the following:
+//! - \b CPUTIMER_CLOCK_PRESCALER_1  - Prescaler value of / 1
+//! - \b CPUTIMER_CLOCK_PRESCALER_2  - Prescaler value of / 2
+//! - \b CPUTIMER_CLOCK_PRESCALER_4  - Prescaler value of / 4
+//! - \b CPUTIMER_CLOCK_PRESCALER_8  - Prescaler value of / 8
+//! - \b CPUTIMER_CLOCK_PRESCALER_16 - Prescaler value of / 16
+//!
+//! \return None.
+//
+//*****************************************************************************
+static inline void CPUTimer_selectClockSource(uint32_t base,
+                                              CPUTimer_ClockSource source,
+                                              CPUTimer_Prescaler prescaler)
+{
+    ASSERT(base == CPUTIMER2_BASE);
+
+    //
+    // Set source and prescaler for CPU Timer 2
+    //
+    if(base == CPUTIMER2_BASE)
+    {
+        EALLOW;
+
+        //
+        // Set Clock Source
+        //
+        HWREGH(CPUSYS_BASE + SYSCTL_O_TMR2CLKCTL) =
+                    (HWREGH(CPUSYS_BASE + SYSCTL_O_TMR2CLKCTL) &
+                     ~SYSCTL_TMR2CLKCTL_TMR2CLKSRCSEL_M) | (uint16_t)source;
+        SYSCTL_REGWRITE_DELAY;
+
+        //
+        // Set Clock Prescaler
+        //
+        HWREGH(CPUSYS_BASE + SYSCTL_O_TMR2CLKCTL) =
+                    (HWREGH(CPUSYS_BASE + SYSCTL_O_TMR2CLKCTL) &
+                     ~SYSCTL_TMR2CLKCTL_TMR2CLKPRESCALE_M) |
+                    ((uint16_t)prescaler <<SYSCTL_TMR2CLKCTL_TMR2CLKPRESCALE_S);
+
+        EDIS;
+    }
+    SYSCTL_REGWRITE_DELAY;
+}
 
 //*****************************************************************************
 //
@@ -415,6 +495,7 @@ extern void CPUTimer_setEmulationMode(uint32_t base,
 //
 //*****************************************************************************
 
+#endif // #ifdef __TMS320C28XX__
 
 //*****************************************************************************
 //

@@ -48,38 +48,34 @@
 // The following are defines for the FLASH register offsets
 //
 //*************************************************************************************************
-#define FLASH_O_FRDCNTL              0x0U     // Flash Read Control Register
-#define FLASH_O_FBAC                 0x3CU    // Flash Bank Access Control Register
-#define FLASH_O_FBFALLBACK           0x40U    // Flash Bank Fallback Power Register
-#define FLASH_O_FBPRDY               0x44U    // Flash Bank Pump Ready Register
-#define FLASH_O_FPAC1                0x48U    // Flash Pump Access Control Register 1
-#define FLASH_O_FMSTAT               0x54U    // Flash Module Status Register
-#define FLASH_O_FRD_INTF_CTRL_LOCK   0x2FCU   // Lock register for FLASH_CTRL_REGS (Not including
-                                              // FRD_INTF_CTRL_LOCK ).
-#define FLASH_O_FRD_INTF_CTRL        0x300U   // Flash Read Interface Control Register
+#define FLASH_O_FRDCNTL         0x0U     // Flash Read Control Register
+#define FLASH_O_FBAC            0x1EU    // Flash Bank Access Control Register
+#define FLASH_O_FBFALLBACK      0x20U    // Flash Bank Fallback Power Register
+#define FLASH_O_FBPRDY          0x22U    // Flash Bank Pump Ready Register
+#define FLASH_O_FPAC1           0x24U    // Flash Pump Access Control Register 1
+#define FLASH_O_FMSTAT          0x2AU    // Flash Module Status Register
+#define FLASH_O_FRD_INTF_CTRL   0x180U   // Flash Read Interface Control Register
 
 #define FLASH_O_ECC_ENABLE             0x0U    // ECC Enable
-#define FLASH_O_SINGLE_ERR_ADDR_LOW    0x4U    // Single Error Address Low
-#define FLASH_O_SINGLE_ERR_ADDR_HIGH   0x8U    // Single Error Address High
-#define FLASH_O_UNC_ERR_ADDR_LOW       0xCU    // Uncorrectable Error Address Low
-#define FLASH_O_UNC_ERR_ADDR_HIGH      0x10U   // Uncorrectable Error Address High
-#define FLASH_O_ERR_STATUS             0x14U   // Error Status
-#define FLASH_O_ERR_POS                0x18U   // Error Position
-#define FLASH_O_ERR_STATUS_CLR         0x1CU   // Error Status Clear
-#define FLASH_O_ERR_CNT                0x20U   // Error Control
-#define FLASH_O_ERR_THRESHOLD          0x24U   // Error Threshold
-#define FLASH_O_ERR_INTFLG             0x28U   // Error Interrupt Flag
-#define FLASH_O_ERR_INTCLR             0x2CU   // Error Interrupt Flag Clear
-#define FLASH_O_FDATAH_TEST            0x30U   // Data High Test
-#define FLASH_O_FDATAL_TEST            0x34U   // Data Low Test
-#define FLASH_O_FADDR_TEST             0x38U   // ECC Test Address
-#define FLASH_O_FECC_TEST              0x3CU   // ECC Test Address
-#define FLASH_O_FECC_CTRL              0x40U   // ECC Control
-#define FLASH_O_FOUTH_TEST             0x44U   // Test Data Out High
-#define FLASH_O_FOUTL_TEST             0x48U   // Test Data Out Low
-#define FLASH_O_FECC_STATUS            0x4CU   // ECC Status
-#define FLASH_O_ECC_REGS_LOCK          0x7CU   // Lock register for FLASH_ECC_REGS (Not including
-                                               // FLASH_ECC_REGS_LOCK ).
+#define FLASH_O_SINGLE_ERR_ADDR_LOW    0x2U    // Single Error Address Low
+#define FLASH_O_SINGLE_ERR_ADDR_HIGH   0x4U    // Single Error Address High
+#define FLASH_O_UNC_ERR_ADDR_LOW       0x6U    // Uncorrectable Error Address Low
+#define FLASH_O_UNC_ERR_ADDR_HIGH      0x8U    // Uncorrectable Error Address High
+#define FLASH_O_ERR_STATUS             0xAU    // Error Status
+#define FLASH_O_ERR_POS                0xCU    // Error Position
+#define FLASH_O_ERR_STATUS_CLR         0xEU    // Error Status Clear
+#define FLASH_O_ERR_CNT                0x10U   // Error Control
+#define FLASH_O_ERR_THRESHOLD          0x12U   // Error Threshold
+#define FLASH_O_ERR_INTFLG             0x14U   // Error Interrupt Flag
+#define FLASH_O_ERR_INTCLR             0x16U   // Error Interrupt Flag Clear
+#define FLASH_O_FDATAH_TEST            0x18U   // Data High Test
+#define FLASH_O_FDATAL_TEST            0x1AU   // Data Low Test
+#define FLASH_O_FADDR_TEST             0x1CU   // ECC Test Address
+#define FLASH_O_FECC_TEST              0x1EU   // ECC Test Address
+#define FLASH_O_FECC_CTRL              0x20U   // ECC Control
+#define FLASH_O_FOUTH_TEST             0x22U   // Test Data Out High
+#define FLASH_O_FOUTL_TEST             0x24U   // Test Data Out Low
+#define FLASH_O_FECC_STATUS            0x26U   // ECC Status
 
 
 //*************************************************************************************************
@@ -104,7 +100,7 @@
 //
 //*************************************************************************************************
 #define FLASH_FBFALLBACK_BNKPWR0_S   0U
-#define FLASH_FBFALLBACK_BNKPWR0_M   0x3U   // Bank Power Mode of BANK0
+#define FLASH_FBFALLBACK_BNKPWR0_M   0x3U   // Bank Power Mode
 
 //*************************************************************************************************
 //
@@ -144,7 +140,7 @@
 // The following are defines for the bit fields in the FRD_INTF_CTRL register
 //
 //*************************************************************************************************
-#define FLASH_FRD_INTF_CTRL_PROG_CACHE_EN   0x1U   // Program Cache Enable
+#define FLASH_FRD_INTF_CTRL_PREFETCH_EN     0x1U   // Prefetch Enable
 #define FLASH_FRD_INTF_CTRL_DATA_CACHE_EN   0x2U   // Data Cache Enable
 
 

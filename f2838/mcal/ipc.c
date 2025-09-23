@@ -2,7 +2,7 @@
 //
 // FILE:   ipc.c
 //
-// TITLE:  CM IPC driver.
+// TITLE:  C28x IPC driver.
 //
 //###########################################################################
 // 
@@ -45,7 +45,7 @@
 //
 // Macros internal to the IPC driver
 //
-#define IPC_REG_BOOTSTS_OFFSET             0x40U
+#define IPC_REG_BOOTSTS_OFFSET             0x20U
 
 #define IPC_ADDR_OFFSET_NOCHANGE           2U
 #define IPC_ADDR_OFFSET_MUL2               4U
@@ -58,64 +58,115 @@
 //
 // Global Circular Buffer Definitions
 //
+#pragma DATA_SECTION(IPC_CPU1_To_CPU2_PutBuffer, "MSGRAM_CPU1_TO_CPU2")
+#pragma DATA_SECTION(IPC_CPU1_To_CPU2_GetBuffer, "MSGRAM_CPU2_TO_CPU1")
+#pragma DATA_SECTION(IPC_CPU_To_CM_PutBuffer,    "MSGRAM_CPU_TO_CM")
+#pragma DATA_SECTION(IPC_CPU_To_CM_GetBuffer,    "MSGRAM_CM_TO_CPU")
 
-#pragma DATA_SECTION(IPC_CM_To_CPU1_PutBuffer,   "MSGRAM_CM_TO_CPU1")
-#pragma DATA_SECTION(IPC_CM_To_CPU1_GetBuffer,   "MSGRAM_CPU1_TO_CM")
-#pragma DATA_SECTION(IPC_CM_To_CPU2_PutBuffer,   "MSGRAM_CM_TO_CPU2")
-#pragma DATA_SECTION(IPC_CM_To_CPU2_GetBuffer,   "MSGRAM_CPU2_TO_CM")
+//
+// IPC_CPU1_To_CPU2_PutBuffer acts as IPC_CPU2_To_CPU1_GetBuffer and
+// IPC_CPU1_To_CPU2_GetBuffer acts as IPC_CPU2_To_CPU1_PutBuffer
+//
+IPC_PutBuffer_t IPC_CPU1_To_CPU2_PutBuffer;
+IPC_GetBuffer_t IPC_CPU1_To_CPU2_GetBuffer;
 
-IPC_PutBuffer_t IPC_CM_To_CPU1_PutBuffer;
-IPC_GetBuffer_t IPC_CM_To_CPU1_GetBuffer;
-IPC_PutBuffer_t IPC_CM_To_CPU2_PutBuffer;
-IPC_GetBuffer_t IPC_CM_To_CPU2_GetBuffer;
+//
+// IPC_CPU_To_CM_Put(Get)Buffer acts as IPC_CPU1_To_CM_Put(Get)Buffer and
+// IPC_CPU2_To_CM_Put(Get)Buffer
+//
+IPC_PutBuffer_t IPC_CPU_To_CM_PutBuffer;
+IPC_GetBuffer_t IPC_CPU_To_CM_GetBuffer;
+
 
 #endif
 
 const IPC_Instance_t IPC_Instance[IPC_TOTAL_NUM] = {
 
-     /* IPC_CM_L_CPU1_R */
+     /* IPC_CPU1_L_CPU2_R */
      {
-      .IPC_Flag_Ctr_Reg   = (volatile IPC_Flag_Ctr_Reg_t *) IPC_CMTOCPU1_BASE,
+      .IPC_Flag_Ctr_Reg   = (volatile IPC_Flag_Ctr_Reg_t *) IPC_CPUXTOCPUX_BASE,
       .IPC_SendCmd_Reg    = (volatile IPC_SendCmd_Reg_t *)
-                            (IPC_CMTOCPU1_BASE + IPC_O_CMTOCPU1IPCSENDCOM),
+                            (IPC_CPUXTOCPUX_BASE + IPC_O_CPU1TOCPU2IPCSENDCOM),
       .IPC_RecvCmd_Reg    = (volatile IPC_RecvCmd_Reg_t *)
-                            (IPC_CMTOCPU1_BASE + IPC_O_CPU1TOCMIPCRECVCOM),
+                            (IPC_CPUXTOCPUX_BASE + IPC_O_CPU2TOCPU1IPCRECVCOM),
       .IPC_Boot_Pump_Reg  = (volatile IPC_Boot_Pump_Reg_t *)
-                            (IPC_CMTOCPU1_BASE + IPC_REG_BOOTSTS_OFFSET),
-      .IPC_IntNum         = {INT_CPU1TOCMIPC0, INT_CPU1TOCMIPC1,
-                             INT_CPU1TOCMIPC2, INT_CPU1TOCMIPC3,
-                             INT_CPU1TOCMIPC4, INT_CPU1TOCMIPC5,
-                             INT_CPU1TOCMIPC6, INT_CPU1TOCMIPC7},
-      .IPC_MsgRam_LtoR    = CMTOCPU1MSGRAM0_BASE,
-      .IPC_MsgRam_RtoL    = CPU1TOCMMSGRAM0_BASE,
-      .IPC_Offset_Corr    = IPC_ADDR_OFFSET_MUL2
+                            (IPC_CPUXTOCPUX_BASE + IPC_REG_BOOTSTS_OFFSET),
+      .IPC_IntNum         = {INT_CIPC0, INT_CIPC1, INT_CIPC2, INT_CIPC3,
+                             0U, 0U, 0U, 0U},
+      .IPC_MsgRam_LtoR    = CPU1TOCPU2MSGRAM0_BASE,
+      .IPC_MsgRam_RtoL    = CPU2TOCPU1MSGRAM0_BASE,
+      .IPC_Offset_Corr    = IPC_ADDR_OFFSET_NOCHANGE
 #if IPC_MSGQ_SUPPORT == 1U
       ,
-      .IPC_PutBuffer      = &IPC_CM_To_CPU1_PutBuffer,
-      .IPC_GetBuffer      = &IPC_CM_To_CPU1_GetBuffer
+      .IPC_PutBuffer      = &IPC_CPU1_To_CPU2_PutBuffer,
+      .IPC_GetBuffer      = &IPC_CPU1_To_CPU2_GetBuffer
 #endif
      },
 
-     /* IPC_CM_L_CPU2_R */
+     /* IPC_CPU1_L_CM_R */
      {
-      .IPC_Flag_Ctr_Reg   = (volatile IPC_Flag_Ctr_Reg_t *) IPC_CMTOCPU2_BASE,
+      .IPC_Flag_Ctr_Reg   = (volatile IPC_Flag_Ctr_Reg_t *) IPC_CPUXTOCM_BASE,
       .IPC_SendCmd_Reg    = (volatile IPC_SendCmd_Reg_t *)
-                            (IPC_CMTOCPU2_BASE + IPC_O_CMTOCPU2IPCSENDCOM),
+                            (IPC_CPUXTOCM_BASE + IPC_O_CPU1TOCMIPCSENDCOM),
       .IPC_RecvCmd_Reg    = (volatile IPC_RecvCmd_Reg_t *)
-                            (IPC_CMTOCPU2_BASE + IPC_O_CPU2TOCMIPCRECVCOM),
+                            (IPC_CPUXTOCM_BASE + IPC_O_CMTOCPU1IPCRECVCOM),
       .IPC_Boot_Pump_Reg  = (volatile IPC_Boot_Pump_Reg_t *)
-                            (IPC_CMTOCPU2_BASE + IPC_REG_BOOTSTS_OFFSET),
-      .IPC_IntNum         = {INT_CPU2TOCMIPC0, INT_CPU2TOCMIPC1,
-                             INT_CPU2TOCMIPC2, INT_CPU2TOCMIPC3,
-                             INT_CPU2TOCMIPC4, INT_CPU2TOCMIPC5,
-                             INT_CPU2TOCMIPC6, INT_CPU2TOCMIPC7},
-      .IPC_MsgRam_LtoR    = CMTOCPU2MSGRAM0_BASE,
-      .IPC_MsgRam_RtoL    = CPU2TOCMMSGRAM0_BASE,
-      .IPC_Offset_Corr    = IPC_ADDR_OFFSET_MUL2
+                            (IPC_CPUXTOCM_BASE + IPC_REG_BOOTSTS_OFFSET),
+      .IPC_IntNum         = {INT_CMTOCPUXIPC0, INT_CMTOCPUXIPC1,
+                             INT_CMTOCPUXIPC2, INT_CMTOCPUXIPC3,
+                             INT_CMTOCPUXIPC4, INT_CMTOCPUXIPC5,
+                             INT_CMTOCPUXIPC6, INT_CMTOCPUXIPC7},
+      .IPC_MsgRam_LtoR    = CPUXTOCMMSGRAM0_BASE,
+      .IPC_MsgRam_RtoL    = CMTOCPUXMSGRAM0_BASE,
+      .IPC_Offset_Corr    = IPC_ADDR_OFFSET_DIV2
 #if IPC_MSGQ_SUPPORT == 1U
       ,
-      .IPC_PutBuffer      = &IPC_CM_To_CPU2_PutBuffer,
-      .IPC_GetBuffer      = &IPC_CM_To_CPU2_GetBuffer
+      .IPC_PutBuffer      = &IPC_CPU_To_CM_PutBuffer,
+      .IPC_GetBuffer      = &IPC_CPU_To_CM_GetBuffer
+#endif
+     },
+
+     /* IPC_CPU2_L_CPU1_R */
+     {
+      .IPC_Flag_Ctr_Reg   = (volatile IPC_Flag_Ctr_Reg_t *) IPC_CPUXTOCPUX_BASE,
+      .IPC_SendCmd_Reg    = (volatile IPC_SendCmd_Reg_t *)
+                            (IPC_CPUXTOCPUX_BASE + IPC_O_CPU2TOCPU1IPCSENDCOM),
+      .IPC_RecvCmd_Reg    = (volatile IPC_RecvCmd_Reg_t *)
+                            (IPC_CPUXTOCPUX_BASE + IPC_O_CPU1TOCPU2IPCRECVCOM),
+      .IPC_Boot_Pump_Reg  = (volatile IPC_Boot_Pump_Reg_t *)
+                            (IPC_CPUXTOCPUX_BASE + IPC_REG_BOOTSTS_OFFSET),
+      .IPC_IntNum         = {INT_CIPC0, INT_CIPC1, INT_CIPC2, INT_CIPC3,
+                             0U, 0U, 0U, 0U},
+      .IPC_MsgRam_LtoR    = CPU2TOCPU1MSGRAM0_BASE,
+      .IPC_MsgRam_RtoL    = CPU1TOCPU2MSGRAM0_BASE,
+      .IPC_Offset_Corr    = IPC_ADDR_OFFSET_NOCHANGE
+#if IPC_MSGQ_SUPPORT == 1U
+      ,
+      .IPC_PutBuffer      = (IPC_PutBuffer_t *)&IPC_CPU1_To_CPU2_GetBuffer,
+      .IPC_GetBuffer      = (IPC_GetBuffer_t *)&IPC_CPU1_To_CPU2_PutBuffer
+#endif
+     },
+
+     /* IPC_CPU2_L_CM_R */
+     {
+      .IPC_Flag_Ctr_Reg   = (volatile IPC_Flag_Ctr_Reg_t *) IPC_CPUXTOCM_BASE,
+      .IPC_SendCmd_Reg    = (volatile IPC_SendCmd_Reg_t *)
+                            (IPC_CPUXTOCM_BASE + IPC_O_CPU2TOCMIPCSENDCOM),
+      .IPC_RecvCmd_Reg    = (volatile IPC_RecvCmd_Reg_t *)
+                            (IPC_CPUXTOCM_BASE + IPC_O_CMTOCPU2IPCRECVCOM),
+      .IPC_Boot_Pump_Reg  = (volatile IPC_Boot_Pump_Reg_t *)
+                            (IPC_CPUXTOCM_BASE + IPC_REG_BOOTSTS_OFFSET),
+      .IPC_IntNum         = {INT_CMTOCPUXIPC0, INT_CMTOCPUXIPC1,
+                             INT_CMTOCPUXIPC2, INT_CMTOCPUXIPC3,
+                             INT_CMTOCPUXIPC4, INT_CMTOCPUXIPC5,
+                             INT_CMTOCPUXIPC6, INT_CMTOCPUXIPC7},
+      .IPC_MsgRam_LtoR    = CPUXTOCMMSGRAM0_BASE,
+      .IPC_MsgRam_RtoL    = CMTOCPUXMSGRAM0_BASE,
+      .IPC_Offset_Corr    = IPC_ADDR_OFFSET_DIV2
+#if IPC_MSGQ_SUPPORT == 1U
+      ,
+      .IPC_PutBuffer      = &IPC_CPU_To_CM_PutBuffer,
+      .IPC_GetBuffer      = &IPC_CPU_To_CM_GetBuffer
 #endif
      }
 };
@@ -233,7 +284,10 @@ void IPC_registerInterrupt(IPC_Type_t ipcType, uint32_t ipcInt,
     // Check for arguments
     //
 
-    ASSERT(ipcInt <= IPC_INT7);
+    ASSERT(((ipcType == IPC_CPU1_L_CPU2_R) && (ipcInt <= IPC_INT3)) ||
+           ((ipcType == IPC_CPU1_L_CM_R)   && (ipcInt <= IPC_INT7)) ||
+           ((ipcType == IPC_CPU2_L_CPU1_R) && (ipcInt <= IPC_INT3)) ||
+           ((ipcType == IPC_CPU2_L_CM_R)   && (ipcInt <= IPC_INT7)));
 
     //
     // Get the corresponding interrupt number
@@ -244,7 +298,7 @@ void IPC_registerInterrupt(IPC_Type_t ipcType, uint32_t ipcInt,
     // Register the interrupt handler
     //
 
-    Interrupt_registerHandler(intNum, pfnHandler);
+    Interrupt_register(intNum, pfnHandler);
 
     //
     // Enable the interrupt
@@ -263,7 +317,10 @@ void IPC_unregisterInterrupt(IPC_Type_t ipcType, uint32_t ipcInt)
     // Check for arguments
     //
 
-    ASSERT(ipcInt <= IPC_INT7);
+    ASSERT(((ipcType == IPC_CPU1_L_CPU2_R) && (ipcInt <= IPC_INT3)) ||
+           ((ipcType == IPC_CPU1_L_CM_R)   && (ipcInt <= IPC_INT7)) ||
+           ((ipcType == IPC_CPU2_L_CPU1_R) && (ipcInt <= IPC_INT3)) ||
+           ((ipcType == IPC_CPU2_L_CM_R)   && (ipcInt <= IPC_INT7)));
 
     //
     // Get the corresponding interrupt number
@@ -279,7 +336,7 @@ void IPC_unregisterInterrupt(IPC_Type_t ipcType, uint32_t ipcInt)
     // Unregister the interrupt handler.
     //
 
-    Interrupt_unregisterHandler(intNum);
+    Interrupt_unregister(intNum);
 }
 
 #if IPC_MSGQ_SUPPORT == 1U

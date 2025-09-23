@@ -50,10 +50,13 @@
 extern "C" {
 #endif
 
+#ifdef __TMS320C28XX__
 #include "inc/hw_mcanss.h"
 #include "inc/hw_memmap.h"
 #include <stdbool.h>
 #include "inc/hw_types_mcan.h"
+#include "cpu.h"
+#include "sysctl.h"
 
 
 //! \addtogroup mcan_api MCAN
@@ -462,6 +465,8 @@ typedef enum
     //! Peripheral System Clock Source
     MCAN_CLOCK_SOURCE_SYS       = 0x0,
 
+    //! Auxiliary PLL Clock Source
+    MCAN_CLOCK_SOURCE_AUXPLL    = 0x1,
 
     //! Auxiliary Clock Input Source
     MCAN_CLOCK_SOURCE_AUXIN     = 0x2,  
@@ -1348,6 +1353,7 @@ typedef struct
  *
  * The \e source parameter can be any one of the following:
  * - \b MCAN_CLOCK_SOURCE_SYS       - Peripheral System Clock
+ * - \b MCAN_CLOCK_SOURCE_AUXPLL    - Auxiliary PLL Clock        
  * - \b MCAN_CLOCK_SOURCE_AUXIN     - Auxiliary Clock Input
  *
  * \retval  None
@@ -2238,6 +2244,7 @@ uint32_t MCAN_getMsgObjSize(uint32_t elemSize);
 // Close the Doxygen group.
 //! @}
 
+#endif  // #ifdef __TMS320C28XX__
 
 #ifdef __cplusplus
 }

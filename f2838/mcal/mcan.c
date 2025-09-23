@@ -247,11 +247,44 @@ static inline bool
 MCAN_isBaseValid(uint32_t baseAddr)
 {
 return(
-           (baseAddr == MCAN0_BASE)
+           (baseAddr == MCANA_DRIVER_BASE)
           );  
 }
 #endif
 
+void MCAN_selectClockSource(uint32_t baseAddr, MCAN_ClockSource source)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MCAN_isBaseValid(baseAddr));
+
+    //
+    // Determine the CAN controller and set specified clock source
+    //
+    EALLOW;
+
+    switch(baseAddr)
+    {
+        case MCANA_DRIVER_BASE:
+            HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL2) = 
+                    (HWREGH(CLKCFG_BASE + SYSCTL_O_CLKSRCCTL2) & 
+                    ~SYSCTL_CLKSRCCTL2_MCANABITCLKSEL_M) |
+                    ((uint16_t)source << SYSCTL_CLKSRCCTL2_MCANABITCLKSEL_S); 
+            break;
+
+
+        default:
+
+            //
+            // Do nothing. Not a valid mode value.
+            //
+            break;
+    }
+
+    EDIS;
+
+}
 
 uint32_t MCAN_isInReset(uint32_t baseAddr)
 {

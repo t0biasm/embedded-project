@@ -2,7 +2,7 @@
 //
 // FILE:   flash.c
 //
-// TITLE:  CM Flash driver.
+// TITLE:  C28x Flash driver.
 //
 //###########################################################################
 // 
@@ -59,19 +59,12 @@
 void
 Flash_initModule(uint32_t ctrlBase, uint32_t eccBase, uint16_t waitstates)
 {
-    volatile uint32_t count;
     //
     // Check the arguments.
     //
     ASSERT(Flash_isCtrlBaseValid(ctrlBase));
     ASSERT(Flash_isECCBaseValid(eccBase));
     ASSERT(waitstates <= 0xFU);
-
-    //
-    // Unlock to enable the writes to the flash control and ECC registers.
-    //
-    Flash_unlockCtrlRegisters(ctrlBase);
-    Flash_unlockECCRegisters(eccBase);
 
     //
     // Set the bank fallback power mode to active.
@@ -87,8 +80,8 @@ Flash_initModule(uint32_t ctrlBase, uint32_t eccBase, uint16_t waitstates)
     //
     // Disable cache and prefetch mechanism before changing wait states
     //
-    Flash_disableDataCache(ctrlBase);
-    Flash_disableProgramCache(ctrlBase);
+    Flash_disableCache(ctrlBase);
+    Flash_disablePrefetch(ctrlBase);
 
     //
     // Set waitstates according to frequency.
@@ -100,8 +93,8 @@ Flash_initModule(uint32_t ctrlBase, uint32_t eccBase, uint16_t waitstates)
     // Enable cache and prefetch mechanism to improve performance of code
     // executed from flash.
     //
-    Flash_enableDataCache(ctrlBase);
-    Flash_enableProgramCache(ctrlBase);
+    Flash_enableCache(ctrlBase);
+    Flash_enablePrefetch(ctrlBase);
 
     //
     // At reset, ECC is enabled.  If it is disabled by application software and
@@ -114,10 +107,7 @@ Flash_initModule(uint32_t ctrlBase, uint32_t eccBase, uint16_t waitstates)
     // configured occurs before returning.
     //
 
-    for(count = 0U; count < 8U; count++)
-    {
-        NOP;
-    }
+    FLASH_DELAY_CONFIG;
 }
 
 //*****************************************************************************
@@ -135,11 +125,6 @@ Flash_powerDown(uint32_t ctrlBase)
     // Check the arguments.
     //
     ASSERT(Flash_isCtrlBaseValid(ctrlBase));
-
-    //
-    // Unlock to enable the writes to the flash control registers.
-    //
-    Flash_unlockCtrlRegisters(ctrlBase);
 
     //
     // Power down the flash bank.

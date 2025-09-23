@@ -100,7 +100,7 @@ _USBIndexWrite(uint32_t ui32Base, uint32_t ui32Endpoint,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == 0U) || (ui32Endpoint == 1U) || (ui32Endpoint == 2U) ||
            (ui32Endpoint == 3U));
     ASSERT((ui32Size == 1U) || (ui32Size == 2U));
@@ -164,7 +164,7 @@ _USBIndexRead(uint32_t ui32Base, uint32_t ui32Endpoint,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == 0) || (ui32Endpoint == 1) || (ui32Endpoint == 2) ||
            (ui32Endpoint == 3));
     ASSERT((ui32Size == 1) || (ui32Size == 2));
@@ -228,7 +228,7 @@ USBHostSuspend(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Send the suspend signaling to the USB bus.
@@ -260,7 +260,7 @@ USBHostReset(uint32_t ui32Base, bool bStart)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Send a reset signal to the bus.
@@ -305,7 +305,7 @@ USBHostResume(uint32_t ui32Base, bool bStart)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Send a resume signal to the bus.
@@ -334,7 +334,7 @@ USBHostResume(uint32_t ui32Base, bool bStart)
 //! //
 //! // Get the connection speed of the device connected to the USB controller.
 //! //
-//! USBHostSpeedGet(USB0_BASE);
+//! USBHostSpeedGet(USBA_BASE);
 //! \endverbatim
 //!
 //! \note This function must only be called in host mode.
@@ -349,7 +349,7 @@ USBHostSpeedGet(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // If the Full Speed device bit is set, then this is a full speed device.
@@ -395,7 +395,7 @@ USBIntDisableControl(uint32_t ui32Base, uint32_t ui32Flags)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Flags & ~(USB_INTCTRL_ALL)) == 0);
 
     //
@@ -446,7 +446,7 @@ USBIntEnableControl(uint32_t ui32Base, uint32_t ui32Flags)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Flags & (~USB_INTCTRL_ALL)) == 0U);
 
     //
@@ -530,7 +530,7 @@ USBIntStatus(uint32_t ui32Base, uint32_t *pui32IntStatusEP)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Do-While to make sure that all status registers are cleared before
@@ -656,7 +656,7 @@ USBIntStatusControl(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Get the general interrupt status, these bits go into the upper 8 bits
@@ -721,7 +721,7 @@ USBIntDisableEndpoint(uint32_t ui32Base, uint32_t ui32Flags)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // If any transmit interrupts were disabled, then write the transmit
@@ -761,7 +761,7 @@ USBIntEnableEndpoint(uint32_t ui32Base, uint32_t ui32Flags)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Enable any transmit endpoint interrupts.
@@ -804,7 +804,7 @@ USBIntStatusEndpoint(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Get the transmit interrupt status.
@@ -898,7 +898,7 @@ USBEndpointStatus(uint32_t ui32Base, uint32_t ui32Endpoint)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -950,7 +950,7 @@ USBHostEndpointStatusClear(uint32_t ui32Base, uint32_t ui32Endpoint,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -1000,7 +1000,7 @@ USBDevEndpointStatusClear(uint32_t ui32Base, uint32_t ui32Endpoint,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -1090,7 +1090,7 @@ USBHostEndpointDataToggle(uint32_t ui32Base, uint32_t ui32Endpoint,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -1187,7 +1187,7 @@ USBEndpointDataToggleClear(uint32_t ui32Base, uint32_t ui32Endpoint,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_1) || (ui32Endpoint == USB_EP_2) ||
            (ui32Endpoint == USB_EP_3) || (ui32Endpoint == USB_EP_4) ||
            (ui32Endpoint == USB_EP_5) || (ui32Endpoint == USB_EP_6) ||
@@ -1238,7 +1238,7 @@ USBDevEndpointStall(uint32_t ui32Base, uint32_t ui32Endpoint,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Flags & ~(USB_EP_DEV_IN | USB_EP_DEV_OUT)) == 0);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
@@ -1304,7 +1304,7 @@ USBDevEndpointStallClear(uint32_t ui32Base, uint32_t ui32Endpoint,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -1376,7 +1376,7 @@ USBDevConnect(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Enable connection to the USB bus.
@@ -1405,7 +1405,7 @@ USBDevDisconnect(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Disable connection to the USB bus.
@@ -1434,7 +1434,7 @@ USBDevAddrSet(uint32_t ui32Base, uint32_t ui32Address)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Set the function address in the correct location.
@@ -1462,7 +1462,7 @@ USBDevAddrGet(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Return the function address.
@@ -1547,7 +1547,7 @@ USBHostEndpointConfig(uint32_t ui32Base, uint32_t ui32Endpoint,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -1811,7 +1811,7 @@ USBDevEndpointConfigSet(uint32_t ui32Base, uint32_t ui32Endpoint,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_1) || (ui32Endpoint == USB_EP_2) ||
            (ui32Endpoint == USB_EP_3) || (ui32Endpoint == USB_EP_4) ||
            (ui32Endpoint == USB_EP_5) || (ui32Endpoint == USB_EP_6) ||
@@ -1966,7 +1966,7 @@ USBDevEndpointConfigGet(uint32_t ui32Base, uint32_t ui32Endpoint,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT(pui32MaxPacketSize && pui32Flags);
     ASSERT((ui32Endpoint == USB_EP_1) || (ui32Endpoint == USB_EP_2) ||
            (ui32Endpoint == USB_EP_3) || (ui32Endpoint == USB_EP_4) ||
@@ -2153,7 +2153,7 @@ USBFIFOConfigSet(uint32_t ui32Base, uint32_t ui32Endpoint,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_1) || (ui32Endpoint == USB_EP_2) ||
            (ui32Endpoint == USB_EP_3) || (ui32Endpoint == USB_EP_4) ||
            (ui32Endpoint == USB_EP_5) || (ui32Endpoint == USB_EP_6) ||
@@ -2220,7 +2220,7 @@ USBFIFOConfigGet(uint32_t ui32Base, uint32_t ui32Endpoint,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_1) || (ui32Endpoint == USB_EP_2) ||
            (ui32Endpoint == USB_EP_3) || (ui32Endpoint == USB_EP_4) ||
            (ui32Endpoint == USB_EP_5) || (ui32Endpoint == USB_EP_6) ||
@@ -2313,7 +2313,7 @@ USBFIFOConfigGet(uint32_t ui32Base, uint32_t ui32Endpoint,
 //! //
 //! // Configure endpoint 1 for receiving multiple packets using DMA.
 //! //
-//! USBEndpointDMAConfigSet(USB0_BASE, USB_EP_1, USB_EP_HOST_IN |
+//! USBEndpointDMAConfigSet(USBA_BASE, USB_EP_1, USB_EP_HOST_IN |
 //!                                              USB_EP_DMA_MODE_1 |
 //!                                              USB_EP_AUTO_CLEAR |
 //!                                              USB_EP_AUTO_REQUEST);
@@ -2326,7 +2326,7 @@ USBFIFOConfigGet(uint32_t ui32Base, uint32_t ui32Endpoint,
 //! //
 //! // Configure endpoint 1 for transmitting multiple packets using DMA.
 //! //
-//! USBEndpointDMAConfigSet(USB0_BASE, USB_EP_2, USB_EP_HOST_OUT |
+//! USBEndpointDMAConfigSet(USBA_BASE, USB_EP_2, USB_EP_HOST_OUT |
 //!                                              USB_EP_DMA_MODE_1 |
 //!                                              USB_EP_AUTO_SET);
 //! \endverbatim
@@ -2497,7 +2497,7 @@ USBEndpointDataAvail(uint32_t ui32Base, uint32_t ui32Endpoint)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -2566,7 +2566,7 @@ USBEndpointDataGet(uint32_t ui32Base, uint32_t ui32Endpoint,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -2670,7 +2670,7 @@ USBDevEndpointDataAck(uint32_t ui32Base, uint32_t ui32Endpoint,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -2724,7 +2724,7 @@ USBHostEndpointDataAck(uint32_t ui32Base, uint32_t ui32Endpoint)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -2778,7 +2778,7 @@ USBEndpointDataPut(uint32_t ui32Base, uint32_t ui32Endpoint,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -2862,7 +2862,7 @@ USBEndpointDataSend(uint32_t ui32Base, uint32_t ui32Endpoint,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -2933,7 +2933,7 @@ USBFIFOFlush(uint32_t ui32Base, uint32_t ui32Endpoint, uint32_t ui32Flags)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -3023,7 +3023,7 @@ USBHostRequestIN(uint32_t ui32Base, uint32_t ui32Endpoint)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -3077,7 +3077,7 @@ USBHostRequestINClear(uint32_t ui32Base, uint32_t ui32Endpoint)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -3127,7 +3127,7 @@ USBHostRequestStatus(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Set the request for a status IN transaction.
@@ -3163,7 +3163,7 @@ USBHostAddrSet(uint32_t ui32Base, uint32_t ui32Endpoint, uint32_t ui32Addr,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -3216,7 +3216,7 @@ USBHostAddrGet(uint32_t ui32Base, uint32_t ui32Endpoint, uint32_t ui32Flags)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -3275,7 +3275,7 @@ USBHostHubAddrSet(uint32_t ui32Base, uint32_t ui32Endpoint, uint32_t ui32Addr,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -3346,7 +3346,7 @@ USBHostHubAddrGet(uint32_t ui32Base, uint32_t ui32Endpoint, uint32_t ui32Flags)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -3437,7 +3437,7 @@ USBHostPwrConfig(uint32_t ui32Base, uint32_t ui32Flags)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Flags & ~(USB_HOST_PWREN_FILTER | USB_EPC_PFLTACT_M |
                           USB_EPC_PFLTAEN | USB_EPC_PFLTSEN_HIGH |
                           USB_EPC_EPEN_M)) == 0U);
@@ -3478,7 +3478,7 @@ USBHostPwrFaultEnable(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Enable power fault input.
@@ -3505,7 +3505,7 @@ USBHostPwrFaultDisable(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Enable power fault input.
@@ -3533,7 +3533,7 @@ USBHostPwrEnable(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Enable the external power supply enable signal.
@@ -3561,7 +3561,7 @@ USBHostPwrDisable(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Disable the external power supply enable signal.
@@ -3586,7 +3586,7 @@ USBFrameNumberGet(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Return the most recent frame number.
@@ -3614,7 +3614,7 @@ USBOTGSessionRequest(uint32_t ui32Base, bool bStart)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Start or end the session as directed.
@@ -3650,7 +3650,7 @@ USBFIFOAddrGet(uint32_t ui32Base, uint32_t ui32Endpoint)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -3723,7 +3723,7 @@ USBModeGet(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Checks the current mode in the USB_O_DEVCTL and returns the current
@@ -3772,7 +3772,7 @@ USBEndpointDMAChannel(uint32_t ui32Base, uint32_t ui32Endpoint,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_1) || (ui32Endpoint == USB_EP_2) ||
            (ui32Endpoint == USB_EP_3) || (ui32Endpoint == USB_EP_4) ||
            (ui32Endpoint == USB_EP_5) || (ui32Endpoint == USB_EP_6) ||
@@ -3825,7 +3825,7 @@ USBHostMode(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Force mode in OTG parts that support forcing USB controller mode.
@@ -3856,7 +3856,7 @@ USBDevMode(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Set the USB controller mode to device.
@@ -3882,7 +3882,7 @@ USBOTGMode(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Disable the override of the USB controller mode when running on an OTG
@@ -3910,7 +3910,7 @@ USBPHYPowerOff(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Set the PWRDNPHY bit in the PHY, putting it into its low power mode.
@@ -3937,7 +3937,7 @@ USBPHYPowerOn(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Clear the PWRDNPHY bit in the PHY, putting it into normal operating
@@ -3972,7 +3972,7 @@ USBEndpointPacketCountSet(uint32_t ui32Base, uint32_t ui32Endpoint,
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
     ASSERT((ui32Endpoint == USB_EP_0) || (ui32Endpoint == USB_EP_1) ||
            (ui32Endpoint == USB_EP_2) || (ui32Endpoint == USB_EP_3) ||
            (ui32Endpoint == USB_EP_4) || (ui32Endpoint == USB_EP_5) ||
@@ -4007,7 +4007,7 @@ USBNumEndpointsGet(uint32_t ui32Base)
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
     //
     // Read the number of endpoints from the hardware.  The number of TX and
@@ -4016,149 +4016,96 @@ USBNumEndpointsGet(uint32_t ui32Base)
     return(15U);
 }
 
-
 //*****************************************************************************
 //
-//! Get uDMA Raw Interrupt Status.
+//! Enable the Global Interrupt.
 //!
 //! \param ui32Base specifies the USB module base address.
 //!
-//! This function return the value of the USB Raw Interrupt Status Register.
+//! This function sets the USB Global Interrupt and the interrupt is passed on
+//! when received.
 //!
-//! \return The value of the USB Raw Interrupt Status, enumerated as a bit
-//! field of \b USB_DMAA_RX_DONE, \b USB_DMAA_TX_DONE, \b USB_DMAB_RX_DONE,
-//! \b USB_DMAB_TX_DONE, \b USB_DMAC_RX_DONE and \b USB_DMAC_TX_DONE.
+//! \return None.
+//
+//*****************************************************************************
+void
+USBEnableGlobalInterrupt(uint32_t ui32Base)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(ui32Base == USBA_BASE);
+
+    HWREGH(ui32Base + USB_O_GLBINTEN) |= USB_GLBINTEN_INTEN;
+}
+
+//*****************************************************************************
+//
+//! Disable the Global Interrupt.
+//!
+//! \param ui32Base specifies the USB module base address.
+//!
+//! This function disable the USB Global Interrupt and the interrupt is
+//! blocked.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+USBDisableGlobalInterrupt(uint32_t ui32Base)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(ui32Base == USBA_BASE);
+
+    HWREGH(ui32Base + USB_O_GLBINTEN) &= ~USB_GLBINTEN_INTEN;
+}
+
+//*****************************************************************************
+//
+//! Returns the status of the Global Interrupt Flag.
+//!
+//! \param ui32Base specifies the USB module base address.
+//!
+//! This function returns the status of the global interrupt flag. Once USB
+//! interrupt has been fired, no other interrupt will be fired unless this
+//! flag is cleared by writing to Interrupt Global Flag Clear register.
+//!
+//! \return - 0x1U USB Interrupt has been fired
+//!         - 0x0U No USB Interrupt has been fired
 //
 //*****************************************************************************
 uint16_t
-USBDMARawInterruptStatus(uint32_t ui32Base)
+USBGlobalInterruptFlagStatus(uint32_t ui32Base)
 {
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
+    ASSERT(ui32Base == USBA_BASE);
 
-    return(HWREGH(ui32Base + USB_O_DMARIS));
+    return((HWREGH(ui32Base + USB_O_GLBINTFLG) & USB_GLBINTFLG_INTFLG));
 }
 
 //*****************************************************************************
 //
-//! Set the uDMA Interrupt Mask.
+//! Clear Global Interrupt Flag.
 //!
 //! \param ui32Base specifies the USB module base address.
-//! \param intMaskValue specifies the mask for the Raw Interrupt Status
-//!        Register Return.
 //!
-//! This function will set the value of the USB Interrupt Mask and will
-//! trigger a USB Interrupt on Rx and Tx uDMA Done as per the Mask Value
-//! passed.
+//! This function writes 1 to this field which clears the corresponding bit in
+//! USB Global interrupt register.
 //!
-//!
-//! The \e intMaskValue parameter takes the following values:
-//! \b USB_DMAA_RX_DONE, \b USB_DMAA_TX_DONE, \b USB_DMAB_RX_DONE,
-//! \b USB_DMAB_TX_DONE, \b USB_DMAC_RX_DONE and \b USB_DMAC_TX_DONE.
-//!
-//! \return The value of the USB Raw Interrupt Status.
+//! \return None.
 //
 //*****************************************************************************
 void
-USBDMAInterruptMaskSet(uint32_t ui32Base, uint16_t intMaskValue)
+USBClearGlobalInterruptFlag(uint32_t ui32Base)
 {
     //
     // Check the arguments.
     //
-    ASSERT(ui32Base == USB0_BASE);
-    ASSERT((intMaskValue & ~(USB_DMAA_RX_DONE | USB_DMAA_TX_DONE |
-                            USB_DMAB_RX_DONE | USB_DMAB_TX_DONE |
-                            USB_DMAC_RX_DONE | USB_DMAC_TX_DONE)) == 0U);
+    ASSERT(ui32Base == USBA_BASE);
 
-    HWREGH(ui32Base + USB_O_DMAMAIM) |= intMaskValue;
-}
-
-//*****************************************************************************
-//
-//! Reset the uDMA Interrupt Mask.
-//!
-//! \param ui32Base specifies the USB module base address.
-//! \param intMaskValue specifies the mask for the Raw Interrupt Status
-//!        Register Return.
-//!
-//! This function will reset the value of the USB Interrupt Mask and will not
-//! trigger a USB Interrupt.
-//!
-//! The \e intMaskValue parameter takes the following values:
-//! \b USB_DMAA_RX_DONE, \b USB_DMAA_TX_DONE, \b USB_DMAB_RX_DONE,
-//! \b USB_DMAB_TX_DONE, \b USB_DMAC_RX_DONE and \b USB_DMAC_TX_DONE.
-//!
-//! \return The value of the USB Raw Interrupt Status.
-//
-//*****************************************************************************
-void
-USBDMAInterruptMaskReset(uint32_t ui32Base, uint16_t intMaskValue)
-{
-    //
-    // Check the arguments.
-    //
-    ASSERT(ui32Base == USB0_BASE);
-    ASSERT((intMaskValue & ~(USB_DMAA_RX_DONE | USB_DMAA_TX_DONE |
-                            USB_DMAB_RX_DONE | USB_DMAB_TX_DONE |
-                            USB_DMAC_RX_DONE | USB_DMAC_TX_DONE)) == 0U);
-
-    HWREGH(ui32Base + USB_O_DMAMAIM) &= ~intMaskValue;
-}
-
-//*****************************************************************************
-//
-//! Get uDMA Interrupt Status.
-//!
-//! \param ui32Base specifies the USB module base address.
-//!
-//! This function return the value of the USB Interrupt Status Register Value.
-//!
-//! \return The value of the USB Interrupt Status, enumerated as a bit field
-//! of \b USB_DMAA_RX_DONE, \b USB_DMAA_TX_DONE, \b USB_DMAB_RX_DONE,
-//! \b USB_DMAB_TX_DONE, \b USB_DMAC_RX_DONE and \b USB_DMAC_TX_DONE.
-//
-//*****************************************************************************
-uint16_t
-USBDMAInterruptStatus(uint32_t ui32Base)
-{
-    //
-    // Check the arguments.
-    //
-    ASSERT(ui32Base == USB0_BASE);
-
-    return(HWREGH(ui32Base + USB_O_DMAISC));
-}
-
-//*****************************************************************************
-//
-//! Clear uDMA Interrupt Status.
-//!
-//! \param ui32Base specifies the USB module base address.
-//! \param intMaskValue specifies the mask for the Raw Interrupt Status
-//!        Register Return.
-//!
-//! This function clear the uDMA Interrupt Status and uDMA Raw Interrupt
-//! Status according to the flag value passed to the API.
-//!
-//! The \e intMaskValue parameter takes the following values:
-//! \b USB_DMAA_RX_DONE, \b USB_DMAA_TX_DONE, \b USB_DMAB_RX_DONE,
-//! \b USB_DMAB_TX_DONE, \b USB_DMAC_RX_DONE and \b USB_DMAC_TX_DONE.
-//!
-//! \return The value of the USB Interrupt Status.
-//
-//*****************************************************************************
-void
-USBDMAInterruptStatusClear(uint32_t ui32Base, uint16_t intMaskValue)
-{
-    //
-    // Check the arguments.
-    //
-    ASSERT(ui32Base == USB0_BASE);
-    ASSERT((intMaskValue & ~(USB_DMAA_RX_DONE | USB_DMAA_TX_DONE |
-                             USB_DMAB_RX_DONE | USB_DMAB_TX_DONE |
-                             USB_DMAC_RX_DONE | USB_DMAC_TX_DONE)) == 0U);
-
-    HWREGH(ui32Base + USB_O_DMAISC) |= intMaskValue;
+    HWREGH(ui32Base + USB_O_GLBINTFLGCL) |= USB_GLBINTFLGCL_INTFLG;
 }

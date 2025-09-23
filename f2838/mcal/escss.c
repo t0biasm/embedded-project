@@ -2,7 +2,7 @@
 //
 // FILE:    escss.c
 //
-// TITLE:  CM EtherCAT SS Driver.
+// TITLE:  C28x EtherCAT SS Driver.
 //
 //###########################################################################
 // 

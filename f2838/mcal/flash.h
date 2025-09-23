@@ -2,7 +2,7 @@
 //
 // FILE:   flash.h
 //
-// TITLE:  CM Flash driver.
+// TITLE:  C28x Flash driver.
 //
 //###########################################################################
 // 
@@ -74,11 +74,11 @@ extern "C"
 #ifndef __cplusplus
 #pragma CODE_SECTION(Flash_setBankPowerMode, ".TI.ramfunc");
 #pragma CODE_SECTION(Flash_setPumpPowerMode, ".TI.ramfunc");
-#pragma CODE_SECTION(Flash_disableDataCache, ".TI.ramfunc");
-#pragma CODE_SECTION(Flash_disableProgramCache, ".TI.ramfunc");
+#pragma CODE_SECTION(Flash_disableCache, ".TI.ramfunc");
+#pragma CODE_SECTION(Flash_disablePrefetch, ".TI.ramfunc");
 #pragma CODE_SECTION(Flash_setWaitstates, ".TI.ramfunc");
-#pragma CODE_SECTION(Flash_enableDataCache, ".TI.ramfunc");
-#pragma CODE_SECTION(Flash_enableProgramCache, ".TI.ramfunc");
+#pragma CODE_SECTION(Flash_enableCache, ".TI.ramfunc");
+#pragma CODE_SECTION(Flash_enablePrefetch, ".TI.ramfunc");
 #pragma CODE_SECTION(Flash_enableECC, ".TI.ramfunc");
 #endif
 
@@ -101,7 +101,8 @@ typedef enum
 //*****************************************************************************
 typedef enum
 {
-    FLASH_CM_WRAPPER = 0x3, //!< CM Wrapper
+    FLASH_CPU1_WRAPPER = 0x2, //!< CPU1 Wrapper
+    FLASH_CPU2_WRAPPER = 0x1  //!< CPU2 Wrapper
 }Flash_PumpOwnership;
 
 //*****************************************************************************
@@ -186,6 +187,12 @@ typedef enum
 #define    FLASH_SINGLE_ERROR     0x1 //!< Single bit error
 #define    FLASH_UNC_ERROR        0x2 //!< Uncorrectable error
 
+//*****************************************************************************
+//
+// Delay instruction that allows for register configuration to complete.
+//
+//*****************************************************************************
+#define    FLASH_DELAY_CONFIG     __asm(" RPT #7 || NOP")
 
 //*****************************************************************************
 //
@@ -193,13 +200,6 @@ typedef enum
 //
 //*****************************************************************************
 #define FLASH_PUMP_KEY                  0x5A5A0000UL //!< Pump semaphore key
-
-//*****************************************************************************
-//
-// Key value for enabling writes to Flash Control/ECC registers.
-//
-//*****************************************************************************
-#define FLASH_UNLOCK_KEY                  0xA5A5A5A5UL //!< Flash Unlock key
 
 //*****************************************************************************
 //
@@ -280,9 +280,16 @@ Flash_setWaitstates(uint32_t ctrlBase, uint16_t waitstates)
     // waitstates is 4 bits wide.
     //
     ASSERT(waitstates <= 0xFU);
+
+    EALLOW;
     //
     // Write flash read wait-state amount to appropriate register.
     //
+    HWREG(ctrlBase + FLASH_O_FRDCNTL) =
+        (HWREG(ctrlBase + FLASH_O_FRDCNTL) &
+         ~(uint32_t)FLASH_FRDCNTL_RWAIT_M) |
+         ((uint32_t)waitstates << FLASH_FRDCNTL_RWAIT_S);
+    EDIS;
 }
 
 //*****************************************************************************
@@ -320,6 +327,8 @@ Flash_setBankPowerMode(uint32_t ctrlBase, Flash_BankNumber bank,
     //
     ASSERT(Flash_isCtrlBaseValid(ctrlBase));
 
+    EALLOW;
+
     //
     // Write the power mode to the appropriate register.
     //
@@ -327,6 +336,7 @@ Flash_setBankPowerMode(uint32_t ctrlBase, Flash_BankNumber bank,
         (HWREG(ctrlBase + FLASH_O_FBFALLBACK) &
          ~((FLASH_FBFALLBACK_BNKPWR0_M) << ((uint32_t)bank * 2U))) |
         ((uint32_t)powerMode << ((uint32_t)bank * 2U));
+    EDIS;
 }
 
 //*****************************************************************************
@@ -355,17 +365,20 @@ Flash_setPumpPowerMode(uint32_t ctrlBase, Flash_PumpPowerMode powerMode)
     //
     ASSERT(Flash_isCtrlBaseValid(ctrlBase));
 
+    EALLOW;
+
     //
     // Write the power mode to the appropriate register.
     //
     HWREG(ctrlBase + FLASH_O_FPAC1) =
         (HWREG(ctrlBase + FLASH_O_FPAC1) &
         ~(uint32_t)FLASH_FPAC1_PMPPWR) | (uint32_t)powerMode;
+    EDIS;
 }
 
 //*****************************************************************************
 //
-//! Enables program cache and prefetch mechanism.
+//! Enables prefetch mechanism.
 //!
 //! \param ctrlBase is the base address of the flash wrapper control registers.
 //!
@@ -376,23 +389,26 @@ Flash_setPumpPowerMode(uint32_t ctrlBase, Flash_PumpPowerMode powerMode)
 #pragma CODE_SECTION(".TI.ramfunc");
 #endif
 static inline void
-Flash_enableProgramCache(uint32_t ctrlBase)
+Flash_enablePrefetch(uint32_t ctrlBase)
 {
     //
     // Check the arguments.
     //
     ASSERT(Flash_isCtrlBaseValid(ctrlBase));
+
+    EALLOW;
 
     //
     // Set the prefetch enable bit.
     //
     HWREG(ctrlBase + FLASH_O_FRD_INTF_CTRL) |=
-            FLASH_FRD_INTF_CTRL_PROG_CACHE_EN;
+            FLASH_FRD_INTF_CTRL_PREFETCH_EN;
+    EDIS;
 }
 
 //*****************************************************************************
 //
-//! Disables program cache and prefetch mechanism.
+//! Disables prefetch mechanism.
 //!
 //! \param ctrlBase is the base address of the flash wrapper control registers.
 //!
@@ -403,18 +419,21 @@ Flash_enableProgramCache(uint32_t ctrlBase)
 #pragma CODE_SECTION(".TI.ramfunc");
 #endif
 static inline void
-Flash_disableProgramCache(uint32_t ctrlBase)
+Flash_disablePrefetch(uint32_t ctrlBase)
 {
     //
     // Check the arguments.
     //
     ASSERT(Flash_isCtrlBaseValid(ctrlBase));
 
+    EALLOW;
+
     //
     // Clear the prefetch enable bit.
     //
     HWREG(ctrlBase + FLASH_O_FRD_INTF_CTRL) &=
-            ~(uint32_t)FLASH_FRD_INTF_CTRL_PROG_CACHE_EN;
+            ~(uint32_t)FLASH_FRD_INTF_CTRL_PREFETCH_EN;
+    EDIS;
 }
 
 //*****************************************************************************
@@ -430,18 +449,21 @@ Flash_disableProgramCache(uint32_t ctrlBase)
 #pragma CODE_SECTION(".TI.ramfunc");
 #endif
 static inline void
-Flash_enableDataCache(uint32_t ctrlBase)
+Flash_enableCache(uint32_t ctrlBase)
 {
     //
     // Check the arguments.
     //
     ASSERT(Flash_isCtrlBaseValid(ctrlBase));
 
+    EALLOW;
+
     //
     // Set the data cache enable bit.
     //
     HWREG(ctrlBase + FLASH_O_FRD_INTF_CTRL) |=
             FLASH_FRD_INTF_CTRL_DATA_CACHE_EN;
+    EDIS;
 }
 
 //*****************************************************************************
@@ -457,18 +479,21 @@ Flash_enableDataCache(uint32_t ctrlBase)
 #pragma CODE_SECTION(".TI.ramfunc");
 #endif
 static inline void
-Flash_disableDataCache(uint32_t ctrlBase)
+Flash_disableCache(uint32_t ctrlBase)
 {
     //
     // Check the arguments.
     //
     ASSERT(Flash_isCtrlBaseValid(ctrlBase));
 
+    EALLOW;
+
     //
     // Clear the data cache enable bit.
     //
     HWREG(ctrlBase + FLASH_O_FRD_INTF_CTRL) &=
             ~(uint32_t)FLASH_FRD_INTF_CTRL_DATA_CACHE_EN;
+    EDIS;
 }
 
 //*****************************************************************************
@@ -491,12 +516,15 @@ Flash_enableECC(uint32_t eccBase)
     //
     ASSERT(Flash_isECCBaseValid(eccBase));
 
+    EALLOW;
+
     //
     // Write the key value 0xA to ECC_ENABLE register.
     //
     HWREG(eccBase + FLASH_O_ECC_ENABLE) =
         (HWREG(eccBase + FLASH_O_ECC_ENABLE) &
          ~(uint32_t)FLASH_ECC_ENABLE_ENABLE_M) | 0xAU;
+    EDIS;
 }
 
 //*****************************************************************************
@@ -516,12 +544,15 @@ Flash_disableECC(uint32_t eccBase)
     //
     ASSERT(Flash_isECCBaseValid(eccBase));
 
+    EALLOW;
+
     //
     // Clear ECC enable field with the one's complement of the key.
     //
     HWREG(eccBase + FLASH_O_ECC_ENABLE) =
         (HWREG(eccBase + FLASH_O_ECC_ENABLE) &
          ~(uint32_t)FLASH_ECC_ENABLE_ENABLE_M) | 0x5U;
+    EDIS;
 }
 
 
@@ -549,12 +580,15 @@ Flash_setBankActiveGracePeriod(uint32_t ctrlBase, uint32_t period)
     ASSERT(Flash_isCtrlBaseValid(ctrlBase));
     ASSERT( period <= 255U );
 
+    EALLOW;
+
     //
     // Write period to the BAGP of the FBAC register.
     //
     HWREG(ctrlBase + FLASH_O_FBAC) =
           (HWREG(ctrlBase + FLASH_O_FBAC) &
              ~(uint32_t)FLASH_FBAC_BAGP_M) | (period << FLASH_FBAC_BAGP_S);
+    EDIS;
 }
 
 //*****************************************************************************
@@ -585,6 +619,8 @@ Flash_setPumpWakeupTime(uint32_t ctrlBase, uint16_t sysclkCycles)
     //
     ASSERT( sysclkCycles <= 8190U );
 
+    EALLOW;
+
     //
     // Write sysclkCycles/2 to PSLEEP of the FPAC1 register.
     //
@@ -593,6 +629,7 @@ Flash_setPumpWakeupTime(uint32_t ctrlBase, uint16_t sysclkCycles)
           ~(uint32_t)FLASH_FPAC1_PSLEEP_M) |
           (((uint32_t)sysclkCycles / (uint32_t)2) <<
           (uint32_t)FLASH_FPAC1_PSLEEP_S);
+    EDIS;
 }
 
 //*****************************************************************************
@@ -895,7 +932,9 @@ Flash_clearLowErrorPosition(uint32_t eccBase)
     //
     ASSERT(Flash_isECCBaseValid(eccBase));
 
+    EALLOW;
     HWREG(eccBase + FLASH_O_ERR_POS) &= ~(uint32_t)FLASH_ERR_POS_ERR_POS_L_M;
+    EDIS;
 }
 
 //*****************************************************************************
@@ -917,7 +956,9 @@ Flash_clearHighErrorPosition(uint32_t eccBase)
     //
     ASSERT(Flash_isECCBaseValid(eccBase));
 
+    EALLOW;
     HWREG(eccBase + FLASH_O_ERR_POS) &= ~(uint32_t)FLASH_ERR_POS_ERR_POS_H_M;
+    EDIS;
 }
 
 //*****************************************************************************
@@ -1018,7 +1059,10 @@ Flash_clearLowErrorStatus(uint32_t eccBase, uint16_t errorStatus)
     //
     ASSERT(Flash_isECCBaseValid(eccBase));
     ASSERT( errorStatus <= 7U );
+
+    EALLOW;
     HWREG(eccBase + FLASH_O_ERR_STATUS_CLR) |= ((uint32_t)errorStatus);
+    EDIS;
 }
 
 //*****************************************************************************
@@ -1044,7 +1088,10 @@ Flash_clearHighErrorStatus(uint32_t eccBase, uint16_t errorStatus)
     //
     ASSERT(Flash_isECCBaseValid(eccBase));
     ASSERT( errorStatus <= 7U );
+
+    EALLOW;
     HWREG(eccBase + FLASH_O_ERR_STATUS_CLR) |= ((uint32_t)errorStatus << 16U);
+    EDIS;
 }
 
 //*****************************************************************************
@@ -1086,8 +1133,11 @@ Flash_setErrorThreshold(uint32_t eccBase, uint16_t threshold)
     // Check the arguments.
     //
     ASSERT(Flash_isECCBaseValid(eccBase));
+
+    EALLOW;
     HWREG(eccBase + FLASH_O_ERR_THRESHOLD) = ((uint32_t)threshold &
         (uint32_t)FLASH_ERR_THRESHOLD_ERR_THRESHOLD_M);
+    EDIS;
 }
 
 //*****************************************************************************
@@ -1135,8 +1185,11 @@ Flash_clearSingleErrorInterruptFlag(uint32_t eccBase)
     // Check the arguments.
     //
     ASSERT(Flash_isECCBaseValid(eccBase));
+
+    EALLOW;
     HWREG(eccBase + FLASH_O_ERR_INTCLR) |=
         FLASH_ERR_INTCLR_SINGLE_ERR_INTCLR;
+    EDIS;
 }
 
 //*****************************************************************************
@@ -1155,8 +1208,11 @@ Flash_clearUncorrectableInterruptFlag(uint32_t eccBase)
     // Check the arguments.
     //
     ASSERT(Flash_isECCBaseValid(eccBase));
+
+    EALLOW;
     HWREG(eccBase + FLASH_O_ERR_INTCLR) |=
         FLASH_ERR_INTCLR_UNC_ERR_INTCLR;
+    EDIS;
 }
 
 //*****************************************************************************
@@ -1177,7 +1233,10 @@ Flash_setDataLowECCTest(uint32_t eccBase, uint32_t data)
     // Check the arguments.
     //
     ASSERT(Flash_isECCBaseValid(eccBase));
+
+    EALLOW;
     HWREG(eccBase + FLASH_O_FDATAL_TEST) = data;
+    EDIS;
 }
 
 //*****************************************************************************
@@ -1198,7 +1257,10 @@ Flash_setDataHighECCTest(uint32_t eccBase, uint32_t data)
     // Check the arguments.
     //
     ASSERT(Flash_isECCBaseValid(eccBase));
+
+    EALLOW;
     HWREG(eccBase + FLASH_O_FDATAH_TEST) = data;
+    EDIS;
 }
 
 //*****************************************************************************
@@ -1208,6 +1270,8 @@ Flash_setDataHighECCTest(uint32_t eccBase, uint32_t data)
 //! \param eccBase is the base address of the flash wrapper ECC registers.
 //! \param address is a 32-bit value containing an address. Bits 21-3 will be
 //! used as the flash word (128-bit) address.
+//!
+//! This function left shifts the address 1 bit to convert it to a byte address
 //!
 //! \return None.
 //
@@ -1221,9 +1285,18 @@ Flash_setECCTestAddress(uint32_t eccBase, uint32_t address)
     ASSERT(Flash_isECCBaseValid(eccBase));
 
     //
+    // Left shift the address 1 bit to make it byte-addressable
+    //
+    uint32_t byteAddress = address << 1;
+
+    EALLOW;
+
+    //
     // Write bits 21-3 to the register.
     //
-    HWREG(eccBase + FLASH_O_FADDR_TEST) = address;
+    HWREG(eccBase + FLASH_O_FADDR_TEST) = byteAddress;
+
+    EDIS;
 
 }
 
@@ -1247,12 +1320,14 @@ Flash_setECCTestECCBits(uint32_t eccBase, uint16_t ecc)
     ASSERT(Flash_isECCBaseValid(eccBase));
 
     ASSERT( ecc <= 255U );
+    EALLOW;
 
     //
     // Write the 8 ECC Control Bits.
     //
     HWREG(eccBase + FLASH_O_FECC_TEST) =
         ((uint32_t)ecc & (uint32_t)FLASH_FECC_TEST_ECC_M);
+    EDIS;
 }
 
 //*****************************************************************************
@@ -1271,7 +1346,10 @@ Flash_enableECCTestMode(uint32_t eccBase)
     // Check the arguments.
     //
     ASSERT(Flash_isECCBaseValid(eccBase));
+
+    EALLOW;
     HWREG(eccBase + FLASH_O_FECC_CTRL) |= FLASH_FECC_CTRL_ECC_TEST_EN;
+    EDIS;
 }
 
 //*****************************************************************************
@@ -1290,8 +1368,11 @@ Flash_disableECCTestMode(uint32_t eccBase)
     // Check the arguments.
     //
     ASSERT(Flash_isECCBaseValid(eccBase));
+
+    EALLOW;
     HWREG(eccBase + FLASH_O_FECC_CTRL) &=
         ~(uint32_t)FLASH_FECC_CTRL_ECC_TEST_EN;
+    EDIS;
 }
 
 //*****************************************************************************
@@ -1310,8 +1391,11 @@ Flash_selectLowECCBlock(uint32_t eccBase)
     // Check the arguments.
     //
     ASSERT(Flash_isECCBaseValid(eccBase));
+
+    EALLOW;
     HWREG(eccBase + FLASH_O_FECC_CTRL) &=
         ~(uint32_t)FLASH_FECC_CTRL_ECC_SELECT;
+    EDIS;
 }
 
 //*****************************************************************************
@@ -1330,7 +1414,10 @@ Flash_selectHighECCBlock(uint32_t eccBase)
     // Check the arguments.
     //
     ASSERT(Flash_isECCBaseValid(eccBase));
+
+    EALLOW;
     HWREG(eccBase + FLASH_O_FECC_CTRL) |= FLASH_FECC_CTRL_ECC_SELECT;
+    EDIS;
 }
 
 //*****************************************************************************
@@ -1349,7 +1436,10 @@ Flash_performECCCalculation(uint32_t eccBase)
     // Check the arguments.
     //
     ASSERT(Flash_isECCBaseValid(eccBase));
+
+    EALLOW;
     HWREG(eccBase + FLASH_O_FECC_CTRL) |= FLASH_FECC_CTRL_DO_ECC_CALC;
+    EDIS;
 }
 
 //*****************************************************************************
@@ -1491,10 +1581,12 @@ Flash_claimPumpSemaphore(Flash_PumpOwnership wrapper)
     //
     // Block until the pump semaphore is claimed.
     //
+    EALLOW;
     while(IPC_PUMPREQUEST_REG != (uint32_t)wrapper)
     {
         IPC_PUMPREQUEST_REG = FLASH_PUMP_KEY | (uint32_t)wrapper;
     }
+    EDIS;
 }
 
 //*****************************************************************************
@@ -1510,97 +1602,9 @@ Flash_releasePumpSemaphore(void)
     //
     // Relinquish the pump semaphore.
     //
+    EALLOW;
     IPC_PUMPREQUEST_REG = FLASH_PUMP_KEY;
-}
-
-//*****************************************************************************
-//
-//! Unlock the flash control registers to enable the writes to the registers.
-//!
-//! \param ctrlBase is the base address of the flash wrapper control registers.
-//!
-//! \return None.
-//
-//*****************************************************************************
-static inline void
-Flash_unlockCtrlRegisters(uint32_t ctrlBase)
-{
-    //
-    // Check the arguments.
-    //
-    ASSERT(Flash_isCtrlBaseValid(ctrlBase));
-
-    //
-    // Write the key value to enable the writes to the control registers.
-    //
-    HWREG(ctrlBase + FLASH_O_FRD_INTF_CTRL_LOCK) = FLASH_UNLOCK_KEY;
-}
-
-//*****************************************************************************
-//
-//! Lock the flash control registers to disable the writes to the registers.
-//!
-//! \return None.
-//
-//*****************************************************************************
-static inline void
-Flash_lockCtrlRegisters(uint32_t ctrlBase)
-{
-    //
-    // Check the arguments.
-    //
-    ASSERT(Flash_isCtrlBaseValid(ctrlBase));
-
-    //
-    // Write any value other than key to disable the writes to the control
-    // registers.
-    //
-    HWREG(ctrlBase + FLASH_O_FRD_INTF_CTRL_LOCK) = 0U;
-}
-
-//*****************************************************************************
-//
-//! Unlock the flash ECC registers to enable the writes to the registers.
-//!
-//! \param eccBase is the base address of the flash wrapper control registers.
-//!
-//! \return None.
-//
-//*****************************************************************************
-static inline void
-Flash_unlockECCRegisters(uint32_t eccBase)
-{
-    //
-    // Check the arguments.
-    //
-    ASSERT(Flash_isECCBaseValid(eccBase));
-
-    //
-    // Write the key value to enable the writes to the control registers.
-    //
-    HWREG(eccBase + FLASH_O_ECC_REGS_LOCK) = FLASH_UNLOCK_KEY;
-}
-
-//*****************************************************************************
-//
-//! Lock the flash ECC registers to enable the writes to the registers.
-//!
-//! \return None.
-//
-//*****************************************************************************
-static inline void
-Flash_lockECCRegisters(uint32_t eccBase)
-{
-    //
-    // Check the arguments.
-    //
-    ASSERT(Flash_isECCBaseValid(eccBase));
-
-    //
-    // Write any value other than key to disable the writes to the ECC
-    // registers.
-    //
-    HWREG(eccBase + FLASH_O_ECC_REGS_LOCK) = 0U;
+    EDIS;
 }
 
 //*****************************************************************************

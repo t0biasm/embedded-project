@@ -40,6 +40,7 @@ cc_binary(
         "main.c",
     ],
     deps = [
+        "//f2838/mcal:mcal_f2838x",
         "//f2838/public:public_types_h",
     ],
 )

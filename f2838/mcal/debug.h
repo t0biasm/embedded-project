@@ -40,8 +40,8 @@
 // $
 //###########################################################################
 
-#ifndef __DEBUG_H__
-#define __DEBUG_H__
+#ifndef DEBUG_H
+#define DEBUG_H
 
 //*****************************************************************************
 //
@@ -59,6 +59,10 @@ extern void __error__(const char *filename, uint32_t line);
 //
 //*****************************************************************************
 #ifdef DEBUG
+#ifdef __TMS320C28XX__
+//
+// When called from C28x application
+//
 #define ASSERT(expr) do                                                       \
                      {                                                        \
                          if(!(expr))                                          \
@@ -66,9 +70,22 @@ extern void __error__(const char *filename, uint32_t line);
                              __error__(__FILE__, __LINE__);                   \
                          }                                                    \
                      }                                                        \
-                     while(0)
+                     while((_Bool)0)
+#else
+//
+// When called from CLA application. Update as needed.
+//
+#define ASSERT(expr) do                                                       \
+                     {                                                        \
+                         if(!(expr))                                          \
+                         {                                                    \
+                             __mdebugstop();                                  \
+                         }                                                    \
+                     }                                                        \
+                     while((_Bool)0)
+#endif
 #else
 #define ASSERT(expr)
 #endif
 
-#endif // __DEBUG_H__
+#endif // DEBUG_H

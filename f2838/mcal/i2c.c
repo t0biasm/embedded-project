@@ -2,7 +2,7 @@
 //
 // FILE:   i2c.c
 //
-// TITLE:  CM I2C driver.
+// TITLE:  C28x I2C driver.
 //
 //###########################################################################
 // 
@@ -42,135 +42,213 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include "inc/hw_i2c.h"
-#include "inc/hw_memmap.h"
-#include "inc/hw_types.h"
-#include "debug.h"
 #include "i2c.h"
 
 //*****************************************************************************
 //
-// I2C_initMaster()
+// I2C_initController
 //
 //*****************************************************************************
-
 void
-I2C_initMaster(uint32_t base, uint32_t i2cClk,
-               bool fast)
+I2C_initController(uint32_t base, uint32_t sysclkHz, uint32_t bitRate,
+                   I2C_DutyCycle dutyCycle)
 {
-    uint32_t sclFreq;
-    uint32_t tPr;
+    uint32_t modPrescale;
+    uint32_t divider;
+    uint32_t dValue;
 
     //
     // Check the arguments.
     //
     ASSERT(I2C_isBaseValid(base));
+    ASSERT((10000000U / bitRate) >  10U);
 
     //
-    // Must enable the device before doing anything else.
+    // Set the prescaler for the module clock.
     //
-    I2C_enableMaster(base);
+    modPrescale = (sysclkHz / 10000000U) - 1U;
+    HWREGH(base + I2C_O_PSC) = I2C_PSC_IPSC_M & modPrescale;
 
-    //
-    // Get the desired SCL speed.
-    //
-    if(fast == true)
+    switch(modPrescale)
     {
-        sclFreq = I2C_SCL_FREQ_FAST_MODE;
+        case 0U:
+            dValue = 7U;
+            break;
+
+        case 1U:
+            dValue = 6U;
+            break;
+
+        default:
+            dValue = 5U;
+            break;
+    }
+
+    //
+    // Set the divider for the time low
+    //
+    divider = (10000000U / bitRate) - (2U * dValue);
+
+    if(dutyCycle == I2C_DUTYCYCLE_50)
+    {
+        HWREGH(base + I2C_O_CLKH) = divider / 2U;
     }
     else
     {
-        sclFreq = I2C_SCL_FREQ_STD_MODE;
+        HWREGH(base + I2C_O_CLKH) = divider / 3U;
     }
 
-    //
-    // Compute the clock divider that achieves the fastest speed less than or
-    // equal to the desired speed.  The numerator is biased to favor a larger
-    // clock divider so that the resulting clock is always less than or equal
-    // to the desired clock, never greater.
-    // SCL_PERIOD = 2 X (1 + TPR) X ( SCL_LP + SCL_HP) X CLK_PRD
-    //
-    //SCL_PRD is the SCL line period (I2C clock). TPR is the Timer Period
-    //register value (range of 1 to 127).SCL_LP is the SCL Low period
-    //(fixed at 6). SCL_HP is the SCL High period (fixed at 4).
-    //CLK_PRD is the system clock period in ns.
-    //
-
-    tPr = ((i2cClk + (2U * 10U * sclFreq) - 1U) /
-          (2U * 10U * sclFreq)) - 1U;
-    HWREG(base + I2C_O_MTPR) = tPr;
-
-    //
-    // Check to see if this I2C peripheral is High-Speed enabled.  If yes, also
-    // choose the fastest speed that is less than or equal to 3.4 Mbps.
-    // ( SCL_LP + SCL_HP) fixed at 3
-    //
-    if((HWREG(base + I2C_O_PP) & I2C_PP_HS) == I2C_PP_HS)
-    {
-        tPr = ((i2cClk + (2U * 3U * I2C_SCL_FREQ_HS_MODE) - 1U) /
-              (2U * 3U * I2C_SCL_FREQ_HS_MODE)) - 1U;
-        HWREG(base + I2C_O_MTPR) = I2C_MTPR_HS | tPr;
-    }
+    HWREGH(base + I2C_O_CLKL) = divider - HWREGH(base + I2C_O_CLKH);
 }
 
 //*****************************************************************************
 //
-// I2C_setOwnSlaveAddress()
+// I2C_initControllerModuleFrequency
 //
 //*****************************************************************************
 void
-I2C_setOwnSlaveAddress(uint32_t base, I2C_SlaveAddrmode addrNum,
-                       uint8_t slaveAddr)
+I2C_initControllerModuleFrequency(uint32_t base, uint32_t sysclkHz, uint32_t bitRate,
+                   I2C_DutyCycle dutyCycle, uint32_t moduleFrequency)
+{
+    uint32_t modPrescale;
+    uint32_t divider;
+    uint32_t dValue;
+
+    //
+    // Check the arguments.
+    //
+    ASSERT(I2C_isBaseValid(base));
+    ASSERT((moduleFrequency / bitRate) >  10U);
+
+    //
+    // Set the prescaler for the module clock.
+    //
+    modPrescale = (sysclkHz / moduleFrequency) - 1U;
+    HWREGH(base + I2C_O_PSC) = I2C_PSC_IPSC_M & modPrescale;
+
+    switch(modPrescale)
+    {
+        case 0U:
+            dValue = 7U;
+            break;
+
+        case 1U:
+            dValue = 6U;
+            break;
+
+        default:
+            dValue = 5U;
+            break;
+    }
+
+    //
+    // Set the divider for the time low
+    //
+    divider = (moduleFrequency / bitRate) - (2U * dValue);
+
+    if(dutyCycle == I2C_DUTYCYCLE_50)
+    {
+        HWREGH(base + I2C_O_CLKH) = divider / 2U;
+    }
+    else
+    {
+        HWREGH(base + I2C_O_CLKH) = divider / 3U;
+    }
+
+    HWREGH(base + I2C_O_CLKL) = divider - HWREGH(base + I2C_O_CLKH);
+}
+
+//*****************************************************************************
+//
+// I2C_enableInterrupt
+//
+//*****************************************************************************
+void
+I2C_enableInterrupt(uint32_t base, uint32_t intFlags)
 {
     //
     // Check the arguments.
     //
     ASSERT(I2C_isBaseValid(base));
-    ASSERT(addrNum <= 1U);
-    ASSERT((slaveAddr & I2C_SA_A6_0_MASK) == 0U);
 
     //
-    // Determine which slave address is being set.
+    // Enable the desired basic interrupts
     //
-    switch((uint8_t)addrNum)
+    HWREGH(base + I2C_O_IER) |= (intFlags & 0xFFFFU);
+
+    //
+    // Enabling addressed-as-target interrupt separately because its bit is
+    // different between the IER and STR registers.
+    //
+    if((intFlags & I2C_INT_ADDR_TARGET) != 0U)
     {
-        //
-        // Set up the primary slave address.
-        //
-        case I2C_SLAVE_ADDR_PRIMARY:
-        {
-            HWREG(base + I2C_O_SOAR) = slaveAddr;
-            break;
-        }
+        HWREGH(base + I2C_O_IER) |= I2C_IER_AAT;
+    }
 
-        //
-        // Set up and enable the secondary slave address.
-        //
-        case I2C_SLAVE_ADDR_SECONDARY:
-        {
-            HWREG(base + I2C_O_SOAR2) = I2C_SOAR2_OAR2EN | slaveAddr;
-            break;
-        }
+    //
+    // Enable desired FIFO interrupts.
+    //
+    if((intFlags & I2C_INT_TXFF) != 0U)
+    {
+        HWREGH(base + I2C_O_FFTX) |= I2C_FFTX_TXFFIENA;
+    }
 
-        //
-        //default case
-        //
-        default:
-        {
-            break;
-        }
+    if((intFlags & I2C_INT_RXFF) != 0U)
+    {
+        HWREGH(base + I2C_O_FFRX) |= I2C_FFRX_RXFFIENA;
     }
 }
 
 //*****************************************************************************
 //
-// I2C_getMasterErr()
+// I2C_disableInterrupt
+//
+//*****************************************************************************
+void
+I2C_disableInterrupt(uint32_t base, uint32_t intFlags)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(I2C_isBaseValid(base));
+
+    //
+    // Disable the desired basic interrupts.
+    //
+    HWREGH(base + I2C_O_IER) &= ~(intFlags & 0xFFFFU);
+
+    //
+    // Disabling addressed-as-target interrupt separately because its bit is
+    // different between the IER and STR registers.
+    //
+    if((intFlags & I2C_INT_ADDR_TARGET) != 0U)
+    {
+        HWREGH(base + I2C_O_IER) &= ~I2C_IER_AAT;
+    }
+
+    //
+    // Disable the desired FIFO interrupts.
+    //
+    if((intFlags & I2C_INT_TXFF) != 0U)
+    {
+        HWREGH(base + I2C_O_FFTX) &= ~(I2C_FFTX_TXFFIENA);
+    }
+
+    if((intFlags & I2C_INT_RXFF) != 0U)
+    {
+        HWREGH(base + I2C_O_FFRX) &= ~(I2C_FFRX_RXFFIENA);
+    }
+}
+
+//*****************************************************************************
+//
+// I2C_getInterruptStatus
 //
 //*****************************************************************************
 uint32_t
-I2C_getMasterErr(uint32_t base)
+I2C_getInterruptStatus(uint32_t base)
 {
-    uint32_t err, ret;
+    uint32_t temp;
 
     //
     // Check the arguments.
@@ -178,30 +256,96 @@ I2C_getMasterErr(uint32_t base)
     ASSERT(I2C_isBaseValid(base));
 
     //
-    // Get the raw error state
+    // Return only the status bits associated with interrupts.
     //
-    err = HWREG(base + I2C_O_MCS);
+    temp = (uint32_t)HWREGH(base + I2C_O_STR) & (uint32_t)I2C_STR_INTMASK;
 
     //
-    // If the I2C master is busy, then all the other bit are invalid, and
-    // don't have an error to report.
+    // Read FIFO interrupt flags.
     //
-    if((err & I2C_MCS_BUSY) == I2C_MCS_BUSY)
+    if((HWREGH(base + I2C_O_FFTX) & I2C_FFTX_TXFFINT) != 0U)
     {
-        ret = I2C_MASTER_ERR_NONE;
+        temp |= I2C_INT_TXFF;
     }
 
-    //
-    // Check for errors.
-    //
-    if((err & (I2C_MCS_ERROR | I2C_MCS_ARBLST))!= 0U)
+    if((HWREGH(base + I2C_O_FFRX) & I2C_FFRX_RXFFINT) != 0U)
     {
-        ret = (err & (I2C_MCS_ARBLST | I2C_MCS_DATACK |
-                      I2C_MCS_ADRACK | I2C_MCS_CLKTO));
+        temp |= I2C_INT_RXFF;
     }
-    else
+
+    return(temp);
+}
+
+//*****************************************************************************
+//
+// I2C_clearInterruptStatus
+//
+//*****************************************************************************
+void
+I2C_clearInterruptStatus(uint32_t base, uint32_t intFlags)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(I2C_isBaseValid(base));
+
+    //
+    // Clear the interrupt flags that are located in STR.
+    //
+    HWREGH(base + I2C_O_STR) = ((uint16_t)intFlags & I2C_STR_INTMASK);
+
+    //
+    // Clear the FIFO interrupt flags if needed.
+    //
+    if((intFlags & I2C_INT_TXFF) != 0U)
     {
-        ret = I2C_MASTER_ERR_NONE;
+        HWREGH(base + I2C_O_FFTX) |= I2C_FFTX_TXFFINTCLR;
     }
-    return(ret);
+
+    if((intFlags & I2C_INT_RXFF) != 0U)
+    {
+        HWREGH(base + I2C_O_FFRX) |= I2C_FFRX_RXFFINTCLR;
+    }
+}
+//*****************************************************************************
+//
+// I2C_configureModuleFrequency
+//
+//*****************************************************************************
+void
+I2C_configureModuleFrequency(uint32_t base, uint32_t sysclkHz)
+{
+    uint32_t modPrescale;
+
+    //
+    // Check the arguments.
+    //
+    ASSERT(I2C_isBaseValid(base));
+
+    //
+    // Set the prescaler for the module clock.
+    //
+    modPrescale = (sysclkHz / 10000000U) - 1U;
+    HWREGH(base + I2C_O_PSC) = I2C_PSC_IPSC_M & modPrescale;
+}
+//*****************************************************************************
+//
+// I2C_configureModuleClockFrequency
+//
+//*****************************************************************************
+void
+I2C_configureModuleClockFrequency(uint32_t base, uint32_t sysclkHz, uint32_t moduleFrequency)
+{
+    uint32_t modPrescale;
+
+    //
+    // Check the arguments.
+    //
+    ASSERT(I2C_isBaseValid(base));
+
+    //
+    // Set the prescaler for the module clock.
+    //
+    modPrescale = (sysclkHz / moduleFrequency) - 1U;
+    HWREGH(base + I2C_O_PSC) = I2C_PSC_IPSC_M & modPrescale;
 }

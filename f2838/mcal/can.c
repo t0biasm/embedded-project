@@ -2,7 +2,7 @@
 //
 // FILE:   can.c
 //
-// TITLE:  CM CAN driver.
+// TITLE:  C28x CAN driver.
 //
 //###########################################################################
 // 
@@ -444,7 +444,7 @@ CAN_setupMessageObject(uint32_t base, uint32_t objID, uint32_t msgID,
 //*****************************************************************************
 void
 CAN_sendMessage(uint32_t base, uint32_t objID, uint16_t msgLen,
-                const uint8_t *msgData)
+                const uint16_t *msgData)
 {
     uint32_t msgCtrl = 0U;
 
@@ -669,7 +669,7 @@ CAN_sendMessage_32bit(uint32_t base, uint32_t objID, uint16_t msgLen,
 //*****************************************************************************
 void
 CAN_sendMessage_updateDLC(uint32_t base, uint32_t objID, uint16_t msgLen,
-                  const uint8_t *msgData)
+                  const uint16_t *msgData)
 {
     uint32_t msgCtrl = 0U;
 
@@ -844,7 +844,7 @@ CAN_sendRemoteRequestMessage(uint32_t base, uint32_t objID)
 //*****************************************************************************
 bool
 CAN_readMessage(uint32_t base, uint32_t objID,
-                uint8_t *msgData)
+                uint16_t *msgData)
 {
     bool status;
     uint16_t msgCtrl = 0U;
@@ -922,7 +922,7 @@ bool CAN_readMessageWithID(uint32_t base,
                            uint32_t objID,
                            CAN_MsgFrameType *frameType,
                            uint32_t *msgID,
-                           uint8_t *msgData)
+                           uint16_t *msgData)
 {
     bool status;
 

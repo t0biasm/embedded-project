@@ -2,7 +2,7 @@
 //
 // FILE:   ipc.h
 //
-// TITLE:  CM IPC driver.
+// TITLE:  C28x IPC driver.
 //
 //###########################################################################
 // 
@@ -179,8 +179,13 @@ extern "C"
 //
 //*****************************************************************************
 
+#ifdef CPU2
 #define IPC_PUMPREQUEST_REG                                                    \
-        IPC_Instance[IPC_CM_L_CPU1_R].IPC_Boot_Pump_Reg->IPC_PUMPREQUEST
+        IPC_Instance[IPC_CPU2_L_CPU1_R].IPC_Boot_Pump_Reg->IPC_PUMPREQUEST
+#else
+#define IPC_PUMPREQUEST_REG                                                    \
+        IPC_Instance[IPC_CPU1_L_CPU2_R].IPC_Boot_Pump_Reg->IPC_PUMPREQUEST
+#endif
 
 
 //*****************************************************************************
@@ -204,8 +209,10 @@ extern "C"
 //*****************************************************************************
 typedef enum
 {
-    IPC_CM_L_CPU1_R,         //!< CM   - Local core, CPU1 - Remote core
-    IPC_CM_L_CPU2_R,         //!< CM   - Local core, CPU2 - Remote core
+    IPC_CPU1_L_CPU2_R,       //!< CPU1 - Local core, CPU2 - Remote core
+    IPC_CPU1_L_CM_R,         //!< CPU1 - Local core, CM   - Remote core
+    IPC_CPU2_L_CPU1_R,       //!< CPU2 - Local core, CPU1 - Remote core
+    IPC_CPU2_L_CM_R,         //!< CPU2 - Local core, CM   - Remote core
     IPC_TOTAL_NUM
 }IPC_Type_t;
 
@@ -630,6 +637,28 @@ IPC_getResponse(IPC_Type_t ipcType)
     return(IPC_Instance[ipcType].IPC_SendCmd_Reg->IPC_REMOTEREPLY);
 }
 
+//*****************************************************************************
+//
+//! Sets the BOOTMODE register.
+//!
+//! \param ipcType is the enum corresponding to the IPC instance used
+//! \param mode is the 32-bit value to be set
+//!
+//! Allows the caller to set the BOOTMODE register.
+//!
+//! \note This function shall be called by CPU1 only.
+//! \note Boot registers are not available in CPU2<->CM IPC instance
+//!
+//! \return None
+//
+//*****************************************************************************
+static inline void
+IPC_setBootMode(IPC_Type_t ipcType, uint32_t mode)
+{
+    ASSERT((ipcType == IPC_CPU1_L_CPU2_R) || (ipcType == IPC_CPU1_L_CM_R));
+
+    IPC_Instance[ipcType].IPC_Boot_Pump_Reg->IPC_BOOTMODE = mode;
+}
 
 //*****************************************************************************
 //
@@ -670,7 +699,7 @@ IPC_getBootMode(IPC_Type_t ipcType)
 static inline void
 IPC_setBootStatus(IPC_Type_t ipcType, uint32_t status)
 {
-    ASSERT(ipcType == IPC_CM_L_CPU1_R);
+    ASSERT(ipcType == IPC_CPU2_L_CPU1_R);
 
     IPC_Instance[ipcType].IPC_Boot_Pump_Reg->IPC_BOOTSTS = status;
 }

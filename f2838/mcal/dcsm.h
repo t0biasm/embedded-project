@@ -70,6 +70,22 @@ extern "C"
 #include "cpu.h"
 #include "debug.h"
 
+//*****************************************************************************
+//
+// Defines for the unlockZone1CSM() and unlockZone2CSM().
+// These are not parameters for any function.
+// These are not intended for application code.
+//
+//*****************************************************************************
+
+#define DCSM_O_Z1_CSMPSWD0              0x00U //!< Z1 CSMPSWD0 offset
+#define DCSM_O_Z1_CSMPSWD1              0x02U //!< Z1 CSMPSWD1 offset
+#define DCSM_O_Z1_CSMPSWD2              0x04U //!< Z1 CSMPSWD2 offset
+#define DCSM_O_Z1_CSMPSWD3              0x06U //!< Z1 CSMPSWD3 offset
+#define DCSM_O_Z2_CSMPSWD0              0x00U //!< Z2 CSMPSWD0 offset
+#define DCSM_O_Z2_CSMPSWD1              0x02U //!< Z2 CSMPSWD1 offset
+#define DCSM_O_Z2_CSMPSWD2              0x04U //!< Z2 CSMPSWD2 offset
+#define DCSM_O_Z2_CSMPSWD3              0x06U //!< Z2 CSMPSWD3 offset
 
 //*****************************************************************************
 //
@@ -77,6 +93,7 @@ extern "C"
 //
 //*****************************************************************************
 #define FLSEM_KEY                       0xA5U //!< Zone semaphore key
+#define DCSM_FORCE_SECERR_KEY                0x5A5AU
 
 //*****************************************************************************
 //
@@ -565,7 +582,7 @@ DCSM_getRAMZone(DCSM_RAMModule module, DCSM_CPUSel cpuInst)
     //
 
     ramStatus = ((HWREG(DCSMCOMMON_BASE + DCSM_O_RAMSTAT1
-                                        + (4U * (uint16_t)cpuInst)) >> shift)
+                                        + (2U * (uint16_t)cpuInst)) >> shift)
                                         & 0x03U);
     return((DCSM_MemoryStatus)ramStatus);
 
@@ -602,7 +619,7 @@ DCSM_getFlashSectorZone(DCSM_Sector sector, DCSM_CPUSel cpuInst)
     // Get the Sector status register for the specific bank
     //
     sectStat = HWREG(DCSMCOMMON_BASE + DCSM_O_SECTSTAT1 +
-                    (4U *(uint16_t)cpuInst));
+                    (2U *(uint16_t)cpuInst));
     shift = (uint16_t)sector * 2U;
 
     //
@@ -645,6 +662,55 @@ DCSM_getZone2LinkPointerError(void)
     // Return the LinkPointer Error for specific bank
     //
     return(HWREG(DCSM_Z2_BASE + DCSM_O_Z2_LINKPOINTERERR));
+}
+
+//*****************************************************************************
+//
+//! Get the status of the security configuration load from USER-OTP or sector
+//! error status
+//!
+//! \return Returns 0 if no error in loading security information from
+//! USER-OTP, 1 if an error has occurred in the load from USER-OTP.
+//
+//*****************************************************************************
+static inline bool
+DCSM_getFlashErrorStatus(void)
+{
+    return((bool)(HWREG(DCSMCOMMON_BASE + DCSM_O_SECERRSTAT) &
+                  DCSM_SECERRSTAT_ERR));
+}
+
+//*****************************************************************************
+//
+//! Clear the Flash Error Status bit
+//!
+//! Write a '1' to the clear bit to clear the sector error status bit.
+//!
+//! \return None.
+//
+//*****************************************************************************
+static inline void
+DCSM_clearFlashErrorStatus(void)
+{
+    HWREG(DCSMCOMMON_BASE + DCSM_O_SECERRCLR) |= DCSM_SECERRCLR_ERR;
+}
+
+//*****************************************************************************
+//
+//! Set the force Flash Error Status bit
+//!
+//! Write a '1' to force bit to set the sector error status bit.
+//!
+//! \return None.
+//
+//*****************************************************************************
+static inline void
+DCSM_forceFlashErrorStatus(void)
+{
+    HWREG(DCSMCOMMON_BASE +
+          DCSM_O_SECERRFRC) = DCSM_SECERRFRC_ERR |
+                              ((uint32_t)DCSM_FORCE_SECERR_KEY
+                               << DCSM_SECERRFRC_KEY_S);
 }
 
 //*****************************************************************************
@@ -764,6 +830,49 @@ DCSM_getZone2OTPSecureLockStatus(DCSM_OTPLock lockType)
     return(returnStatus);
 }
 
+//*****************************************************************************
+//
+//! Unlocks Zone 1 CSM.
+//!
+//! \param psCMDKey is a pointer to the DCSM_CSMPasswordKey struct that has the
+//! CSM  password for zone 1.
+//!
+//! This function unlocks the CSM password. It first reads the
+//! four password locations in the User OTP. If any of the password values is
+//! different from 0xFFFFFFFF, it unlocks the device by writing the provided
+//! passwords into CSM Key registers
+//!
+//! \return None.
+//!
+//! \note This function should not be called in an actual application,
+//! should only be used for once to program the OTP memory. Ensure flash data
+//! cache is disabled before calling this function(Flash_disableCache).
+//
+//*****************************************************************************
+extern void
+DCSM_unlockZone1CSM(const DCSM_CSMPasswordKey * const psCMDKey);
+
+//*****************************************************************************
+//
+//! Unlocks Zone 2 CSM.
+//!
+//! \param psCMDKey is a pointer to the CSMPSWDKEY that has the CSM
+//!  password for zone 2.
+//!
+//! This function unlocks the CSM password. It first reads
+//! the four password locations in the User OTP. If any of the password values
+//! is different from 0xFFFFFFFF, it unlocks the device by writing the
+//! provided passwords into CSM Key registers
+//!
+//! \return None.
+//!
+//! \note This function should not be called in an actual application,
+//! should only be used for once to program the OTP memory. Ensure flash data
+//! cache is disabled before calling this function(Flash_disableCache).
+//
+//*****************************************************************************
+extern void
+DCSM_unlockZone2CSM(const DCSM_CSMPasswordKey * const psCMDKey);
 //*****************************************************************************
 //
 //! Write Zone 1 CSM.
@@ -986,6 +1095,39 @@ DCSM_claimZoneSemaphore(DCSM_SemaphoreZone zone);
 extern bool
 DCSM_releaseZoneSemaphore(void);
 
+//*****************************************************************************
+//
+//! Perform dummy reads on the 128-bit Zone 1 CSM password.
+//!
+//! This function reads the four password locations in the User OTP
+//! needed to be done as part of the Password Match Flow before
+//! writes to the CSMKEY registers.
+//! This would need to be done before a DCSM_writeZone1CSM().
+//!
+//! \return None.
+//!
+//! \note This API to be called from CPU1.
+//
+//*****************************************************************************
+extern void
+DCSM_readZone1CSMPwd(void);
+
+//*****************************************************************************
+//
+//! Perform dummy reads on the 128-bit Zone 2 CSM password.
+//!
+//! This function reads the four password locations in the User OTP
+//! needed to be done as part of the Password Match Flow before
+//! writes to the CSMKEY registers.
+//! This would need to be done before a DCSM_writeZone2CSM().
+//!
+//! \return None.
+//!
+//! \note This API to be called from CPU1.
+//
+//*****************************************************************************
+extern void
+DCSM_readZone2CSMPwd(void);
 
 //*****************************************************************************
 //

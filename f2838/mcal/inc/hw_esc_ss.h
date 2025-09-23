@@ -49,35 +49,35 @@
 //
 //*************************************************************************************************
 #define ESCSS_O_IPREVNUM            0x0U    // IP Revision Number
-#define ESCSS_O_INTR_RIS            0x4U    // EtherCATSS Interrupt Raw Status
-#define ESCSS_O_INTR_MASK           0x8U    // EtherCATSS Interrupt Mask
-#define ESCSS_O_INTR_MIS            0xCU    // EtherCATSS Masked Interrupt Status
-#define ESCSS_O_INTR_CLR            0x10U   // EtherCATSS Interrupt Clear
-#define ESCSS_O_INTR_SET            0x14U   // EtherCATSS Interrupt Set to emulate
-#define ESCSS_O_LATCH_SEL           0x18U   // Select for Latch0/1 inputs and LATCHIN input
-#define ESCSS_O_ACCESS_CTRL         0x1CU   // PDI interface access control config.
-#define ESCSS_O_GPIN_DAT            0x20U   // GPIN data capture for debug & override
-#define ESCSS_O_GPIN_PIPE           0x24U   // GPIN pipeline select
-#define ESCSS_O_GPIN_GRP_CAP_SEL    0x28U   // GPIN pipe group capture trigger
-#define ESCSS_O_GPOUT_DAT           0x2CU   // GPOUT data capture for debug & override
-#define ESCSS_O_GPOUT_PIPE          0x30U   // GPOUT pipeline select
-#define ESCSS_O_GPOUT_GRP_CAP_SEL   0x34U   // GPOUT pipe group capture trigger
-#define ESCSS_O_MEM_TEST            0x38U   // Memory Test Control
-#define ESCSS_O_RESET_DEST_CONFIG   0x3CU   // ResetOut impact or destination config
-#define ESCSS_O_SYNC0_CONFIG        0x40U   // SYNC0 Configuration for various triggers
-#define ESCSS_O_SYNC1_CONFIG        0x44U   // SYNC1 Configuration for various triggers
+#define ESCSS_O_INTR_RIS            0x2U    // EtherCATSS Interrupt Raw Status
+#define ESCSS_O_INTR_MASK           0x4U    // EtherCATSS Interrupt Mask
+#define ESCSS_O_INTR_MIS            0x6U    // EtherCATSS Masked Interrupt Status
+#define ESCSS_O_INTR_CLR            0x8U    // EtherCATSS Interrupt Clear
+#define ESCSS_O_INTR_SET            0xAU    // EtherCATSS Interrupt Set to emulate
+#define ESCSS_O_LATCH_SEL           0xCU    // Select for Latch0/1 inputs and LATCHIN input
+#define ESCSS_O_ACCESS_CTRL         0xEU    // PDI interface access control config.
+#define ESCSS_O_GPIN_DAT            0x10U   // GPIN data capture for debug & override
+#define ESCSS_O_GPIN_PIPE           0x12U   // GPIN pipeline select
+#define ESCSS_O_GPIN_GRP_CAP_SEL    0x14U   // GPIN pipe group capture trigger
+#define ESCSS_O_GPOUT_DAT           0x16U   // GPOUT data capture for debug & override
+#define ESCSS_O_GPOUT_PIPE          0x18U   // GPOUT pipeline select
+#define ESCSS_O_GPOUT_GRP_CAP_SEL   0x1AU   // GPOUT pipe group capture trigger
+#define ESCSS_O_MEM_TEST            0x1CU   // Memory Test Control
+#define ESCSS_O_RESET_DEST_CONFIG   0x1EU   // ResetOut impact or destination config
+#define ESCSS_O_SYNC0_CONFIG        0x20U   // SYNC0 Configuration for various triggers
+#define ESCSS_O_SYNC1_CONFIG        0x22U   // SYNC1 Configuration for various triggers
 
 #define ESCSS_O_CONFIG_LOCK       0x0U    // EtherCATSS Configuration Lock
-#define ESCSS_O_MISC_IO_CONFIG    0x4U    // RESET_IN, EEPROM IO connections select
-#define ESCSS_O_PHY_IO_CONFIG     0x8U    // Control Register of ESCSS
-#define ESCSS_O_SYNC_IO_CONFIG    0xCU    // SYNC Signals IO configurations
-#define ESCSS_O_LATCH_IO_CONFIG   0x10U   // LATCH inputs IO pad select
-#define ESCSS_O_GPIN_SEL          0x14U   // GPIN Select between IO PAD & tieoff
-#define ESCSS_O_GPIN_IOPAD_SEL    0x18U   // GPIN IO pad Select
-#define ESCSS_O_GPOUT_SEL         0x1CU   // GPOUT IO pad connect select
-#define ESCSS_O_GPOUT_IOPAD_SEL   0x20U   // GPOUT IO pad select
-#define ESCSS_O_LED_CONFIG        0x24U   // Selection of LED o/p connect to IO pad
-#define ESCSS_O_MISC_CONFIG       0x28U   // Miscelleneous Configuration
+#define ESCSS_O_MISC_IO_CONFIG    0x2U    // RESET_IN, EEPROM IO connections select
+#define ESCSS_O_PHY_IO_CONFIG     0x4U    // Control Register of ESCSS
+#define ESCSS_O_SYNC_IO_CONFIG    0x6U    // SYNC Signals IO configurations
+#define ESCSS_O_LATCH_IO_CONFIG   0x8U    // LATCH inputs IO pad select
+#define ESCSS_O_GPIN_SEL          0xAU    // GPIN Select between IO PAD & tieoff
+#define ESCSS_O_GPIN_IOPAD_SEL    0xCU    // GPIN IO pad Select
+#define ESCSS_O_GPOUT_SEL         0xEU    // GPOUT IO pad connect select
+#define ESCSS_O_GPOUT_IOPAD_SEL   0x10U   // GPOUT IO pad select
+#define ESCSS_O_LED_CONFIG        0x12U   // Selection of LED o/p connect to IO pad
+#define ESCSS_O_MISC_CONFIG       0x14U   // Miscelleneous Configuration
 
 
 //*************************************************************************************************

@@ -2,7 +2,7 @@
 //
 // FILE:   interrupt.c
 //
-// TITLE:  Driver for the NVIC Interrupt Controller.
+// TITLE:  C28x Interrupt (PIE) driver.
 //
 //###########################################################################
 // 
@@ -44,485 +44,382 @@
 
 //*****************************************************************************
 //
-// RAM Vector Table to be used as srcVectorTable in
-// Interrupt_initRAMVectorTable(). Set the size of the vector table to the
-// largest number of interrupts of any device.
+//! \internal
+//! Clears the IFR flag in the CPU.
+//!
+//! \param group specifies the interrupt group to be cleared.
+//!
+//! This function clears the IFR flag.  This switch is needed because the
+//! clearing of the IFR can only be done with a constant.
 //
 //*****************************************************************************
-#ifndef USE_RTOS
-#pragma DATA_ALIGN(vectorTableRAM, 1024U)
-#pragma DATA_SECTION(vectorTableRAM, ".vtable")
-#pragma WEAK(vectorTableRAM)
-void (*vectorTableRAM[NUM_INTERRUPTS])(void);
-#endif
+static void Interrupt_clearIFR(uint16_t group)
+{
+    switch(group)
+    {
+        case 0x0001U:
+            IFR &= ~(uint16_t)0x0001U;
+            break;
+        case 0x0002U:
+            IFR &= ~(uint16_t)0x0002U;
+            break;
+        case 0x0004U:
+            IFR &= ~(uint16_t)0x0004U;
+            break;
+        case 0x0008U:
+            IFR &= ~(uint16_t)0x0008U;
+            break;
+        case 0x0010U:
+            IFR &= ~(uint16_t)0x0010U;
+            break;
+        case 0x0020U:
+            IFR &= ~(uint16_t)0x0020U;
+            break;
+        case 0x0040U:
+            IFR &= ~(uint16_t)0x0040U;
+            break;
+        case 0x0080U:
+            IFR &= ~(uint16_t)0x0080U;
+            break;
+        case 0x0100U:
+            IFR &= ~(uint16_t)0x0100U;
+            break;
+        case 0x0200U:
+            IFR &= ~(uint16_t)0x0200U;
+            break;
+        case 0x0400U:
+            IFR &= ~(uint16_t)0x0400U;
+            break;
+        case 0x0800U:
+            IFR &= ~(uint16_t)0x0800U;
+            break;
+        case 0x1000U:
+            IFR &= ~(uint16_t)0x1000U;
+            break;
+        case 0x2000U:
+            IFR &= ~(uint16_t)0x2000U;
+            break;
+        case 0x4000U:
+            IFR &= ~(uint16_t)0x4000U;
+            break;
+        case 0x8000U:
+            IFR &= ~(uint16_t)0x8000U;
+            break;
+        default:
+            //
+            // Invalid group mask.
+            //
+            ASSERT((bool)false);
+            break;
+    }
+}
 
 //*****************************************************************************
 //
-// Interrupt_enable()
+// Interrupt_initModule
 //
 //*****************************************************************************
 void
-Interrupt_enable(uint32_t interruptNum)
+Interrupt_initModule(void)
 {
     //
-    // Check the arguments.
+    // Disable and clear all interrupts at the CPU
     //
-    ASSERT(interruptNum < NUM_INTERRUPTS);
+    (void)Interrupt_disableGlobal();
+    IER = 0x0000U;
+    IFR = 0x0000U;
 
     //
-    // Enable the interrupt.
+    // Clear all PIEIER registers
     //
-    if(interruptNum == FAULT_MPU)
+    HWREGH(PIECTRL_BASE + PIE_O_IER1) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IER2) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IER3) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IER4) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IER5) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IER6) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IER7) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IER8) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IER9) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IER10) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IER11) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IER12) = 0U;
+
+    //
+    // Clear all PIEIFR registers
+    //
+    HWREGH(PIECTRL_BASE + PIE_O_IFR1) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IFR2) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IFR3) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IFR4) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IFR5) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IFR6) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IFR7) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IFR8) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IFR9) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IFR10) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IFR11) = 0U;
+    HWREGH(PIECTRL_BASE + PIE_O_IFR12) = 0U;
+
+    //
+    // Enable vector fetching from PIE block
+    //
+    HWREGH(PIECTRL_BASE + PIE_O_CTRL) |= PIE_CTRL_ENPIE;
+
+}
+
+//*****************************************************************************
+//
+//! The default interrupt handler.
+//!
+//! \return None.
+//
+//*****************************************************************************
+__interrupt void Interrupt_defaultHandler(void)
+{
+    uint16_t pieVect;
+    uint16_t vectID;
+
+    //
+    // Calculate the vector ID. If the vector is in the lower PIE, it's the
+    // offset of the vector that was fetched (bits 7:1 of PIECTRL.PIEVECT)
+    // divided by two.
+    //
+    pieVect = HWREGH(PIECTRL_BASE + PIE_O_CTRL);
+    vectID = (pieVect & 0xFEU) >> 1U;
+
+    //
+    // If the vector is in the upper PIE, the vector ID is 128 or higher.
+    //
+    if(pieVect >= 0x0E00U)
     {
-        HWREG(NVIC_BASE + NVIC_O_SHCSRS) |= NVIC_SHCSRS_MEMFAULTENA;
+        vectID += 128U;
     }
-    else if(interruptNum == FAULT_BUS)
+
+    //
+    // Something has gone wrong. An interrupt without a proper registered
+    // handler function has occurred. To help you debug the issue, local
+    // variable vectID contains the vector ID of the interrupt that occurred.
+    //
+    ESTOP0;
+    for(;;)
     {
-        HWREG(NVIC_BASE + NVIC_O_SHCSRS) |= NVIC_SHCSRS_BUSFAULTENA;
+        ;
     }
-    else if(interruptNum == FAULT_USAGE)
+}
+
+//*****************************************************************************
+//
+//! The default illegal instruction trap interrupt handler.
+//!
+//! \return None.
+//
+//*****************************************************************************
+__interrupt void Interrupt_illegalOperationHandler(void)
+{
+    //
+    // Something has gone wrong.  The CPU has tried to execute an illegal
+    // instruction, generating an illegal instruction trap (ITRAP).
+    //
+    ESTOP0;
+    for(;;)
     {
-        HWREG(NVIC_BASE + NVIC_O_SHCSRS) |= NVIC_SHCSRS_USGFAULTENA;
+        ;
     }
-    else if(interruptNum == FAULT_SYSTICK)
+}
+
+//*****************************************************************************
+//
+//! The default non-maskable interrupt handler.
+//!
+//! \return None.
+//
+//*****************************************************************************
+__interrupt void Interrupt_nmiHandler(void)
+{
+    //
+    // A non-maskable interrupt has occurred, indicating that a hardware error
+    // has occurred in the system.  You can use SysCtl_getNMIFlagStatus() to
+    // to read the NMIFLG register and determine what caused the NMI.
+    //
+    ESTOP0;
+    for(;;)
     {
-        HWREG(NVIC_BASE + NVIC_O_SYST_CSR) |= NVIC_SYST_CSR_TICKINT;
+        ;
     }
-    else if(interruptNum >= 16U)
+}
+
+//*****************************************************************************
+//
+// Interrupt_initVectorTable
+//
+//*****************************************************************************
+void
+Interrupt_initVectorTable(void)
+{
+    uint16_t i;
+
+    EALLOW;
+
+    //
+    // We skip the first three locations because they are initialized by Boot
+    // ROM with boot variables.
+    //
+    for(i = 3U; i < 224U; i++)
     {
-        HWREG(NVIC_BASE + NVIC_O_ISER0 +
-              (NVIC_OFFSET_INC * ((interruptNum - 16U) / 32U))) =
-        (uint32_t)1U << ((interruptNum - 16U) & 0x1FU);
+        HWREG(PIEVECTTABLE_BASE + (2U * i)) =
+            (uint32_t)Interrupt_defaultHandler;
+    }
+
+    //
+    // NMI and ITRAP get their own handlers.
+    //
+    HWREG(PIEVECTTABLE_BASE + ((INT_NMI >> 16U) * 2U)) =
+        (uint32_t)Interrupt_nmiHandler;
+    HWREG(PIEVECTTABLE_BASE + ((INT_ILLEGAL >> 16U) * 2U)) =
+        (uint32_t)Interrupt_illegalOperationHandler;
+
+    EDIS;
+}
+
+//*****************************************************************************
+//
+//Interrupt_enable
+//
+//*****************************************************************************
+void
+Interrupt_enable(uint32_t interruptNumber)
+{
+    bool intsDisabled;
+    uint16_t intGroup;
+    uint16_t groupMask;
+    uint16_t vectID;
+
+    vectID = (uint16_t)(interruptNumber >> 16U);
+
+    //
+    // Globally disable interrupts but save status
+    //
+    intsDisabled = Interrupt_disableGlobal();
+
+    //
+    // PIE Interrupts
+    //
+    if(vectID >= 0x20U)
+    {
+        intGroup = (uint16_t)(((interruptNumber & 0xFF00UL) >> 8U) - 1U);
+        groupMask = (uint16_t)1U << intGroup;
+
+        HWREGH((PIECTRL_BASE + PIE_O_IER1 + (intGroup * 2U))) |=
+            (uint16_t)1U << ((interruptNumber & 0xFFU) - 1U);
+
+        //
+        // Enable PIE Group Interrupt
+        //
+        IER |= groupMask;
+    }
+
+    //
+    // INT13, INT14, DLOGINT, & RTOSINT
+    //
+    else if((vectID >= 0x0DU) && (vectID <= 0x10U))
+    {
+        IER |= (uint16_t)1U << (vectID - 1U);
     }
     else
     {
         //
-        // Do Nothing.
+        // Other interrupts
         //
+    }
+
+    //
+    // Re-enable interrupts if they were enabled
+    //
+    if(!intsDisabled)
+    {
+        (void)Interrupt_enableGlobal();
     }
 }
 
 //*****************************************************************************
 //
-// Interrupt_disable()
+// Interrupt_disable
 //
 //*****************************************************************************
 void
-Interrupt_disable(uint32_t interruptNum)
+Interrupt_disable(uint32_t interruptNumber)
 {
-    //
-    // Check the arguments.
-    //
-    ASSERT(interruptNum <= NUM_INTERRUPTS);
+    bool intsDisabled;
+    uint16_t intGroup;
+    uint16_t groupMask;
+    uint16_t vectID;
+
+    vectID = (uint16_t)(interruptNumber >> 16U);
+
+    intsDisabled = Interrupt_disableGlobal();
 
     //
-    // Disable the interrupt.
+    // PIE Interrupts
     //
-    if(interruptNum == FAULT_MPU)
+    if(vectID >= 0x20U)
     {
-        HWREG(NVIC_BASE + NVIC_O_SHCSRS)   &= ~NVIC_SHCSRS_MEMFAULTENA;
+        intGroup = (uint16_t)(((interruptNumber & 0xFF00UL) >> 8U) - 1U);
+        groupMask = (uint16_t)1U << intGroup;
+
+        //
+        // Disable individual PIE interrupt
+        //
+        HWREGH((PIECTRL_BASE + PIE_O_IER1 + (intGroup * 2U))) &=
+            ~(1U << ((interruptNumber & 0xFFUL) - 1U));
+
+        //
+        // Wait for any pending interrupts to get to the CPU
+        //
+        NOP;
+        NOP;
+        NOP;
+        NOP;
+        NOP;
+
+        Interrupt_clearIFR(groupMask);
+
+        //
+        // Acknowledge any interrupts
+        //
+        HWREGH(PIECTRL_BASE + PIE_O_ACK) = groupMask;
     }
-    else if(interruptNum == FAULT_BUS)
+
+    //
+    // INT13, INT14, DLOGINT, & RTOSINT
+    //
+    else if((vectID >= 0x0DU) && (vectID <= 0x10U))
     {
-        HWREG(NVIC_BASE + NVIC_O_SHCSRS)   &= ~NVIC_SHCSRS_BUSFAULTENA;
-    }
-    else if(interruptNum == FAULT_USAGE)
-    {
-        HWREG(NVIC_BASE + NVIC_O_SHCSRS)   &= ~NVIC_SHCSRS_USGFAULTENA;
-    }
-    else if(interruptNum == FAULT_SYSTICK)
-    {
-        HWREG(NVIC_BASE + NVIC_O_SYST_CSR) &= ~NVIC_SYST_CSR_TICKINT;
-    }
-    else if(interruptNum >= 16U)
-    {
-        HWREG(NVIC_BASE + NVIC_O_ICER0 +
-              (NVIC_OFFSET_INC * ((interruptNum - 16U) / 32U))) =
-        (uint32_t)1U << ((interruptNum - 16U) & 0x1FU);
+        IER &= ~((uint16_t)1U << (vectID - 1U));
+
+        //
+        // Wait for any pending interrupts to get to the CPU
+        //
+        NOP;
+        NOP;
+        NOP;
+        NOP;
+        NOP;
+
+        Interrupt_clearIFR((uint16_t)1U << (vectID - 1U));
     }
     else
     {
         //
-        // Do Nothing.
+        // Other interrupts
         //
     }
-}
-
-//*****************************************************************************
-//
-// Interrupt_isEnabled()
-//
-//*****************************************************************************
-bool
-Interrupt_isEnabled(uint32_t interruptNum)
-{
-    uint32_t status;
 
     //
-    // Check the arguments.
+    // Re-enable interrupts if they were enabled
     //
-    ASSERT(interruptNum <= NUM_INTERRUPTS);
-
-    //
-    // Return the interrupt status
-    //
-    if(interruptNum == FAULT_MPU)
+    if(!intsDisabled)
     {
-        status = HWREG(NVIC_BASE + NVIC_O_SHCSRS) & NVIC_SHCSRS_MEMFAULTENA;
+        (void)Interrupt_enableGlobal();
     }
-    else if(interruptNum == FAULT_BUS)
-    {
-        status = HWREG(NVIC_BASE + NVIC_O_SHCSRS) & NVIC_SHCSRS_BUSFAULTENA;
-    }
-    else if(interruptNum == FAULT_USAGE)
-    {
-        status = HWREG(NVIC_BASE + NVIC_O_SHCSRS) & NVIC_SHCSRS_USGFAULTENA;
-    }
-    else if(interruptNum == FAULT_SYSTICK)
-    {
-        status = HWREG(NVIC_BASE + NVIC_O_SYST_CSR) & NVIC_SYST_CSR_TICKINT;
-    }
-    else if(interruptNum >= 16U)
-    {
-        status = HWREG(NVIC_BASE + (uint32_t)NVIC_O_ISER0 +
-                       (NVIC_OFFSET_INC * ((interruptNum - 16U) / 32U))) &
-                 (1U << ((interruptNum - 16U) & 0x1FU));
-    }
-    else
-    {
-        status = 0U;
-    }
-
-    //
-    // Return peripheral interrupt status.
-    //
-    return(status != 0U);
-}
-
-//*****************************************************************************
-//
-// Interrupt_pend()
-//
-//*****************************************************************************
-void
-Interrupt_pend(uint32_t interruptNum)
-{
-    //
-    // Check the arguments.
-    //
-    ASSERT(interruptNum <= NUM_INTERRUPTS);
-
-    //
-    // Pends the corresponding channel interrupt.
-    //
-    if(interruptNum == FAULT_NMI)
-    {
-        HWREG(NVIC_BASE + NVIC_O_ICSR) |= NVIC_ICSR_NMIPENDSET;
-    }
-    else if(interruptNum == FAULT_PENDSV)
-    {
-        HWREG(NVIC_BASE + NVIC_O_ICSR) |= NVIC_ICSR_PENDSVSET;
-    }
-    else if(interruptNum == FAULT_SYSTICK)
-    {
-        HWREG(NVIC_BASE + NVIC_O_ICSR) |= NVIC_ICSR_PENDSTSET;
-    }
-    else if(interruptNum == FAULT_SVCALL)
-    {
-        HWREG(NVIC_BASE + NVIC_O_SHCSRS) |= NVIC_SHCSRS_SVCALLPENDED;
-    }
-    else if(interruptNum == FAULT_BUS)
-    {
-        HWREG(NVIC_BASE + NVIC_O_SHCSRS) |= NVIC_SHCSRS_BUSFAULTPENDED;
-    }
-    else if(interruptNum == FAULT_MPU)
-    {
-        HWREG(NVIC_BASE + NVIC_O_SHCSRS) |= NVIC_SHCSRS_MEMFAULTPENDED;
-    }
-    else if(interruptNum == FAULT_USAGE)
-    {
-        HWREG(NVIC_BASE + NVIC_O_SHCSRS) |= NVIC_SHCSRS_USGFAULTPENDED;
-    }
-    else if(interruptNum >= 16U)
-    {
-        HWREG(NVIC_BASE + NVIC_O_ISPR0 +
-              (NVIC_OFFSET_INC * ((interruptNum - 16U) / 32U))) =
-        (uint32_t)1U << ((interruptNum - 16U) & 0x1FU);
-    }
-    else
-    {
-        //
-        // Do Nothing.
-        //
-    }
-}
-
-//*****************************************************************************
-//
-// Interrupt_unpend()
-//
-//*****************************************************************************
-void
-Interrupt_unpend(uint32_t interruptNum)
-{
-    //
-    // Check the arguments.
-    //
-    ASSERT(interruptNum <= NUM_INTERRUPTS);
-
-    //
-    // Unpends the corresponding channel interrupt.
-    //
-    if(interruptNum == FAULT_PENDSV)
-    {
-        HWREG(NVIC_BASE + NVIC_O_ICSR) |= NVIC_ICSR_PENDSVCLR;
-    }
-    else if(interruptNum == FAULT_SYSTICK)
-    {
-        HWREG(NVIC_BASE + NVIC_O_ICSR) |= NVIC_ICSR_PENDSTCLR;
-    }
-    else if(interruptNum == FAULT_SVCALL)
-    {
-        HWREG(NVIC_BASE + NVIC_O_SHCSRS) &= ~NVIC_SHCSRS_SVCALLPENDED;
-    }
-    else if(interruptNum == FAULT_BUS)
-    {
-        HWREG(NVIC_BASE + NVIC_O_SHCSRS) &= ~NVIC_SHCSRS_BUSFAULTPENDED;
-    }
-    else if(interruptNum == FAULT_MPU)
-    {
-        HWREG(NVIC_BASE + NVIC_O_SHCSRS) &= ~NVIC_SHCSRS_MEMFAULTPENDED;
-    }
-    else if(interruptNum == FAULT_USAGE)
-    {
-        HWREG(NVIC_BASE + NVIC_O_SHCSRS) &= ~NVIC_SHCSRS_USGFAULTPENDED;
-    }
-    else if(interruptNum >= 16U)
-    {
-        HWREG(NVIC_BASE + NVIC_O_ICPR0 +
-              (NVIC_OFFSET_INC * ((interruptNum - 16U) / 32U))) =
-        (uint32_t)1U << ((interruptNum - 16U) & (uint32_t)0x1FU);
-    }
-    else
-    {
-        //
-        // Do Nothing.
-        //
-    }
-}
-
-//*****************************************************************************
-//
-// Interrupt_setPriority()
-//
-//*****************************************************************************
-void
-Interrupt_setPriority(uint32_t interruptNum, uint32_t priority)
-{
-    uint32_t offset, shift, mask;
-
-    //
-    // Check the arguments.
-    //
-    ASSERT((interruptNum >= 4U) && (interruptNum < NUM_INTERRUPTS));
-
-    //
-    // Set the interrupt priority.
-    //
-    if(interruptNum == FAULT_MPU)
-    {
-        HWREG(NVIC_BASE + NVIC_O_SHPR1) = (HWREG(NVIC_BASE + NVIC_O_SHPR1) &
-                                           ~(uint32_t)NVIC_SHPR1_PRI_4_M) |
-                                          (priority << NVIC_SHPR1_PRI_4_S);
-    }
-    else if(interruptNum == FAULT_BUS)
-    {
-        HWREG(NVIC_BASE + NVIC_O_SHPR1) = (HWREG(NVIC_BASE + NVIC_O_SHPR1) &
-                                           ~(uint32_t)NVIC_SHPR1_PRI_5_M) |
-                                           (priority << NVIC_SHPR1_PRI_5_S);
-    }
-    else if(interruptNum == FAULT_USAGE)
-    {
-        HWREG(NVIC_BASE + NVIC_O_SHPR1) = (HWREG(NVIC_BASE + NVIC_O_SHPR1) &
-                                           ~(uint32_t)NVIC_SHPR1_PRI_6_M) |
-                                          (priority << NVIC_SHPR1_PRI_6_S);
-    }
-    else if(interruptNum == FAULT_SVCALL)
-    {
-        HWREG(NVIC_BASE + NVIC_O_SHPR2) = (HWREG(NVIC_BASE + NVIC_O_SHPR2) &
-                                           ~(uint32_t)NVIC_SHPR2_PRI_11_M) |
-                                          (priority << NVIC_SHPR2_PRI_11_S);
-    }
-    else if(interruptNum == FAULT_PENDSV)
-    {
-        HWREG(NVIC_BASE + NVIC_O_SHPR3) = (HWREG(NVIC_BASE + NVIC_O_SHPR3) &
-                                           ~(uint32_t)NVIC_SHPR3_PRI_14_M) |
-                                          (priority << NVIC_SHPR3_PRI_14_S);
-    }
-    else if(interruptNum == FAULT_SYSTICK)
-    {
-        HWREG(NVIC_BASE + NVIC_O_SHPR3) = (HWREG(NVIC_BASE + NVIC_O_SHPR3) &
-                                           ~(uint32_t)NVIC_SHPR3_PRI_15_M) |
-                                          (priority << NVIC_SHPR3_PRI_15_S);
-    }
-    else if(interruptNum >= 16U)
-    {
-        offset = (uint32_t)NVIC_OFFSET_INC * ((interruptNum - 16U) / 4U);
-        shift  = ((uint32_t)8U * (interruptNum & 0x3U)) + NVIC_IPR0_PRI_0_S;
-        mask   = (uint32_t)NVIC_IPR0_PRI_0_M << (8U * (interruptNum & 0x3U));
-
-        HWREG(NVIC_BASE + NVIC_O_IPR0 + offset) =
-                (HWREG(NVIC_BASE + (uint32_t)NVIC_O_IPR0 + offset) & ~mask) |
-                (priority << shift);
-    }
-    else
-    {
-        //
-        // Do Nothing.
-        //
-    }
-}
-
-//*****************************************************************************
-//
-// Interrupt_getPriority()
-//
-//*****************************************************************************
-uint32_t
-Interrupt_getPriority(uint32_t interruptNum)
-{
-    uint32_t offset, shift, status;
-
-    //
-    // Check the arguments.
-    //
-    ASSERT((interruptNum >= 4U) && (interruptNum < NUM_INTERRUPTS));
-
-    //
-    // Set the interrupt priority.
-    //
-    if(interruptNum == FAULT_MPU)
-    {
-        status = (HWREG(NVIC_BASE + NVIC_O_SHPR1) & NVIC_SHPR1_PRI_4_M) >>
-                 NVIC_SHPR1_PRI_4_S;
-    }
-    else if(interruptNum == FAULT_BUS)
-    {
-        status = (HWREG(NVIC_BASE + NVIC_O_SHPR1) & NVIC_SHPR1_PRI_5_M) >>
-                 NVIC_SHPR1_PRI_5_S;
-    }
-    else if(interruptNum == FAULT_USAGE)
-    {
-        status = (HWREG(NVIC_BASE + NVIC_O_SHPR1) & NVIC_SHPR1_PRI_6_M) >>
-                 NVIC_SHPR1_PRI_6_S;
-    }
-    else if(interruptNum == FAULT_SVCALL)
-    {
-        status = (HWREG(NVIC_BASE + NVIC_O_SHPR2) & NVIC_SHPR2_PRI_11_M) >>
-                 NVIC_SHPR2_PRI_11_S;
-    }
-    else if(interruptNum == FAULT_PENDSV)
-    {
-        status = (HWREG(NVIC_BASE + NVIC_O_SHPR3) & NVIC_SHPR3_PRI_14_M) >>
-                 NVIC_SHPR3_PRI_14_S;
-    }
-    else if(interruptNum == FAULT_SYSTICK)
-    {
-        status = (HWREG(NVIC_BASE + NVIC_O_SHPR3) & NVIC_SHPR3_PRI_15_M) >>
-                 NVIC_SHPR3_PRI_15_S;
-    }
-    else if(interruptNum >= 16U)
-    {
-        offset = (uint32_t)NVIC_OFFSET_INC * ((interruptNum - 16U) / 4U);
-        shift = ((uint32_t)8U * (interruptNum & 0x3U)) + 5U;
-
-        status = (HWREG(NVIC_BASE + (uint32_t)NVIC_O_IPR0 + offset) >> shift) &
-                 0xFFU;
-    }
-    else
-    {
-        status = 0U;
-    }
-    return(status);
-}
-
-//*****************************************************************************
-//
-// Interrupt_initRAMVectorTable()
-//
-//*****************************************************************************
-void
-Interrupt_initRAMVectorTable(void (*srcVectorTable[])(void),
-                             void (*dstVectorTable[])(void))
-{
-    uint32_t index;
-
-    //
-    // Check whether dstVectorTable lies in RAM and is correctly aligned.
-    //
-    ASSERT((uint32_t)dstVectorTable >= 0x20000000U);
-    ASSERT(((uint32_t)dstVectorTable & 0x000003FFU) == 0U);
-
-    if(HWREG(NVIC_BASE + NVIC_O_VTOR) != (uint32_t)dstVectorTable)
-    {
-        //
-        // Point the NVIC at the RAM vector table.
-        //
-        HWREG(NVIC_BASE + NVIC_O_VTOR) = (uint32_t)dstVectorTable;
-    }
-
-    //
-    // Copy the ISRs from temp vector table to RAM vector table.
-    //
-    for(index = 0U; index < NUM_INTERRUPTS; index++)
-    {
-        dstVectorTable[index] = srcVectorTable[index];
-    }
-}
-//*****************************************************************************
-//
-// Interrupt_registerHandler()
-//
-//*****************************************************************************
-void
-Interrupt_registerHandler(uint32_t interruptNum, void (*intHandler)(void))
-{
-    uint32_t index, value;
-
-    //
-    // Check the arguments.
-    //
-    ASSERT(interruptNum < NUM_INTERRUPTS);
-
-    //
-    // Make sure that the RAM vector table is correctly aligned.
-    // Check vector table alignment in device datasheet.
-    //
-    ASSERT(((uint32_t)vectorTableRAM & 0x000003FFU) == 0U);
-
-    //
-    // See if the RAM vector table has been initialized.
-    //
-    if(HWREG(NVIC_BASE + NVIC_O_VTOR) != (uint32_t)vectorTableRAM)
-    {
-        //
-        // Copy the vector table from the beginning of FLASH to the RAM vector
-        // table.
-        //
-        value = HWREG(NVIC_BASE + NVIC_O_VTOR);
-        for(index = 0U; index < NUM_INTERRUPTS; index++)
-        {
-            vectorTableRAM[index] = (void (*)(void))HWREG((index * 4U) + value);
-        }
-
-        //
-        // Point the NVIC at the RAM vector table.
-        //
-        HWREG(NVIC_BASE + NVIC_O_VTOR) = (uint32_t)vectorTableRAM;
-    }
-
-    //
-    // Save the interrupt handler.
-    //
-    vectorTableRAM[interruptNum] = intHandler;
 }

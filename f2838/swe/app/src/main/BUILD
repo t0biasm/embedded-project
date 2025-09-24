@@ -43,6 +43,14 @@ cc_binary(
         "//f2838/mcal:mcal_f2838x",
         "//f2838/public:public_types_h",
     ],
+    # Declare addation linker inputs - needed for linkopts
+    additional_linker_inputs = [
+        "//f2838/swe/linker:linker_cmd_app"
+    ],
+    # Linker options
+    linkopts = [
+        "--library=$(location //f2838/swe/linker:linker_cmd_app)",
+    ],
 )
 
 # cc_binary_c2000(

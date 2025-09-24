@@ -169,6 +169,12 @@ def _impl(ctx):
                                         ),
                                     ],
                                 ),
+                                # Linker script add-on
+                                flag_group(
+                                    expand_if_available = "user_link_flags",
+                                    iterate_over = "user_link_flags",
+                                    flags = ["%{user_link_flags}"],
+                                ),
                             ],
                         ),
                     ],

@@ -9,18 +9,16 @@ MEMORY
 
 SECTIONS
 {
-   /* Code and read-only data */
-   .text      : > RAML0
-   .cinit     : > RAML0
-   .pinit     : > RAML0
-   .const     : > RAML0
+    /* Code and read-only data */
+    .econst: > RAML0
+    .text: > RAML0
+    .cinit: > RAML0
+    .pinit: > RAML0
 
-   /* Data */
-   .bss       : > RAML0
-   .ebss      : > RAML0
-   .stack     : > RAML0
-   .sysmem    : > RAML0
-
-   /* Reset vector */
-   .reset     : > RESET, TYPE = DSECT
+    /* Data */
+    .ebss: > RAML0
+    .stack: > RAML0
+    .esysmem: > RAML0
+    .data: > RAML0
+    .switch: > RAML0
 }

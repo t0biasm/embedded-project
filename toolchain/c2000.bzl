@@ -12,6 +12,14 @@ C2000_COMPILER_FLAGS = [
     "--preproc_with_compile",
 ]
 
+C2000_ARCHIVER_FLAGS_APP = [
+    "-a", # Adds the specified files to the library
+    "%{output_execpath}",
+    # "--output_file=%{output_execpath}",
+    # "function"
+]
+
+
 C2000_LINKER_FLAGS_APP = [
     "--run_linker",
     "--output_file=%{output_execpath}",

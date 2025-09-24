@@ -9,7 +9,7 @@ load("@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
      "env_entry", 
      "env_set",
      "variable_with_value")
-load("//toolchain:c2000.bzl", "C2000_COMPILER_FLAGS", "C2000_LINKER_FLAGS_APP")
+load("//toolchain:c2000.bzl", "C2000_COMPILER_FLAGS", "C2000_LINKER_FLAGS_APP", "C2000_ARCHIVER_FLAGS_APP")
 
 all_compile_actions = [ # NEW
     ACTION_NAMES.c_compile,
@@ -26,7 +26,7 @@ def _impl(ctx):
     builtin_sysroot = None
     cxx_builtin_include_directories = []
     # Build tool pathes
-    archiver = "../" + ctx.file._archiver.dirname + "/" + ctx.file._compiler.basename
+    archiver = "../" + ctx.file._archiver.dirname + "/" + ctx.file._archiver.basename
     compiler = "../" + ctx.file._compiler.dirname + "/" + ctx.file._compiler.basename
     linker = "../" + ctx.file._linker.dirname + "/" + ctx.file._linker.basename
     strip = "../" + ctx.file._strip.dirname + "/" + ctx.file._strip.basename
@@ -41,12 +41,12 @@ def _impl(ctx):
             ],
         ),
         action_config(
-            action_name = ACTION_NAMES.cpp_link_executable,
-            tools = [tool(path = compiler)],
-        ),
-        action_config(
             action_name = ACTION_NAMES.cpp_link_static_library,
             tools = [tool(path = archiver)],
+        ),
+        action_config(
+            action_name = ACTION_NAMES.cpp_link_executable,
+            tools = [tool(path = compiler)],
         ),
         action_config(
             action_name = ACTION_NAMES.strip,
@@ -57,7 +57,7 @@ def _impl(ctx):
     features = [
         feature(name = "no_legacy_features", enabled = True),
         feature(
-            name = "ti_compilation",
+            name = "ti_compiler",
             enabled = True,
             flag_sets = [
                 flag_set(
@@ -90,12 +90,46 @@ def _impl(ctx):
             ],
         ),
         feature(
-            name = "ti_linking",
+            name = "ti_archiver",
             enabled = True,
             flag_sets = [
                 flag_set(
                     actions = [
                         ACTION_NAMES.cpp_link_static_library,
+                    ],
+                    flag_groups = [
+                        # ---------- Linker flags --------- #
+                        flag_group(
+                            flags = C2000_ARCHIVER_FLAGS_APP,
+                        ),
+                        # ----- Libraries to be linked ---- #
+                        flag_group (
+                            expand_if_available = "libraries_to_link",
+                            iterate_over = "libraries_to_link",
+                            flag_groups = [
+                                flag_group(
+                                    flag_groups = [
+                                        flag_group(
+                                            flags = ["%{libraries_to_link.name}"],
+                                        ),
+                                    ],
+                                    expand_if_equal = variable_with_value(
+                                        name = "libraries_to_link.type",
+                                        value = "object_file",
+                                    ),
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        ),
+        feature(
+            name = "ti_linker",
+            enabled = True,
+            flag_sets = [
+                flag_set(
+                    actions = [
                         ACTION_NAMES.cpp_link_executable,
                     ],
                     flag_groups = [

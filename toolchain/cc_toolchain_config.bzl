@@ -108,15 +108,11 @@ def _impl(ctx):
                             iterate_over = "libraries_to_link",
                             flag_groups = [
                                 flag_group(
-                                    flag_groups = [
-                                        flag_group(
-                                            flags = ["%{libraries_to_link.name}"],
-                                        ),
-                                    ],
                                     expand_if_equal = variable_with_value(
                                         name = "libraries_to_link.type",
                                         value = "object_file",
                                     ),
+                                    flag_groups = [flag_group(flags = ["%{libraries_to_link.name}"])],
                                 ),
                             ],
                         ),
@@ -143,15 +139,26 @@ def _impl(ctx):
                             iterate_over = "libraries_to_link",
                             flag_groups = [
                                 flag_group(
+                                    expand_if_equal = variable_with_value(
+                                        name = "libraries_to_link.type",
+                                        value = "object_file",
+                                    ),
                                     flag_groups = [
                                         flag_group(
                                             flags = ["%{libraries_to_link.name}"],
                                         ),
                                     ],
+                                ),
+                                flag_group(
                                     expand_if_equal = variable_with_value(
                                         name = "libraries_to_link.type",
-                                        value = "object_file",
+                                        value = "static_library",
                                     ),
+                                    flag_groups = [
+                                        flag_group(
+                                            flags = ["%{libraries_to_link.name}"],
+                                        ),
+                                    ],
                                 ),
                             ],
                         ),

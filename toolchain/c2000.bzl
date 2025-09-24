@@ -15,8 +15,7 @@ C2000_COMPILER_FLAGS = [
 C2000_ARCHIVER_FLAGS_APP = [
     "-a", # Adds the specified files to the library
     "%{output_execpath}",
-    # "--output_file=%{output_execpath}",
-    # "function"
+    # "%{output_assembly_file}",
 ]
 
 

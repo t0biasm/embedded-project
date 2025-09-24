@@ -56,6 +56,8 @@ def _impl(ctx):
 
     features = [
         feature(name = "no_legacy_features", enabled = True),
+        # Feature for compiling sources files to object files - .c/.h -> .o
+        # Used for cc_library/cc_binary
         feature(
             name = "ti_compiler",
             enabled = True,
@@ -89,6 +91,8 @@ def _impl(ctx):
                 ),
             ],
         ),
+        # Feature for archiving object files to static library - .o -> .lib
+        # Used for cc_library
         feature(
             name = "ti_archiver",
             enabled = True,
@@ -107,6 +111,7 @@ def _impl(ctx):
                             expand_if_available = "libraries_to_link",
                             iterate_over = "libraries_to_link",
                             flag_groups = [
+                                # All object files .o
                                 flag_group(
                                     expand_if_equal = variable_with_value(
                                         name = "libraries_to_link.type",
@@ -120,6 +125,8 @@ def _impl(ctx):
                 ),
             ],
         ),
+        # Feature for linking object files/static libraries to final executable - .o/.lib -> .out
+        # Used for cc_binary
         feature(
             name = "ti_linker",
             enabled = True,
@@ -138,6 +145,7 @@ def _impl(ctx):
                             expand_if_available = "libraries_to_link",
                             iterate_over = "libraries_to_link",
                             flag_groups = [
+                                # All object files .o
                                 flag_group(
                                     expand_if_equal = variable_with_value(
                                         name = "libraries_to_link.type",
@@ -149,6 +157,7 @@ def _impl(ctx):
                                         ),
                                     ],
                                 ),
+                                # All static libraries .lib
                                 flag_group(
                                     expand_if_equal = variable_with_value(
                                         name = "libraries_to_link.type",

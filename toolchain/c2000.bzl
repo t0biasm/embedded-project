@@ -30,6 +30,17 @@ C2000_COMPILER_FLAGS = [
     ## Run-Time Model Options
     "--gen_data_subsections=on",                # Place all aggregate data (arrays, structs, and unions) into subsections.
     "--gen_func_subsections=on",                # Puts each function in a separate subsection in the object file.
+    ## Assembler Options
+    # "--keep_asm",                               # Keeps the assembly language (.asm) file.
+    # "--preproc_asm",                            # Preprocesses assembly source, expands assembly macros.
+]
+
+C2000_ASSEMBLER_FLAGS = [
+    ## Input sources files .asm
+    "%{source_file}",
+    ## Output file .o
+    "--output_file=%{output_file}",
+    ## Assembler Options
 ]
 
 C2000_ARCHIVER_FLAGS_APP = [

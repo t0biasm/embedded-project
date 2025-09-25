@@ -1,16 +1,20 @@
 load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
-load("@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl", 
+load("@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
      "action_config",
-     "artifact_name_pattern", 
-     "tool", 
-     "tool_path", 
-     "feature", 
-     "flag_group", 
-     "flag_set", 
-     "env_entry", 
+     "artifact_name_pattern",
+     "tool",
+     "tool_path",
+     "feature",
+     "flag_group",
+     "flag_set",
+     "env_entry",
      "env_set",
      "variable_with_value")
-load("//toolchain:c2000.bzl", "C2000_COMPILER_FLAGS", "C2000_LINKER_FLAGS_APP", "C2000_ARCHIVER_FLAGS_APP")
+load("//toolchain:c2000.bzl",
+     "C2000_COMPILER_FLAGS",
+     "C2000_LINKER_FLAGS_APP",
+     "C2000_ARCHIVER_FLAGS_APP",
+     "C2000_ASSEMBLER_FLAGS")
 
 all_compile_actions = [ # NEW
     ACTION_NAMES.c_compile,
@@ -53,11 +57,11 @@ def _impl(ctx):
     action_configs = [
         action_config (
             action_name = ACTION_NAMES.c_compile,
-            tools = [
-                tool(
-                    path = compiler,
-                ),
-            ],
+            tools = [tool(path = compiler)],
+        ),
+        action_config (
+            action_name = ACTION_NAMES.assemble,
+            tools = [tool(path = compiler)],
         ),
         action_config(
             action_name = ACTION_NAMES.cpp_link_static_library,
@@ -82,11 +86,48 @@ def _impl(ctx):
             enabled = True,
             flag_sets = [
                 flag_set(
-                    actions = [ACTION_NAMES.c_compile],
+                    actions = [
+                        ACTION_NAMES.c_compile,
+                    ],
                     flag_groups = [
                         # ---- General Compiler Flags ----- #
                         flag_group(
                             flags = C2000_COMPILER_FLAGS,
+                        ),
+                        # ---------- Include Paths -------- #
+                        # Compilers built in path
+                        flag_group(
+                            flags = [
+                                "-I", Label("@ti_cgt_c2000//:include").workspace_root + "/include",
+                                "-I", Label("@ti_cgt_c2000//:lib").workspace_root + "/lib",
+                            ]
+                        ),
+                        # System include paths
+                        flag_group(
+                            iterate_over = "system_include_paths",
+                            flags = ["-I", "%{system_include_paths}"],
+                        ),
+                        # Normal include paths
+                        flag_group(
+                            iterate_over = "include_paths",
+                            flags = ["-I", "%{include_paths}"],
+                        ),
+                    ],
+                ),
+            ],
+        ),
+        feature(
+            name = "ti_assembler",
+            enabled = True,
+            flag_sets = [
+                flag_set(
+                    actions = [
+                        ACTION_NAMES.assemble,
+                    ],
+                    flag_groups = [
+                        # ---- General Assembler Flags ----- #
+                        flag_group(
+                            flags = C2000_ASSEMBLER_FLAGS,
                         ),
                         # ---------- Include Paths -------- #
                         # Compilers built in path

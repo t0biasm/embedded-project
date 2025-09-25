@@ -203,6 +203,14 @@ def _impl(ctx):
                                 ),
                             ],
                         ),
+                        # Flag for automatic run-time support
+                        # Needed to define an entry point (if c_int00 is not resolved by any specified object file or library)
+                        # See compiler user guide
+                        flag_group(
+                            flags = [
+                                "--library=libc.a",
+                            ]
+                        ),
                     ],
                 ),
             ],

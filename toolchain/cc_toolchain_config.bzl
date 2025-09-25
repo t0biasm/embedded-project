@@ -1,6 +1,7 @@
 load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
 load("@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl", 
-     "action_config", 
+     "action_config",
+     "artifact_name_pattern", 
      "tool", 
      "tool_path", 
      "feature", 
@@ -22,9 +23,33 @@ all_link_actions = [ # NEW
 ]
 
 def _impl(ctx):
+    # Used tools are handled via action_config
     tool_paths = []
+    # Compiler sysroot needs to invoked via --include_path option of compiler
+    # No need to set specific values here
     builtin_sysroot = None
     cxx_builtin_include_directories = []
+    # Adjust bazel default file formats/endings to TI specific formats/endings
+    artifact_name_patterns = [
+        # Adjust .o to .obj
+        artifact_name_pattern(
+            category_name = "object_file",
+            prefix = "",
+            extension = ".obj",
+        ),
+        # Adjust .a to .lib
+        artifact_name_pattern(
+            category_name = "static_library",
+            prefix = "",
+            extension = ".lib",
+        ),
+        # Adjust ??? to ???
+        artifact_name_pattern(
+            category_name = "executable",
+            prefix = "",
+            extension = "",
+        ),
+    ]
     # Build tool pathes
     archiver = "../" + ctx.file._archiver.dirname + "/" + ctx.file._archiver.basename
     compiler = "../" + ctx.file._compiler.dirname + "/" + ctx.file._compiler.basename
@@ -212,6 +237,7 @@ def _impl(ctx):
         builtin_sysroot = builtin_sysroot,
         cxx_builtin_include_directories = cxx_builtin_include_directories,
         action_configs = action_configs,
+        artifact_name_patterns = artifact_name_patterns,
     )
 
 cc_toolchain_config = rule(

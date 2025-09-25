@@ -166,6 +166,13 @@ def _impl(ctx):
                             flags = C2000_LINKER_FLAGS_APP,
                         ),
                         # ----- Libraries to be linked ---- #
+                        # Linker search path (This option must appear before the --library option.)
+                        flag_group(
+                            flags = [
+                                "--search_path=" + Label("@ti_cgt_c2000//:lib").workspace_root + "/lib",
+                            ]
+                        ),
+                        # Add files to be linked
                         flag_group (
                             expand_if_available = "libraries_to_link",
                             iterate_over = "libraries_to_link",

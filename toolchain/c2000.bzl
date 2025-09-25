@@ -39,9 +39,21 @@ C2000_ARCHIVER_FLAGS_APP = [
 ]
 
 C2000_LINKER_FLAGS_APP = [
+    ## Basic Options
     "--run_linker",
     "--output_file=%{output_execpath}",
-    # "--map_file=%{output_execpath}.map",
+    "--map_file=%{output_execpath}.map",
+    ## File Search Path Options
+    "--disable_auto_rts",
+    ## Diagnostic Options
+    "--display_error_number",
+    "--warn_sections",
+    ## Linker Output Options
+    "--xml_link_info=%{output_execpath}_linkInfo.xml",
+    ## Symbol Management Options
+    # "--entry_point=_c_int00",
+    ## Runtime Environment Options
+    "--rom_model",
 ]
 
 C2000_LINKER_OPTIONS_APP = [

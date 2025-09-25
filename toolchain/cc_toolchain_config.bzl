@@ -169,18 +169,32 @@ def _impl(ctx):
                                         ),
                                     ],
                                 ),
-                                # Linker script add-on
-                                flag_group(
-                                    expand_if_available = "user_link_flags",
-                                    iterate_over = "user_link_flags",
-                                    flags = ["%{user_link_flags}"],
-                                ),
                             ],
                         ),
                     ],
                 ),
             ],
-        )
+        ),
+        feature(
+            name = "ti_linkopts",
+            enabled = True,
+            flag_sets = [
+                flag_set(
+                    actions = [
+                        ACTION_NAMES.cpp_link_static_library,
+                        ACTION_NAMES.cpp_link_executable,
+                    ],
+                    flag_groups = [
+                        # Linker script add-on
+                        flag_group(
+                            expand_if_available = "user_link_flags",
+                            iterate_over = "user_link_flags",
+                            flags = ["%{user_link_flags}"],
+                        ),
+                    ],
+                ),
+            ],
+        ),
     ]
 
     return cc_common.create_cc_toolchain_config_info(

@@ -45,7 +45,7 @@ cc_binary(
     ],
     # Declare addation linker inputs - needed for linkopts
     additional_linker_inputs = [
-        "//f2838/swe/linker:linker_cmd_app"
+        "//f2838/swe/linker:linker_cmd_app",
     ],
     # Linker options
     linkopts = [

@@ -41,6 +41,7 @@ C2000_ARCHIVER_FLAGS_APP = [
 C2000_LINKER_FLAGS_APP = [
     "--run_linker",
     "--output_file=%{output_execpath}",
+    # "--map_file=%{output_execpath}.map",
 ]
 
 C2000_LINKER_OPTIONS_APP = [

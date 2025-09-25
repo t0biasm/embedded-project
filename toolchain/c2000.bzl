@@ -40,20 +40,19 @@ C2000_ARCHIVER_FLAGS_APP = [
 
 C2000_LINKER_FLAGS_APP = [
     ## Basic Options
-    "--run_linker",
-    "--output_file=%{output_execpath}",
-    "--map_file=%{output_execpath}.map",
+    "--abi=eabi",                               # Selects application binary interface. Must be specified before the --run_linker option
+    "--run_linker",                             # Run linker
+    "--output_file=%{output_execpath}",         # Generate output executable
+    "--map_file=%{output_execpath}.map",        # Generate map file
     ## File Search Path Options
-    "--disable_auto_rts",
+    "--disable_auto_rts",                       #
     ## Diagnostic Options
-    "--display_error_number",
-    "--warn_sections",
+    "--display_error_number",                   # Display error/warning numbers of linker issues
+    "--warn_sections",                          #
     ## Linker Output Options
     "--xml_link_info=%{output_execpath}_linkInfo.xml",
-    ## Symbol Management Options
-    # "--entry_point=_c_int00",
     ## Runtime Environment Options
-    "--rom_model",
+    "--rom_model",                              # Select ROM for code placement?
 ]
 
 C2000_LINKER_OPTIONS_APP = [

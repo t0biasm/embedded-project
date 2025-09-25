@@ -43,12 +43,6 @@ def _impl(ctx):
             prefix = "",
             extension = ".lib",
         ),
-        # Adjust ??? to ???
-        artifact_name_pattern(
-            category_name = "executable",
-            prefix = "",
-            extension = "",
-        ),
     ]
     # Build tool pathes
     archiver = "../" + ctx.file._archiver.dirname + "/" + ctx.file._archiver.basename

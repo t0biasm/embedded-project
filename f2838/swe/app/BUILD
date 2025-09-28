@@ -39,6 +39,7 @@ cc_binary(
     deps = [
         "//f2838/mcal:mcal_f2838x",
         "//f2838/public:public_types_h",
+        "//f2838/units:units_app",
     ],
     # Declare addation linker inputs - needed for linkopts
     additional_linker_inputs = [

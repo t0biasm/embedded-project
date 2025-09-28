@@ -4,7 +4,7 @@ Repository for embedded software development
 ## Build Commands
 - Build SW project
 ```starlark
-bazel build --config=f2838 //f2838/swe/app/src/main:app
+bazel build --config=f2838 //f2838/swe/app:app
 ```
 
 ## Prerequisites

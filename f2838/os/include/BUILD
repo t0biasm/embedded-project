@@ -2,6 +2,7 @@ cc_library(
     name = "free_rtos_c28x_include",
     hdrs = glob(["*.h"]),
     deps = [
+        "//f2838/swe/app:free_rtos_app_config",
         "//toolchain:c2000_builtin_directories",
     ],
     includes = ["."],

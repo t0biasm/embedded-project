@@ -1,5 +1,5 @@
 cc_library(
-    name = "free_rtos_c28x",
+    name = "free_rtos_c28x_app",
     srcs = glob(["*.c"]),
     deps = [
         "//f2838/os/include:free_rtos_c28x_include",

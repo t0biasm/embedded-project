@@ -35,6 +35,7 @@
 //-------------------------------------------------------------------------------------------------
 // Hardware includes
 //-------------------------------------------------------------------------------------------------
+#include "cputimer.h"
 
 //-------------------------------------------------------------------------------------------------
 // Type definitions.
@@ -45,8 +46,6 @@
 #define portLONG        uint32_t
 #define portSHORT       uint16_t
 #define portBASE_TYPE   uint16_t
-#define uint8_t         uint16_t
-#define int8_t          int16_t
 #define portSTACK_TYPE  uint16_t
 
 typedef portSTACK_TYPE StackType_t;
@@ -89,7 +88,7 @@ extern volatile uint16_t bYield;
 //-------------------------------------------------------------------------------------------------
 // Hardware specifics.
 //-------------------------------------------------------------------------------------------------
-#define portBYTE_ALIGNMENT      4
+#define portBYTE_ALIGNMENT      2
 #define portSTACK_GROWTH        ( 1 )
 #define portTICK_PERIOD_MS      ( ( TickType_t ) 1000 / configTICK_RATE_HZ )
 #define portNOP()               __asm(" NOP")

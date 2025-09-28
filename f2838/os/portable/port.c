@@ -33,7 +33,11 @@
 // Constants required for hardware setup.
 #define portINITIAL_CRITICAL_NESTING  ( ( uint16_t ) 10 )
 #define portFLAGS_INT_ENABLED         ( ( StackType_t ) 0x08 )
-#if defined(__TMS320C28XX_FPU32__)
+#if defined(__TMS320C28XX_FPU64__)
+# define AUX_REGISTERS_TO_SAVE        27 // XAR + FPU registers
+# define XAR4_REGISTER_POSITION       6  // XAR4 position in AUX registers array
+# define STF_REGISTER_POSITION        10 // STF position in AUX registers array
+#elif defined(__TMS320C28XX_FPU32__)
 # define AUX_REGISTERS_TO_SAVE        19 // XAR + FPU registers
 # define XAR4_REGISTER_POSITION       6  // XAR4 position in AUX registers array
 # define STF_REGISTER_POSITION        10 // STF position in AUX registers array
@@ -43,7 +47,14 @@
 #endif
 
 extern uint32_t getSTF( void );
-extern void vApplicationSetupTimerInterrupt( void );
+
+/*
+ * Setup the timer to generate the tick interrupts.  The implementation in this
+ * file is weak to allow application writers to change the timer used to
+ * generate the tick interrupt.
+ */
+void vPortSetupTimerInterrupt( void );
+
 
 // Each task maintains a count of the critical section nesting depth.  Each
 // time a critical section is entered the count is incremented.  Each time a
@@ -137,7 +148,7 @@ void vPortEndScheduler( void )
 //-------------------------------------------------------------------------------------------------
 BaseType_t xPortStartScheduler(void)
 {
-  vApplicationSetupTimerInterrupt();
+  vPortSetupTimerInterrupt();
 
   ulCriticalNesting = 0;
 
@@ -169,4 +180,40 @@ void vPortExitCritical( void )
   {
     portENABLE_INTERRUPTS();
   }
+}
+
+/*
+ * Setup the CPU timer 2 to generate the tick interrupts at the required
+ * frequency.
+ */
+#pragma WEAK( vPortSetupTimerInterrupt )
+void vPortSetupTimerInterrupt( void )
+{
+    //
+    // Initialize timer period:
+    //
+    CPUTimer_setPeriod(CPUTIMER2_BASE, configCPU_CLOCK_HZ / configTICK_RATE_HZ);
+
+    //
+    // Set pre-scale counter to divide by 1 (SYSCLKOUT):
+    //
+    CPUTimer_setPreScaler(CPUTIMER2_BASE, 0);
+	
+	//
+    // Initializes timer control register. The timer is stopped, reloaded,
+    // free run disabled, and interrupt enabled.
+    // Additionally, the free and soft bits are set
+    //
+    CPUTimer_stopTimer(CPUTIMER2_BASE);
+    CPUTimer_reloadTimerCounter(CPUTIMER2_BASE);
+	CPUTimer_setEmulationMode(CPUTIMER2_BASE,
+                              CPUTIMER_EMULATIONMODE_STOPAFTERNEXTDECREMENT);
+    
+	//
+	// Enable interrupt and start timer
+	//
+	CPUTimer_enableInterrupt(CPUTIMER2_BASE);
+    Interrupt_register(INT_TIMER2, &portTICK_ISR);
+    Interrupt_enable(INT_TIMER2);
+    CPUTimer_startTimer(CPUTIMER2_BASE);
 }

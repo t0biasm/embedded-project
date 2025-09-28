@@ -1,9 +1,10 @@
 ## FreeRTOS kernel for C28x
 
-The mentioned code is fetched from following open source MIT repository\
-[FreeRTOS port for C28x](https://github.com/IvanZuy/freertos_c28x)
+The mentioned code is fetched from an official Texas Instruments FreeRTOS port\
+[FreeRTOS port for C28x](https://github.com/TexasInstruments/c2000ware-FreeRTOS/tree/REL_C2000Ware_v5.05.00.00/kernel/FreeRTOS/Source)
 ```
-commit: 52a94f13dbcbb62c4fe8616434eab9a5670b9868
+tag: REL_C2000Ware_v5.05.00.00
+commit: 6a04433db92938ed380d168bfafdfefc5d88791f
 ```
 
 Each real time kernel port consists of three files that contain the core kernel

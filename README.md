@@ -19,3 +19,6 @@ Under following link, MCU specific sheets can be found \
 Used F2838 driver library (MCAL) version: v5.05.00.00 \
 [F2838x MCAL](https://github.com/TexasInstruments/c2000ware-core-sdk/tree/REL_C2000Ware_v5.05.00.00/driverlib/f2838x/driverlib_cm)
 
+Technical reference manual \
+[F2838x Technical Reference Manual](https://www.ti.com/document-viewer/lit/html/spruii0)
+

@@ -12,4 +12,5 @@ SECTIONS
     .data:  PAGE = 0
     .cinit: PAGE = 0 /* Used only for C programs */
     .bss:  PAGE = 1
+    .TI.ramfunc : PAGE = 0 /* ??? */
 }

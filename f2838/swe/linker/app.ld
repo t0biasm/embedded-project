@@ -1,16 +1,16 @@
 /* Default Memory Allocation */
 MEMORY
 {
-    PAGE 0: PROG: origin = 0x000040 length = 0x3fffc0
-    PAGE 1: DATA: origin = 0x000000 length = 0x010000
-    PAGE 1: DATA1: origin = 0x010000 length = 0x3f0000
+    ROM_APP:    origin = 0x00080000,    length = 0x00400000,
+    RAM_APP:    origin = 0x00000400,    length = 0x00000400,
 }
 
 SECTIONS
 {
-    .text:  PAGE = 0
-    .data:  PAGE = 0
-    .cinit: PAGE = 0 /* Used only for C programs */
-    .bss:  PAGE = 1
-    .TI.ramfunc : PAGE = 0 /* ??? */
+    .text       :  > ROM_APP
+    .data       :  > ROM_APP
+    .cinit      :  > ROM_APP
+    .bss        :  > ROM_APP
+    .TI.ramfunc :  > ROM_APP
+    .stack      :  > RAM_APP
 }

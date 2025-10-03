@@ -10,6 +10,7 @@ SECTIONS
     .text       :  > ROM_APP
     .data       :  > ROM_APP
     .cinit      :  > ROM_APP
+    .const      :  > ROM_APP
     .bss        :  > ROM_APP
     .TI.ramfunc :  > ROM_APP
     .stack      :  > RAM_APP

@@ -6,5 +6,5 @@ cc_library(
         "//f2838/os/portable:free_rtos_c28x_portable",
     ],
     includes = ["."],
-    visibility = ["//f2838/os:__subpackages__"],
+    visibility = ["//f2838:__subpackages__"],
 )

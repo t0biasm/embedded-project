@@ -29,6 +29,12 @@ filegroup(
 )
 
 filegroup(
+    name = "ofd2000",
+    srcs = ["bin/ofd2000.exe"],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
     name = "strip2000",
     srcs = ["bin/strip2000.exe"],
     visibility = ["//visibility:public"],

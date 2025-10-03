@@ -38,6 +38,7 @@ C2000_COMPILER_FLAGS = [
 C2000_ASSEMBLER_FLAGS = [
     ## Input sources files .asm
     "%{source_file}",
+    "--abi=eabi",                               # Selects application binary interface. Must be specified before the --run_linker option
     ## Output file .o
     "--output_file=%{output_file}",
     ## Assembler Options
@@ -53,7 +54,8 @@ C2000_LINKER_FLAGS_APP = [
     ## Basic Options
     "--abi=eabi",                               # Selects application binary interface. Must be specified before the --run_linker option
     "--run_linker",                             # Run linker
-    "--output_file=%{output_execpath}",         # Generate output executable
+    "--stack_size=0x1000",
+    "--output_file=%{output_execpath}",     # Generate output executable
     "--map_file=%{output_execpath}.map",        # Generate map file
     ## File Search Path Options
     "--disable_auto_rts",                       #
@@ -62,6 +64,7 @@ C2000_LINKER_FLAGS_APP = [
     "--warn_sections",                          #
     ## Linker Output Options
     "--xml_link_info=%{output_execpath}_linkInfo.xml",
+    "--mapfile_contents=sym_defs",              # Mechanism to control information within map file. Defined symbols per file
     ## Runtime Environment Options
     "--rom_model",                              # Select ROM for code placement?
 ]

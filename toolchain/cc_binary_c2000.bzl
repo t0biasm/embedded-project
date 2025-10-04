@@ -46,6 +46,7 @@ def _cc_binary_c2000_impl(ctx):
         cc_toolchain = cc_toolchain,
         linking_contexts = [dep[CcInfo].linking_context for dep in ctx.attr.deps],
         user_link_flags = [f.path for f in ctx.files.additional_linker_inputs],
+        additional_inputs = ctx.files.additional_linker_inputs,
     )
 
     ## Create object dump of elf file

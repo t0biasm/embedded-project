@@ -5,6 +5,9 @@ def _cc_binary_c2000_impl(ctx):
     ## Declare executable
     executable = ctx.actions.declare_file(ctx.attr.name)
 
+    # Get tool for object dump
+    ofd2000 = ctx.file._ofd2000.dirname + "/" + ctx.file._ofd2000.basename
+
     ## Fetch toolchain
     cc_toolchain = find_cpp_toolchain(ctx)
 
@@ -16,7 +19,7 @@ def _cc_binary_c2000_impl(ctx):
         unsupported_features = ctx.disabled_features,
     )
 
-    ## Compile sources
+    # ------------ Compile sources  ------------ #
     (compilation_contexts, compilation_outputs) = cc_common.compile(
         actions = ctx.actions,
         feature_configuration = feature_configuration,
@@ -26,7 +29,7 @@ def _cc_binary_c2000_impl(ctx):
         name = ctx.label.name,
     )
 
-    ## Add compilation outputs into a linking_context
+    # ------------ Add compilation outputs into a linking_context ------------ #
     (linking_contexts, linking_outputs) = cc_common.create_linking_context_from_compilation_outputs(
         name = ctx.attr.name,
         actions = ctx.actions,
@@ -37,7 +40,35 @@ def _cc_binary_c2000_impl(ctx):
         alwayslink = True,
     )
 
-    ## Link executable
+    # ------------ Merge CC Infos ------------ #
+    local_cc_info   = CcInfo(compilation_context = compilation_contexts,
+                             linking_context     = linking_contexts)
+    cc_info         = cc_common.merge_cc_infos(cc_infos = 
+                                                   [local_cc_info] + 
+                                                   [dep[CcInfo] for dep in ctx.attr.deps])
+
+    # ------------ Create object dump for all object files ------------ #
+    objects = []
+    cc_info = cc_common.merge_cc_infos(cc_infos = [dep[CcInfo] for dep in ctx.attr.deps])
+    for linker_input in cc_info.linking_context.linker_inputs.to_list():
+        for library_to_link in linker_input.libraries:
+            objects.extend(library_to_link.objects)
+    
+    objdmp_files = []
+    for object in objects:
+        objdmp = ctx.actions.declare_file("objdmp/" + object.basename.replace(".obj", ".objdmp"))
+        objdmp_files.append(objdmp)
+        ctx.actions.run(
+            inputs = [object],
+            outputs = [objdmp],
+            executable = ofd2000,
+            arguments =
+                ["--output=" + objdmp.path] +
+                [object.path],
+            progress_message = "Running Object Dump for {}".format(object.basename),
+        )
+
+    # ------------ Link executable ------------ #
     linking_outputs = cc_common.link(
         name = ctx.attr.name,
         actions = ctx.actions,
@@ -49,24 +80,22 @@ def _cc_binary_c2000_impl(ctx):
         additional_inputs = ctx.files.additional_linker_inputs,
     )
 
-    ## Create object dump of elf file
-    # Get tool for object dump
-    objdmp = ctx.file._objdmp.dirname + "/" + ctx.file._objdmp.basename
+    # ------------ Create object dump for elf file ------------ #
     # Output is .txt file with the object dump (.elfdmp)
     elfdmp = ctx.actions.declare_file(ctx.attr.name + ".elfdmp")
     # Run executable with specific command line arguments
     ctx.actions.run(
         inputs = [linking_outputs.executable],
         outputs = [elfdmp],
-        executable = objdmp,
+        executable = ofd2000,
         arguments =
             ["--output=" + elfdmp.path] +
             [linking_outputs.executable.path],
-        progress_message = "Running Object Dump",
+        progress_message = "Running Object Dump for {}".format(ctx.attr.name),
     )
 
     # Expose a DefaultInfo with the executable
-    default_info = DefaultInfo(files = depset([elfdmp]),
+    default_info = DefaultInfo(files = depset([elfdmp] + objdmp_files),
                                executable = linking_outputs.executable)
 
     # Optionally, expose CcInfo including compilation outputs
@@ -84,7 +113,7 @@ cc_binary_c2000 = rule(
         "additional_linker_inputs": attr.label_list(allow_files = True),
         "linkopts": attr.string_list(),
         "_cc_toolchain": attr.label(default = Label("@bazel_tools//tools/cpp:current_cc_toolchain")),
-        "_objdmp": attr.label(
+        "_ofd2000": attr.label(
             default = Label("@ti_cgt_c2000//:ofd2000"),
             allow_single_file = True,
             executable = True,

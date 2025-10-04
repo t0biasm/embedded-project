@@ -1,4 +1,5 @@
 load("//toolchain:cc_binary_c2000.bzl", "cc_binary_c2000")
+load("//toolchain:cc_binary_native.bzl", "cc_binary_native")
 load("//toolchain:debug.bzl", "debug_rule")
 
 # Application specific FreeRTOS configuration
@@ -12,7 +13,7 @@ cc_library(
     visibility = ["//f2838/os/include:__subpackages__"],
 )
 
-cc_binary(
+cc_binary_native(
     name = "app",
     srcs = [
         "main.c",

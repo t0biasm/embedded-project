@@ -1,0 +1,34 @@
+@startmindmap
+* SW Project
+** Development Process
+*** System Definition
+*** Requirements
+**** Interfaces
+***** Communication\nInterfaces
+***** HW/SW Interfaces
+***** SW Interfaces
+*** Release Management
+** Toolchain & CI
+*** Build Environment
+**** Bazel
+**** CMake/Make
+*** Compiler
+*** Doxygen
+*** Clang
+**** Tidy (Naming\nConvention)
+**** Format (Code\nFormation)
+** Microcontroller
+*** Peripherals
+*** Memory
+**** RAM
+**** ROM
+** Code & Workspace
+** Documentation
+*** Markdown
+**** ReadMe
+*** PlantUML
+** Testing
+*** Code Debug Tool\n(e.g. GCC)
+*** CUnit
+*** GooleTest
+@endmindmap

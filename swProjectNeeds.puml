@@ -3,6 +3,11 @@
 ** Development Process
 *** General
 **** Language
+**** Wording
+***** System
+***** Component
+***** Unit
+***** Feature
 **** Management Tools
 ***** JIRA
 ***** Confluence
@@ -69,6 +74,11 @@
 **** Files
 **** Folders
 **** Symbols
+*** Code
+**** Safety
+***** Superior Features
+***** E-Gas\nConcept
+***** BIST
 ** Documentation
 *** Markdown
 **** ReadMe

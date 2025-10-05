@@ -44,7 +44,7 @@
 
   .if .TMS320C2800_FPU32 = 1
 
-  .def _getSTF
+  .def getSTF
 
 _getSTF:
   MOV32   *SP++, STF

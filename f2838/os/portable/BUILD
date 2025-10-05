@@ -5,7 +5,7 @@ cc_library(
         "port.c",
     ],
     hdrs = [
-        "portmacro.h"
+        "portmacro.h",
     ],
     deps = [
         "//f2838/mcal:mcal_f2838x_h",

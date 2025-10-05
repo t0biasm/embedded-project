@@ -81,7 +81,6 @@ C2000_LINKER_FLAGS_APP = [
     ## Basic Options
     "--abi=eabi",                               # Selects application binary interface. Must be specified before the --run_linker option
     "--run_linker",                             # Run linker
-    "--stack_size=0x400",
     "--output_file=%{output_execpath}",         # Generate output executable
     "--map_file=%{output_execpath}.map",        # Generate map file
     ## File Search Path Options

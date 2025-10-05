@@ -39,8 +39,8 @@ DD -[hidden]-> MCAL
 MCAL -[hidden]-> PER : Test
 
 ' === Notes ===
-note bottom of MCAL
-  Hardware-specific drivers
+note left of MCAL
+  MCU-specific drivers
 end note
 
 @enduml

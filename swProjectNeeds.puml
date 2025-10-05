@@ -1,22 +1,50 @@
 @startmindmap
 * SW Project
 ** Development Process
+*** General
+**** Language
+**** Management Tools
+***** JIRA
+***** Confluence
+***** Codebeamer
 *** System Definition
+**** System Boundaries
+**** Children Elements\nHW/SW/Mechanics
+**** SW Unit\nDefinition
+**** Roles
+**** Responsibilities
+**** Namespaces
 *** Requirements
+**** Features
 **** Interfaces
 ***** Communication\nInterfaces
-***** HW/SW Interfaces
 ***** SW Interfaces
+***** HW/SW Interfaces
+***** Mechanical Interfaces
+**** ASIL
+**** Homologation
+**** Reporter/nAssignee
+**** Quality Checks
+***** Checker Bot
+**** Derivation
+*** Implementation
 *** Release Management
+**** Tag/SW Logistics
+**** Change Logs
+***** Pull Requests
+***** Commits
+***** Tickets
 ** Toolchain & CI
 *** Build Environment
 **** Bazel
 **** CMake/Make
-*** Compiler
-*** Doxygen
+**** Tools
+***** Compiler
+***** A2L Tool (XCP)
 *** Clang
 **** Tidy (Naming\nConvention)
 **** Format (Code\nFormation)
+*** Doxygen
 ** Microcontroller
 *** Peripherals
 *** Memory
@@ -29,6 +57,10 @@
 *** PlantUML
 ** Testing
 *** Code Debug Tool\n(e.g. GCC)
-*** CUnit
-*** GooleTest
+*** Unit Test
+**** CUnit
+**** GooleTest
+*** Smoke Tests
+**** Flash Test
+**** Reset Test
 @endmindmap

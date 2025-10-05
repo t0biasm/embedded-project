@@ -45,12 +45,18 @@
 **** Tidy (Naming\nConvention)
 **** Format (Code\nFormation)
 *** Doxygen
+*** Version Control
+**** Git/GitHub
+*** Continuous\nIntegration
+**** Protected\nBranches
 ** Microcontroller
 *** Peripherals
 *** Memory
-**** RAM
-**** ROM
 ** Code & Workspace
+*** Naming Conventions
+**** Files
+**** Folders
+**** Symbols
 ** Documentation
 *** Markdown
 **** ReadMe

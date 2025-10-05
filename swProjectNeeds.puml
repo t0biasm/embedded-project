@@ -21,6 +21,12 @@
 ***** SW Interfaces
 ***** HW/SW Interfaces
 ***** Mechanical Interfaces
+**** HSI
+***** Requests from SW to HW
+****** Pins
+****** Memory
+****** ASIL Rating
+***** Requests from HW to SW
 **** ASIL
 **** Homologation
 **** Reporter/nAssignee
@@ -50,8 +56,14 @@
 *** Continuous\nIntegration
 **** Protected\nBranches
 ** Microcontroller
-*** Peripherals
-*** Memory
+*** TRM (Technical\nReference\nManual)
+*** Architecture
+**** Cores
+**** Busses
+**** Peripherals
+*** Memory Map
+*** Protected Areas
+*** ERRATA
 ** Code & Workspace
 *** Naming Conventions
 **** Files

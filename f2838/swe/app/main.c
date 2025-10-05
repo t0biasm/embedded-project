@@ -6,6 +6,12 @@
 
 uint16_t global_test = 2U;
 
+//-------------------------------------------------------------------------------------------------
+void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName )
+{
+    while(1);
+}
+
 void main(void) 
 {
     // Main

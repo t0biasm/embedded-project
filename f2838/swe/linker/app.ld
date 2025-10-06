@@ -140,8 +140,8 @@ SECTIONS
    //
    CLAscratch       :
                         { *.obj(CLAscratch)
-                        . += CLA_SCRATCHPAD_SIZE;
-                        *.obj(CLAscratch_end) } >  RAMLS1
+                          . += CLA_SCRATCHPAD_SIZE;
+                          *.obj(CLAscratch_end) } >  RAMLS1
 
    .scratchpad      : > RAMLS1
    .bss_cla         : > RAMLS1

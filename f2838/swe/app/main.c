@@ -4,7 +4,12 @@
 #include "task10msQm.h"
 #include "task.h"
 
-uint16_t global_test = 2U;
+extern uint16 RamfuncsRunStart;
+extern uint16 RamfuncsLoadStart;
+extern uint16 RamfuncsLoadSize;
+extern uint16 Cla1funcsRunStart;
+extern uint16 Cla1funcsLoadStart;
+extern uint16 Cla1funcsLoadSize;
 
 //-------------------------------------------------------------------------------------------------
 void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName )
@@ -14,9 +19,11 @@ void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName )
 
 void main(void) 
 {
-    // Main
-    uint16_t i = 8U;
-    i += global_test;
+    /*** Initialize the .hwi_vec section ***/
+    asm(" EALLOW"); /* Enable EALLOW protected register access */
+    (void)memcpy(&RamfuncsRunStart, &RamfuncsLoadStart, (size_t)&RamfuncsLoadSize);
+    (void)memcpy(&Cla1funcsRunStart, &Cla1funcsLoadStart, (size_t)&Cla1funcsLoadSize);
+    asm(" EDIS"); /* Disable EALLOW protected register access */
 
     // Setup and initialize MCU peripherals
     sysHwCfg_init();

@@ -4,6 +4,15 @@ load("//toolchain:debug.bzl", "debug_rule")
 # Application specific FreeRTOS configuration
 # Only allowed to be included within os/include
 cc_library(
+    name = "app_defines",
+    hdrs = [
+        "appDefines.h"
+    ],
+    includes = ["."],
+    visibility = ["//f2838/swe/app:__subpackages__"],
+)
+
+cc_library(
     name = "free_rtos_app_config",
     hdrs = [
         "FreeRTOSConfig.h"
@@ -18,6 +27,7 @@ cc_binary_c2000(
         "main.c",
     ],
     deps = [
+        ":app_defines",
         "//f2838/mcal:mcal_f2838x",
         "//f2838/public:public_types_h",
         "//f2838/swe/app/tasks:task10msQm",

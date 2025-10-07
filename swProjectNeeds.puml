@@ -1,5 +1,5 @@
 @startmindmap
-* SW Project
+* SW/Embedded\nProject
 ** Development Process
 *** General
 **** Language
@@ -8,6 +8,9 @@
 ***** Component
 ***** Unit
 ***** Feature
+**** Meeting
+***** Schedule
+***** Culture
 **** Management Tools
 ***** JIRA
 ***** Confluence
@@ -32,14 +35,18 @@
 ****** Memory
 ****** ASIL Rating
 ***** Requests from HW to SW
-**** ASIL
-**** Homologation
-**** Reporter/nAssignee
+**** Metadata
+***** Mandatory
+****** ASIL
+****** Homologation
+****** Reporter/nAssignee
 **** Quality Checks
 ***** Checker Bot
 **** Derivation
 *** Implementation
 *** Release Management
+*** Problem Management
+**** Bug Handling
 **** Tag/SW Logistics
 **** Change Logs
 ***** Pull Requests
@@ -55,11 +62,17 @@
 *** Clang
 **** Tidy (Naming\nConvention)
 **** Format (Code\nFormation)
+***** Indents
 *** Doxygen
 *** Version Control
 **** Git/GitHub
 *** Continuous\nIntegration
 **** Protected\nBranches
+***** Checks
+****** buildable
+****** Clang
+****** FIXME:
+****** Buildifier
 ** Microcontroller
 *** TRM (Technical\nReference\nManual)
 *** Architecture
@@ -72,18 +85,29 @@
 ** Code & Workspace
 *** Naming Conventions
 **** Files
+***** Structure/Sections
 **** Folders
 **** Symbols
 *** Code
 **** Safety
+***** Watchdog
 ***** Superior Features
-***** E-Gas\nConcept
+***** E Gas Concept
 ***** BIST
+**** Security
 ** Documentation
 *** Markdown
 **** ReadMe
 *** PlantUML
+*** Comments
+**** Doxygen
+**** eHandbook
 ** Testing
+*** Simulation
+**** MCU Emulator\n(Vendor)
+**** Code Embedding
+***** S Function
+***** LTSpice/QSpice
 *** Code Debug Tool\n(e.g. GCC)
 *** Unit Test
 **** CUnit

@@ -278,7 +278,7 @@ def _impl(ctx):
         toolchain_identifier = "c2000-toolchain",
         host_system_name = "local",
         target_system_name = "local",
-        target_cpu = "TMS320F28388D",
+        target_cpu = "TMS320F28P650DK9",
         target_libc = "local",
         compiler = "ti_cgt_c2000",
         abi_version = "local",

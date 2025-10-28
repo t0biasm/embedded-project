@@ -95,6 +95,15 @@
 ***** E Gas Concept
 ***** BIST
 **** Security
+**** Quality
+***** Static Analysis
+****** MISRA
+****** PolySpace
+***** Dynamic Analysis
+****** CodeSonar
+**** Analysis
+***** Memory Consumption
+***** Runtime Consumption
 ** Documentation
 *** Markdown
 **** ReadMe

@@ -39,6 +39,6 @@ toolchain(
         "@platforms//cpu:x86_64",
     ],
     target_compatible_with = [
-        "//constraints:f2838",
+        "//constraints:f28p65",
     ],
 )

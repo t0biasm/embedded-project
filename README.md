@@ -4,7 +4,7 @@ Repository for embedded software development
 ## Build Commands
 - Build SW project
 ```starlark
-bazel build --config=f2838 //f2838/swe/app:app
+bazel build --config=f28p65 //f28p65/swe/app:app
 ```
 
 ## Prerequisites
@@ -14,11 +14,19 @@ bazel build --config=f2838 //f2838/swe/app:app
 
 ## MCU
 Under following link, MCU specific sheets can be found \
-[F28388D Documentation](https://dev.ti.com/tirex/explore/node?node=A__AJ2S52t6KipWImg.HzDMUw__c2000ware_devices_package__coGQ502__LATEST)
+[F28P650DK9 Documentation](https://dev.ti.com/tirex/explore/node?node=A__ACuCzyjm65lS7oGVsP08EQ__c2000ware_devices_package__coGQ502__LATEST)
 
-Used F2838 driver library (MCAL) version: v5.05.00.00 \
-[F2838x MCAL](https://github.com/TexasInstruments/c2000ware-core-sdk/tree/REL_C2000Ware_v5.05.00.00/driverlib/f2838x/driverlib_cm)
+Used F28P65 driver library (MCAL) version: v5.05.00.00 \
+[F28P65XxMCAL](https://github.com/TexasInstruments/c2000ware-core-sdk/tree/REL_C2000Ware_v5.05.00.00/driverlib/f28p65x/driverlib)
 
 Technical reference manual \
-[F2838x Technical Reference Manual](https://www.ti.com/document-viewer/lit/html/spruii0)
+[F28P65x Technical Reference Manual](https://www.ti.com/lit/ug/spruiz1b/spruiz1b.pdf?ts=1761634546685&ref_url=https%253A%252F%252Fdev.ti.com%252F)
+
+## Test Setup
+
+### Daughter Card/Docking Station
+[TMDSHSECDOCK](https://www.ti.com/lit/ug/spruij6a/spruij6a.pdf?ts=1761663995340)
+
+### Evaluation Board
+[TMDSCNCD28P65X](https://www.ti.com/lit/ug/spruj90b/spruj90b.pdf?ts=1761617006565)
 

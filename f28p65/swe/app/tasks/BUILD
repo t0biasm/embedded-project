@@ -4,7 +4,7 @@ cc_library(
     hdrs = glob(["*.h"]),
     deps = [
         "//f28p65/public:public_types_h",
-        "//f28p65/os:free_rtos_c28x_app",
+        "//platforms/c28/os:free_rtos_c28x_app",
     ],
     includes = ["."],
     visibility = ["//f28p65/swe/app:__subpackages__"],

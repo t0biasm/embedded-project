@@ -11,9 +11,9 @@
 extern uint16_t RamfuncsRunStart;
 extern uint16_t RamfuncsLoadStart;
 extern uint16_t RamfuncsLoadSize;
-extern uint16_t Cla1funcsRunStart;
-extern uint16_t Cla1funcsLoadStart;
-extern uint16_t Cla1funcsLoadSize;
+extern uint16_t Cla1ProgRunStart;
+extern uint16_t Cla1ProgLoadStart;
+extern uint16_t Cla1ProgLoadSize;
 
 //-------------------------------------------------------------------------------------------------
 void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName )
@@ -39,7 +39,7 @@ void main(void)
     //
     // Copy time critical code and flash setup code to RAM.
     //
-    (void)memcpy(&Cla1funcsRunStart, &Cla1funcsLoadStart, (size_t)&Cla1funcsLoadSize);
+    (void)memcpy(&Cla1ProgRunStart, &Cla1ProgLoadStart, (size_t)&Cla1ProgLoadSize);
 #endif
 
     //

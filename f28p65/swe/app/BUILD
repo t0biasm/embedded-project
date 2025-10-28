@@ -18,7 +18,7 @@ cc_library(
         "FreeRTOSConfig.h"
     ],
     includes = ["."],
-    visibility = ["//f28p65/os/include:__subpackages__"],
+    visibility = ["//platforms/c28/os/include:__subpackages__"],
 )
 
 cc_binary_c2000(

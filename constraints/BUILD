@@ -3,7 +3,7 @@ constraint_setting(
 )
 
 constraint_value(
-    name = "f28p65",
+    name = "c28",
     constraint_setting = ":c2000",
     visibility = ["//visibility:public"],
 )

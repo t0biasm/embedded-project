@@ -54,6 +54,13 @@ void main(void)
     // Setup and initialize MCU peripherals
     sysHwCfg_init();
 
+    // Initialize common task setup - Semaphores, etc.
+    tasksCmn_init();
+
+    // Enable global Interrupts and higher priority real-time debug events:
+    EINT;  // Enable Global interrupt INTM
+    ERTM;  // Enable Global realtime interrupt DBGM
+    
     // Create the task without using any dynamic memory allocation.
     xTaskCreateStatic(task10msQm,           // Function that implements the task.
                       "10 ms QM Task",      // Text name for the task.
@@ -62,4 +69,6 @@ void main(void)
                       tskIDLE_PRIORITY + 1, // Priority at which the task is created.
                       redTaskStack,         // Array to use as the task's stack.
                       &redTaskBuffer );     // Variable to hold the task's data structure.
+
+    vTaskStartScheduler();
 }

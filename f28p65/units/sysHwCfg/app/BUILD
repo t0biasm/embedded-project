@@ -5,6 +5,7 @@ cc_library(
     deps = [
         "//f28p65/mcal:mcal_f28p65x",
         "//f28p65/public:public_types_h",
+        "//f28p65/swe/app:app_defines",
     ],
     includes = ["."],
     visibility = ["//f28p65/units/sysHwCfg:__subpackages__"],

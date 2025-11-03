@@ -1,7 +1,7 @@
 CLA_SCRATCHPAD_SIZE = 0x100;
 --undef_sym=__cla_scratchpad_end
 --undef_sym=__cla_scratchpad_start
---stack_size=0x3F8
+--stack_size=0x400
 
 MEMORY
 {

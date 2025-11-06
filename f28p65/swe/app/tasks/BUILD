@@ -8,6 +8,7 @@ cc_library(
     deps = [
         "//f28p65/public:public_types_h",
         "//f28p65/swe/app:app_defines",
+        "//f28p65/units/drvLedCtrl",
         "//platforms/c28/os:free_rtos_c28x_app",
     ],
     includes = ["."],

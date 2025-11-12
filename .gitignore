@@ -83,3 +83,5 @@ dkms.conf
 .bazelversion
 # User-specific .bazelrc
 user.bazelrc
+# CCS specific configuration
+.theia

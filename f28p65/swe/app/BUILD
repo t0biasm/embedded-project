@@ -15,6 +15,7 @@ cc_library(
 cc_binary_c2000(
     name = "app",
     srcs = [
+        "codestart.asm",
         "main.c",
     ],
     deps = [

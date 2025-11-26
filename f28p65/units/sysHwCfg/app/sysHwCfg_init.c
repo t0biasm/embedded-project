@@ -192,7 +192,7 @@ void sysHwCfg_init(void)
     //
     // Make sure the LSPCLK divider is set to the default (divide by 4)
     //
-    SysCtl_setLowSpeedClock(SYSCTL_LSPCLK_PRESCALE_4);
+    SysCtl_setLowSpeedClock(SYSCTL_LSPCLK_PRESCALE_1);
 
     //
     // Set up AUXPLL control and clock dividers needed for CMCLK

@@ -3,8 +3,13 @@
 #include "tasksCmn.h"
 #include "semphr.h"
 
-static SemaphoreHandle_t xSemaphore = NULL;
+#define STACK_SIZE_TASKIDLE   (256U)
+
+SemaphoreHandle_t xSemaphore = NULL;
 static StaticSemaphore_t xSemaphoreBuffer;
+
+static StaticTask_t idleTaskBuffer;
+static StackType_t  idleTaskStack[STACK_SIZE_TASKIDLE];
 
 interrupt void timer1_ISR( void )
 {
@@ -13,6 +18,14 @@ interrupt void timer1_ISR( void )
     xSemaphoreGiveFromISR( xSemaphore, &xHigherPriorityTaskWoken );
 
     portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
+}
+
+//-------------------------------------------------------------------------------------------------
+void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, configSTACK_DEPTH_TYPE *pulIdleTaskStackSize )
+{
+    *ppxIdleTaskTCBBuffer = &idleTaskBuffer;
+    *ppxIdleTaskStackBuffer = idleTaskStack;
+    *pulIdleTaskStackSize = STACK_SIZE_TASKIDLE;
 }
 
 void tasksCmn_init(void)
@@ -34,13 +47,13 @@ void tasksCmn_init(void)
     //
     // Initialize timer period:
     //
-    temp = ((freq / 1000000) * 100000);
+    temp = ((freq / 1000000U) * 100000U);
     CPUTimer_setPeriod(CPUTIMER1_BASE, temp);
 
     //
     // Set pre-scale counter to divide by 1 (SYSCLKOUT):
     //
-    CPUTimer_setPreScaler(CPUTIMER1_BASE, 0);
+    CPUTimer_setPreScaler(CPUTIMER1_BASE, 0U);
 
     //
     // Initializes timer control register. The timer is stopped, reloaded,

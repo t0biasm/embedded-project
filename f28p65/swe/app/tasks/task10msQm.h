@@ -4,8 +4,8 @@
 #define STACK_SIZE_TASK10MSQM   (256U)
 #define TASK10MSQM              0xDEADBEAF
 
-static StackType_t  redTaskStack[STACK_SIZE_TASK10MSQM];
-static StaticTask_t redTaskBuffer;
+extern StackType_t  task10msQmStack[STACK_SIZE_TASK10MSQM];
+extern StaticTask_t task10msQmBuffer;
 
 //-------------------------------------------------------------------------------------------------
 extern void task10msQm(void * pvParameters);

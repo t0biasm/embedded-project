@@ -21,6 +21,12 @@ void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName )
     while(1);
 }
 
+void vApplicationTickHook( void )
+{
+    // GPIO_togglePin(DEVICE_GPIO_PIN_LED2);
+}
+
+//-------------------------------------------------------------------------------------------------
 void main(void) 
 {
 #ifdef _FLASH
@@ -67,8 +73,8 @@ void main(void)
                       STACK_SIZE_TASK10MSQM,           // Number of indexes in the xStack array.
                       ( void * ) TASK10MSQM,       // Parameter passed into the task.
                       tskIDLE_PRIORITY + 1, // Priority at which the task is created.
-                      redTaskStack,         // Array to use as the task's stack.
-                      &redTaskBuffer );     // Variable to hold the task's data structure.
+                      task10msQmStack,         // Array to use as the task's stack.
+                      &task10msQmBuffer );     // Variable to hold the task's data structure.
 
     vTaskStartScheduler();
 }

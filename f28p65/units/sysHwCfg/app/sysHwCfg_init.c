@@ -188,6 +188,7 @@ void sysHwCfg_init(void)
     // Set up PLL control and clock dividers
     //
     SysCtl_setClock(DEVICE_SYSCLK_FREQ);
+    SysCtl_setPLLSysClk(0U);
 
     //
     // Make sure the LSPCLK divider is set to the default (divide by 4)

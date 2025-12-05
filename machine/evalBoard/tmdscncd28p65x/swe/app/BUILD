@@ -9,7 +9,7 @@ cc_library(
         "appDefines.h"
     ],
     includes = ["."],
-    visibility = ["//f28p65:__subpackages__"],
+    visibility = ["//machine/evalBoard/tmdscncd28p65x:__subpackages__"],
 )
 
 cc_binary_c2000(
@@ -21,17 +21,17 @@ cc_binary_c2000(
     deps = [
         ":app_defines",
         "//platforms/mcal/f28p65:mcal_f28p65x",
-        "//f28p65/public:public_types_h",
-        "//f28p65/swe/app/tasks:tasks",
-        "//f28p65/units:units_app",
+        "//machine/evalBoard/tmdscncd28p65x/public:public_types_h",
+        "//machine/evalBoard/tmdscncd28p65x/swe/app/tasks:tasks",
+        "//machine/evalBoard/tmdscncd28p65x/units:units_app",
     ],
     # Declare addation linker inputs - needed for linkopts
     additional_linker_inputs = [
-        "//f28p65/swe/linker:linker_cmd_app",
+        "//machine/evalBoard/tmdscncd28p65x/swe/linker:linker_cmd_app",
     ],
     # Linker options
     linkopts = [
-        "--library=$(location //f28p65/swe/linker:linker_cmd_app)",
+        "--library=$(location //machine/evalBoard/tmdscncd28p65x/swe/linker:linker_cmd_app)",
     ],
 )
 
@@ -48,9 +48,9 @@ cc_binary_c2000(
 #         "main.c",
 #     ],
 #     deps = [
-#         "//f28p65/public:public_types_h"
+#         "//machine/evalBoard/tmdscncd28p65x/public:public_types_h"
 #     ],
-#     # linker_files = "//f28p65/swe/linker:linker_scripts_app",
+#     # linker_files = "//machine/evalBoard/tmdscncd28p65x/swe/linker:linker_scripts_app",
 #     # linker_flags = C2000_LINKER_FLAGS_APP,
 #     # output_name = "app",
 #     # target_compatible_with = [":c2000_f28p65"]

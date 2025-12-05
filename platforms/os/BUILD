@@ -5,8 +5,8 @@ cc_library(
         exclude = ["heap_1.c"],
     ),
     deps = [
-        "//platforms/c28/os/include:free_rtos_c28x_include",
-        "//platforms/c28/os/portable:free_rtos_c28x_portable",
+        "//platforms/os/include:free_rtos_c28x_include",
+        "//platforms/os/c28:free_rtos_c28x_portable",
     ],
     includes = ["."],
     visibility = ["//visibility:public"],

@@ -9,7 +9,7 @@ cc_library(
         "//f28p65/public:public_types_h",
         "//f28p65/swe/app:app_defines",
         "//f28p65/units/drvLedCtrl",
-        "//platforms/os:free_rtos_c28x_app",
+        "//platforms/os/freertos:free_rtos_c28x_app",
     ],
     includes = ["."],
     visibility = ["//f28p65/swe/app:__subpackages__"],
@@ -21,5 +21,5 @@ cc_library(
         "FreeRTOSConfig.h"
     ],
     includes = ["."],
-    visibility = ["//platforms/os/include:__subpackages__"],
+    visibility = ["//platforms/os/freertos/include:__subpackages__"],
 )

@@ -6,5 +6,5 @@ cc_library(
         "//toolchain/c28:c2000_builtin_directories",
     ],
     includes = ["."],
-    visibility = ["//platforms/os:__subpackages__"],
+    visibility = ["//platforms/os/freertos:__subpackages__"],
 )

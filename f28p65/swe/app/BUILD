@@ -20,7 +20,7 @@ cc_binary_c2000(
     ],
     deps = [
         ":app_defines",
-        "//f28p65/mcal:mcal_f28p65x",
+        "//platforms/mcal/f28p65:mcal_f28p65x",
         "//f28p65/public:public_types_h",
         "//f28p65/swe/app/tasks:tasks",
         "//f28p65/units:units_app",

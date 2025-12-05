@@ -2,7 +2,7 @@ cc_library(
     name = "mcal_f28p65x_h",
     srcs = glob(["*.h"]),
     deps = [
-        "//f28p65/mcal/inc:mcal_f28p65x_inc_h",
+        "//platforms/mcal/f28p65/inc:mcal_f28p65x_inc_h",
         "//toolchain/c28:c2000_builtin_directories",
     ],
     includes = ["."],

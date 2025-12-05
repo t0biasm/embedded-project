@@ -3,7 +3,7 @@ cc_library(
     srcs = glob(["*.c"]),
     hdrs = glob(["*.h"]),
     deps = [
-        "//f28p65/mcal:mcal_f28p65x",
+        "//platforms/mcal/f28p65:mcal_f28p65x",
         "//f28p65/public:public_types_h",
         "//f28p65/swe/app:app_defines",
     ],

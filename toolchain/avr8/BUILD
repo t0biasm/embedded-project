@@ -8,6 +8,8 @@ package(default_visibility = ["//visibility:public"])
 avr_cc_toolchain_config(
     name = "avr_toolchain_config",
     cpu = "avr",
+    mcu = "atmega32u4",
+    f_cpu = "16000000UL",
 )
 
 # Filegroup for all compiler files

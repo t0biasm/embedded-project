@@ -28,9 +28,9 @@ http_archive(
 
 http_archive(
     name = "avr8_compiler",
-    urls = ["file:///C:/tools/avr8.zip"],
-    strip_prefix = "",
-    sha256 = "7cd44395044631e3a8283e091122c74f80e3a900c2f82252939c586bfcaa42e8",
+    urls = ["https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/avr8-gnu-toolchain-4.0.0.52-win32.any.x86_64.zip"],
+    strip_prefix = "avr8-gnu-toolchain-win32_x86_64",
+    sha256 = "ccc9712ca20edc713dcf101013f80ba245b418ebfb02fc98e9f44f7733fe086a",
     build_file = "//toolchain/avr8:avr8.BUILD",
 )
 

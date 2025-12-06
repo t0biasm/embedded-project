@@ -14,16 +14,22 @@ load("@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
 load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
 
 def _impl(ctx):
+    # Build tool pathes
+    print(ctx.executable.gcc.path)
     tool_paths = [
-        tool_path(name = "gcc", path = "/usr/bin/avr-gcc"),
-        tool_path(name = "ld", path = "/usr/bin/avr-ld"),
-        tool_path(name = "ar", path = "/usr/bin/avr-ar"),
-        tool_path(name = "cpp", path = "/usr/bin/avr-cpp"),
-        tool_path(name = "gcov", path = "/usr/bin/avr-gcov"),
-        tool_path(name = "nm", path = "/usr/bin/avr-nm"),
-        tool_path(name = "objdump", path = "/usr/bin/avr-objdump"),
-        tool_path(name = "strip", path = "/usr/bin/avr-strip"),
+        tool_path(name = "gcc", path = "C:/_git/embedded-project_v1/output/execroot/_main/external/+_repo_rules+avr8_compiler/bin/avr-gcc.exe"),
+        tool_path(name = "ld", path = ctx.executable.ld.path),
+        tool_path(name = "ar", path = ctx.executable.ar.path),
+        tool_path(name = "cpp", path = ctx.executable.cpp.path),
+        tool_path(name = "gcov", path = ctx.executable.gcov.path),
+        tool_path(name = "nm", path = ctx.executable.nm.path),
+        tool_path(name = "objdump", path = ctx.executable.objdump.path),
+        tool_path(name = "strip", path = ctx.executable.strip.path),
     ]
+
+    # Get MCU and F_CPU from attributes
+    mcu = ctx.attr.mcu
+    f_cpu = ctx.attr.f_cpu
 
     # Compiler flags for AVR
     compiler_flags = feature(
@@ -44,8 +50,8 @@ def _impl(ctx):
                 flag_groups = [
                     flag_group(
                         flags = [
-                            "-mmcu=%{mcu}",
-                            "-DF_CPU=%{f_cpu}",
+                            "-mmcu=" + mcu,
+                            "-DF_CPU=" + f_cpu,
                             "-Os",  # Optimize for size
                             "-Wall",
                             "-ffunction-sections",
@@ -71,9 +77,8 @@ def _impl(ctx):
                 flag_groups = [
                     flag_group(
                         flags = [
-                            "-mmcu=%{mcu}",
+                            "-mmcu=" + mcu,
                             "-Wl,--gc-sections",
-                            "-Wl,-Map=%{output_execpath}.map",
                         ],
                     ),
                 ],
@@ -139,7 +144,7 @@ def _impl(ctx):
 
     return cc_common.create_cc_toolchain_config_info(
         ctx = ctx,
-        toolchain_identifier = "avr-toolchain",
+        toolchain_identifier = "avr-toolchain-" + mcu,
         host_system_name = "local",
         target_system_name = "avr",
         target_cpu = ctx.attr.cpu,
@@ -162,6 +167,56 @@ avr_cc_toolchain_config = rule(
     implementation = _impl,
     attrs = {
         "cpu": attr.string(mandatory = True),
+        "mcu": attr.string(mandatory = True),
+        "f_cpu": attr.string(mandatory = True),
+        "gcc": attr.label(
+            default = Label("@avr8_compiler//:avr-gcc"),
+            allow_single_file = True,
+            executable = True,
+            cfg = "exec",
+        ),
+        "ld": attr.label(
+            default = Label("@avr8_compiler//:avr-ld"),
+            allow_single_file = True,
+            executable = True,
+            cfg = "exec",
+        ),
+        "ar": attr.label(
+            default = Label("@avr8_compiler//:avr-ar"),
+            allow_single_file = True,
+            executable = True,
+            cfg = "exec",
+        ),
+        "cpp": attr.label(
+            default = Label("@avr8_compiler//:avr-cpp"),
+            allow_single_file = True,
+            executable = True,
+            cfg = "exec",
+        ),
+        "gcov": attr.label(
+            default = Label("@avr8_compiler//:avr-gcov"),
+            allow_single_file = True,
+            executable = True,
+            cfg = "exec",
+        ),
+        "nm": attr.label(
+            default = Label("@avr8_compiler//:avr-nm"),
+            allow_single_file = True,
+            executable = True,
+            cfg = "exec",
+        ),
+        "objdump": attr.label(
+            default = Label("@avr8_compiler//:avr-objdump"),
+            allow_single_file = True,
+            executable = True,
+            cfg = "exec",
+        ),
+        "strip": attr.label(
+            default = Label("@avr8_compiler//:avr-strip"),
+            allow_single_file = True,
+            executable = True,
+            cfg = "exec",
+        ),
     },
     provides = [CcToolchainConfigInfo],
 )

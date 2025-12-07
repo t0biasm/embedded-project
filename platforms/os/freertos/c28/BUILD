@@ -8,7 +8,7 @@ cc_library(
         "portmacro.h",
     ],
     deps = [
-        "//platforms/mcal/f28p65:mcal_f28p65x_h",
+        "//platforms/c2000/mcal/f28p65:mcal_f28p65x_h",
         "//platforms/os/freertos/include:free_rtos_c28x_include",
         "//platforms/c2000/toolchain:c2000_builtin_directories",
     ],

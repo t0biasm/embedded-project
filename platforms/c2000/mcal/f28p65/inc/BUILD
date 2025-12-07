@@ -5,5 +5,5 @@ cc_library(
         "//platforms/c2000/toolchain:c2000_builtin_directories",
     ],
     includes = ["."],
-    visibility = ["//platforms/mcal/f28p65:__subpackages__"],
+    visibility = ["//platforms/c2000/mcal/f28p65:__subpackages__"],
 )

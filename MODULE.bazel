@@ -31,7 +31,7 @@ http_archive(
     urls = ["https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/avr8-gnu-toolchain-4.0.0.52-win32.any.x86_64.zip"],
     strip_prefix = "avr8-gnu-toolchain-win32_x86_64",
     sha256 = "ccc9712ca20edc713dcf101013f80ba245b418ebfb02fc98e9f44f7733fe086a",
-    build_file = "//toolchain/avr8:avr8.BUILD",
+    build_file = "//platforms/avr8/toolchain:avr8.BUILD",
 )
 
 # Toolchain Setup
@@ -41,5 +41,5 @@ register_toolchains(
 )
 
 register_toolchains(
-    "//toolchain/avr8:avr8_toolchain_windows"
+    "//platforms/avr8/toolchain:avr8_toolchain_windows"
 )

@@ -13,7 +13,7 @@ load("@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
      "with_feature_set",
      "variable_with_value")
 load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
-load("//toolchain/avr8:avr8.bzl",
+load("//platforms/avr8/toolchain:avr8.bzl",
      "AVR_COMPILER_FLAGS",
      "AVR_LINKER_FLAGS_APP",
      "AVR_ARCHIVER_FLAGS_APP",
@@ -43,14 +43,14 @@ def _impl(ctx):
     ]
     
     # Build tool pathes
-    gcc = "../../" + ctx.executable.gcc.path
-    ld = "../../" + ctx.executable.ld.path
-    ar = "../../" + ctx.executable.ar.path
-    cpp = "../../" + ctx.executable.cpp.path
-    gcov = "../../" + ctx.executable.gcov.path
-    nm = "../../" + ctx.executable.nm.path
-    objdump = "../../" + ctx.executable.objdump.path
-    strip = "../../" + ctx.executable.strip.path
+    gcc = "../../../" + ctx.executable.gcc.path
+    ld = "../../../" + ctx.executable.ld.path
+    ar = "../../../" + ctx.executable.ar.path
+    cpp = "../../../" + ctx.executable.cpp.path
+    gcov = "../../../" + ctx.executable.gcov.path
+    nm = "../../../" + ctx.executable.nm.path
+    objdump = "../../../" + ctx.executable.objdump.path
+    strip = "../../../" + ctx.executable.strip.path
 
     action_configs = [
         action_config (

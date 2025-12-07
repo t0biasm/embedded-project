@@ -6,7 +6,7 @@ cc_library(
     ),
     deps = [
         "//os/freertos/include:free_rtos_c28x_include",
-        "//os/freertos/c28:free_rtos_c28x_portable",
+        "//platforms/c2000/port/freertos:free_rtos_c28x_portable",
     ],
     includes = ["."],
     visibility = ["//visibility:public"],

@@ -12,7 +12,7 @@
 #     urls = ["https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-xqxJ05PLfM/22.6.2.LTS/ti_cgt_c2000_22.6.2.LTS_osx_installer.app.zip"],
 #     strip_prefix = "ti_cgt_c2000_22.6.2.LTS_osx_installer.app",
 #     sha256 = "b71dfc35247a84cc6a81f70dfdc4bea3ecb70dcd9c409eb61768c915cd7c94f7",
-#     build_file = "//toolchain/c28:c2000.BUILD",
+#     build_file = "//platforms/c2000/toolchain:c2000.BUILD",
 # )
 
 # External Dependencies
@@ -23,7 +23,7 @@ http_archive(
     urls = ["file:///C:/tools/cl2000.zip"],
     strip_prefix = "",
     sha256 = "37dc48e3b040f439b52c189a043af652b51792e513e47585f3e4973c6909ca08",
-    build_file = "//toolchain/c28:c2000.BUILD",
+    build_file = "//platforms/c2000/toolchain:c2000.BUILD",
 )
 
 http_archive(
@@ -37,7 +37,7 @@ http_archive(
 # Toolchain Setup
 bazel_dep(name = "platforms", version = "0.0.10")
 register_toolchains(
-    "//toolchain/c28:c2000_toolchain_windows"
+    "//platforms/c2000/toolchain:c2000_toolchain_windows"
 )
 
 register_toolchains(

@@ -3,7 +3,7 @@ cc_library(
     srcs = [],
     hdrs = glob(["*.h"]),
     deps = [
-        "//toolchain/c28:c2000_builtin_directories",
+        "//platforms/c2000/toolchain:c2000_builtin_directories",
     ],
     includes = ["."],
     visibility = ["//machine/evalBoard/tmdscncd28p65x:__subpackages__"],

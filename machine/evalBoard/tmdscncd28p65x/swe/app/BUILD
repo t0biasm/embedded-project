@@ -1,5 +1,5 @@
-load("//toolchain/c28:cc_binary_c2000.bzl", "cc_binary_c2000")
-load("//toolchain/c28:debug.bzl", "debug_rule")
+load("//platforms/c2000/toolchain:cc_binary_c2000.bzl", "cc_binary_c2000")
+load("//platforms/c2000/toolchain:debug.bzl", "debug_rule")
 
 # Application specific FreeRTOS configuration
 # Only allowed to be included within os/include

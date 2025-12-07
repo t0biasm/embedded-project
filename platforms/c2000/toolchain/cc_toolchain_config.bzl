@@ -10,7 +10,7 @@ load("@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
      "env_entry",
      "env_set",
      "variable_with_value")
-load("//toolchain/c28:c2000.bzl",
+load("//platforms/c2000/toolchain:c2000.bzl",
      "C2000_COMPILER_FLAGS",
      "C2000_LINKER_FLAGS_APP",
      "C2000_ARCHIVER_FLAGS_APP",
@@ -49,10 +49,10 @@ def _impl(ctx):
         ),
     ]
     # Build tool pathes
-    archiver = "../../" + ctx.file._archiver.dirname + "/" + ctx.file._archiver.basename
-    compiler = "../../" + ctx.file._compiler.dirname + "/" + ctx.file._compiler.basename
-    linker = "../../" + ctx.file._linker.dirname + "/" + ctx.file._linker.basename
-    strip = "../../" + ctx.file._strip.dirname + "/" + ctx.file._strip.basename
+    archiver = "../../../" + ctx.file._archiver.dirname + "/" + ctx.file._archiver.basename
+    compiler = "../../../" + ctx.file._compiler.dirname + "/" + ctx.file._compiler.basename
+    linker = "../../../" + ctx.file._linker.dirname + "/" + ctx.file._linker.basename
+    strip = "../../../" + ctx.file._strip.dirname + "/" + ctx.file._strip.basename
 
     action_configs = [
         action_config (

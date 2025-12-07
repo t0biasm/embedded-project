@@ -10,157 +10,278 @@ load("@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
      "flag_set",
      "tool",
      "tool_path",
-     "with_feature_set")
+     "with_feature_set",
+     "variable_with_value")
 load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
+load("//toolchain/avr8:avr8.bzl",
+     "AVR_COMPILER_FLAGS",
+     "AVR_LINKER_FLAGS_APP",
+     "AVR_ARCHIVER_FLAGS_APP",
+     "AVR_ASSEMBLER_FLAGS")
 
 def _impl(ctx):
+    # Used tools are handled via action_config
+    tool_paths = []
+    # Compiler sysroot needs to invoked via --include_path option of compiler
+    # No need to set specific values here
+    builtin_sysroot = None
+    cxx_builtin_include_directories = []
+    # Adjust bazel default file formats/endings to TI specific formats/endings
+    artifact_name_patterns = [
+        # # Adjust .o to .obj
+        # artifact_name_pattern(
+        #     category_name = "object_file",
+        #     prefix = "",
+        #     extension = ".obj",
+        # ),
+        # # Adjust .a to .lib
+        # artifact_name_pattern(
+        #     category_name = "static_library",
+        #     prefix = "",
+        #     extension = ".lib",
+        # ),
+    ]
+    
     # Build tool pathes
-    print(ctx.executable.gcc.path)
-    tool_paths = [
-        tool_path(name = "gcc", path = "C:/_git/embedded-project_v1/output/execroot/_main/external/+_repo_rules+avr8_compiler/bin/avr-gcc.exe"),
-        tool_path(name = "ld", path = ctx.executable.ld.path),
-        tool_path(name = "ar", path = ctx.executable.ar.path),
-        tool_path(name = "cpp", path = ctx.executable.cpp.path),
-        tool_path(name = "gcov", path = ctx.executable.gcov.path),
-        tool_path(name = "nm", path = ctx.executable.nm.path),
-        tool_path(name = "objdump", path = ctx.executable.objdump.path),
-        tool_path(name = "strip", path = ctx.executable.strip.path),
+    gcc = "../../" + ctx.executable.gcc.path
+    ld = "../../" + ctx.executable.ld.path
+    ar = "../../" + ctx.executable.ar.path
+    cpp = "../../" + ctx.executable.cpp.path
+    gcov = "../../" + ctx.executable.gcov.path
+    nm = "../../" + ctx.executable.nm.path
+    objdump = "../../" + ctx.executable.objdump.path
+    strip = "../../" + ctx.executable.strip.path
+
+    action_configs = [
+        action_config (
+            action_name = ACTION_NAMES.c_compile,
+            tools = [tool(path = gcc)],
+        ),
+        action_config (
+            action_name = ACTION_NAMES.assemble,
+            tools = [tool(path = gcc)],
+        ),
+        action_config(
+            action_name = ACTION_NAMES.cpp_link_static_library,
+            tools = [tool(path = ar)],
+        ),
+        action_config(
+            action_name = ACTION_NAMES.cpp_link_executable,
+            tools = [tool(path = ld)],
+        ),
+        action_config(
+            action_name = ACTION_NAMES.strip,
+            tools = [tool(path = strip)],
+        ),
     ]
 
-    # Get MCU and F_CPU from attributes
-    mcu = ctx.attr.mcu
-    f_cpu = ctx.attr.f_cpu
-
-    # Compiler flags for AVR
-    compiler_flags = feature(
-        name = "compiler_flags",
-        enabled = True,
-        flag_sets = [
-            flag_set(
-                actions = [
-                    ACTION_NAMES.assemble,
-                    ACTION_NAMES.preprocess_assemble,
-                    ACTION_NAMES.linkstamp_compile,
-                    ACTION_NAMES.c_compile,
-                    ACTION_NAMES.cpp_compile,
-                    ACTION_NAMES.cpp_header_parsing,
-                    ACTION_NAMES.cpp_module_compile,
-                    ACTION_NAMES.cpp_module_codegen,
-                ],
-                flag_groups = [
-                    flag_group(
-                        flags = [
-                            "-mmcu=" + mcu,
-                            "-DF_CPU=" + f_cpu,
-                            "-Os",  # Optimize for size
-                            "-Wall",
-                            "-ffunction-sections",
-                            "-fdata-sections",
-                            "-fno-exceptions",
-                        ],
-                    ),
-                ],
-            ),
-        ],
-    )
-
-    # Linker flags for AVR
-    linker_flags = feature(
-        name = "linker_flags",
-        enabled = True,
-        flag_sets = [
-            flag_set(
-                actions = [
-                    ACTION_NAMES.cpp_link_executable,
-                    ACTION_NAMES.cpp_link_dynamic_library,
-                ],
-                flag_groups = [
-                    flag_group(
-                        flags = [
-                            "-mmcu=" + mcu,
-                            "-Wl,--gc-sections",
-                        ],
-                    ),
-                ],
-            ),
-        ],
-    )
-
-    # Default compile flags
-    default_compile_flags = feature(
-        name = "default_compile_flags",
-        enabled = True,
-        flag_sets = [
-            flag_set(
-                actions = [
-                    ACTION_NAMES.assemble,
-                    ACTION_NAMES.preprocess_assemble,
-                    ACTION_NAMES.c_compile,
-                    ACTION_NAMES.cpp_compile,
-                ],
-                flag_groups = [
-                    flag_group(
-                        flags = [
-                            "-std=gnu11",  # For C files
-                        ],
-                    ),
-                ],
-            ),
-        ],
-    )
-
-    # Opt feature (optimization)
-    opt_feature = feature(
-        name = "opt",
-        flag_sets = [
-            flag_set(
-                actions = [ACTION_NAMES.c_compile, ACTION_NAMES.cpp_compile],
-                flag_groups = [flag_group(flags = ["-O2"])],
-            ),
-        ],
-    )
-
-    # Debug feature
-    dbg_feature = feature(
-        name = "dbg",
-        flag_sets = [
-            flag_set(
-                actions = [ACTION_NAMES.c_compile, ACTION_NAMES.cpp_compile],
-                flag_groups = [flag_group(flags = ["-g"])],
-            ),
-        ],
-    )
-
-    # Action configs
-    action_configs = []
-
     features = [
-        compiler_flags,
-        linker_flags,
-        default_compile_flags,
-        opt_feature,
-        dbg_feature,
+        feature(name = "no_legacy_features", enabled = True),
+        # Feature for compiling sources files to object files - .c/.h -> .o
+        # Used for cc_library/cc_binary
+        feature(
+            name = "avr_compiler",
+            enabled = True,
+            flag_sets = [
+                flag_set(
+                    actions = [
+                        ACTION_NAMES.c_compile,
+                    ],
+                    flag_groups = [
+                        # ---- General Compiler Flags ----- #
+                        flag_group(
+                            flags = AVR_COMPILER_FLAGS,
+                        ),
+                        # # ---------- Include Paths -------- #
+                        # # Compilers built in path
+                        # flag_group(
+                        #     flags = [
+                        #         "-I", Label("@ti_cgt_c2000//:include").workspace_root + "/include",
+                        #         "-I", Label("@ti_cgt_c2000//:lib").workspace_root + "/lib",
+                        #     ]
+                        # ),
+                        # # System include paths
+                        # flag_group(
+                        #     iterate_over = "system_include_paths",
+                        #     flags = ["-I", "%{system_include_paths}"],
+                        # ),
+                        # # Normal include paths
+                        # flag_group(
+                        #     iterate_over = "include_paths",
+                        #     flags = ["-I", "%{include_paths}"],
+                        # ),
+                    ],
+                ),
+            ],
+        ),
+        feature(
+            name = "avr_assembler",
+            enabled = True,
+            flag_sets = [
+                flag_set(
+                    actions = [
+                        ACTION_NAMES.assemble,
+                    ],
+                    flag_groups = [
+                        # ---- General Assembler Flags ----- #
+                        flag_group(
+                            flags = AVR_ASSEMBLER_FLAGS,
+                        ),
+                        # # ---------- Include Paths -------- #
+                        # # Compilers built in path
+                        # flag_group(
+                        #     flags = [
+                        #         "-I", Label("@ti_cgt_c2000//:include").workspace_root + "/include",
+                        #         "-I", Label("@ti_cgt_c2000//:lib").workspace_root + "/lib",
+                        #     ]
+                        # ),
+                        # # System include paths
+                        # flag_group(
+                        #     iterate_over = "system_include_paths",
+                        #     flags = ["-I", "%{system_include_paths}"],
+                        # ),
+                        # # Normal include paths
+                        # flag_group(
+                        #     iterate_over = "include_paths",
+                        #     flags = ["-I", "%{include_paths}"],
+                        # ),
+                    ],
+                ),
+            ],
+        ),
+        # Feature for archiving object files to static library - .o -> .lib
+        # Used for cc_library
+        # feature(
+        #     name = "avr_archiver",
+        #     enabled = True,
+        #     flag_sets = [
+        #         flag_set(
+        #             actions = [
+        #                 ACTION_NAMES.cpp_link_static_library,
+        #             ],
+        #             flag_groups = [
+        #                 # ---------- Linker flags --------- #
+        #                 flag_group(
+        #                     flags = AVR_ARCHIVER_FLAGS_APP,
+        #                 ),
+        #                 # # ----- Libraries to be linked ---- #
+        #                 # flag_group (
+        #                 #     expand_if_available = "libraries_to_link",
+        #                 #     iterate_over = "libraries_to_link",
+        #                 #     flag_groups = [
+        #                 #         # All object files .o
+        #                 #         flag_group(
+        #                 #             expand_if_equal = variable_with_value(
+        #                 #                 name = "libraries_to_link.type",
+        #                 #                 value = "object_file",
+        #                 #             ),
+        #                 #             flag_groups = [flag_group(flags = ["%{libraries_to_link.name}"])],
+        #                 #         ),
+        #                 #     ],
+        #                 # ),
+        #                 # Linker script add-on
+        #                 # flag_groups = [
+        #                 #     flag_group(
+        #                 #         expand_if_available = "user_link_flags",
+        #                 #         iterate_over = "user_link_flags",
+        #                 #         flags = ["%{user_link_flags}"],
+        #                 #     ),
+        #                 # ],
+        #             ],
+        #         ),
+        #     ],
+        # ),
+        # Feature for linking object files/static libraries to final executable - .o/.lib -> .out
+        # Used for cc_binary
+        feature(
+            name = "avr_linker",
+            enabled = True,
+            flag_sets = [
+                flag_set(
+                    actions = [
+                        ACTION_NAMES.cpp_link_executable,
+                    ],
+                    flag_groups = [
+                        # ---------- Linker flags --------- #
+                        flag_group(
+                            flags = AVR_LINKER_FLAGS_APP,
+                        ),
+                        # # ----- Libraries to be linked ---- #
+                        # # Linker search path (This option must appear before the --library option.)
+                        # flag_group(
+                        #     flags = [
+                        #         "--search_path=" + Label("@ti_cgt_c2000//:lib").workspace_root + "/lib",
+                        #     ]
+                        # ),
+                        # Add files to be linked
+                        flag_group (
+                            expand_if_available = "libraries_to_link",
+                            iterate_over = "libraries_to_link",
+                            flag_groups = [
+                                # All object files .o
+                                flag_group(
+                                    expand_if_equal = variable_with_value(
+                                        name = "libraries_to_link.type",
+                                        value = "object_file",
+                                    ),
+                                    flag_groups = [
+                                        flag_group(
+                                            flags = ["%{libraries_to_link.name}"],
+                                        ),
+                                    ],
+                                ),
+                                # All static libraries .lib
+                                flag_group(
+                                    expand_if_equal = variable_with_value(
+                                        name = "libraries_to_link.type",
+                                        value = "static_library",
+                                    ),
+                                    flag_groups = [
+                                        flag_group(
+                                            flags = ["%{libraries_to_link.name}"],
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        ),
+                        # # Flag for automatic run-time support
+                        # # Needed to define an entry point (if c_int00 is not resolved by any specified object file or library)
+                        # # See compiler user guide
+                        # flag_group(
+                        #     flags = [
+                        #         "--library=libc.a",
+                        #     ]
+                        # ),
+                        # Linker script add-on
+                        # flag_groups = [
+                        #     flag_group(
+                        #         expand_if_available = "user_link_flags",
+                        #         iterate_over = "user_link_flags",
+                        #         flags = ["%{user_link_flags}"],
+                        #     ),
+                        # ],
+                    ],
+                ),
+            ],
+        ),
     ]
 
     return cc_common.create_cc_toolchain_config_info(
         ctx = ctx,
-        toolchain_identifier = "avr-toolchain-" + mcu,
-        host_system_name = "local",
-        target_system_name = "avr",
-        target_cpu = ctx.attr.cpu,
-        target_libc = "avr-libc",
-        compiler = "avr-gcc",
-        abi_version = "unknown",
-        abi_libc_version = "unknown",
-        tool_paths = tool_paths,
         features = features,
+        toolchain_identifier = "c2000-toolchain",
+        host_system_name = "local",
+        target_system_name = "local",
+        target_cpu = "TMS320F28P650DK9",
+        target_libc = "local",
+        compiler = "ti_cgt_c2000",
+        abi_version = "local",
+        abi_libc_version = "local",
+        tool_paths = tool_paths,
+        builtin_sysroot = builtin_sysroot,
+        cxx_builtin_include_directories = cxx_builtin_include_directories,
         action_configs = action_configs,
-        builtin_sysroot = "/usr/lib/avr",
-        cxx_builtin_include_directories = [
-            "/usr/lib/gcc/avr/5.4.0/include",
-            "/usr/lib/gcc/avr/5.4.0/include-fixed",
-            "/usr/lib/avr/include",
-        ],
+        # artifact_name_patterns = artifact_name_patterns,
     )
 
 avr_cc_toolchain_config = rule(

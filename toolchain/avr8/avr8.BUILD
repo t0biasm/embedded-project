@@ -1,11 +1,21 @@
 filegroup(
-    name = "compiler_files",
+    name = "intrinsic_files",
     srcs = glob([
-        "bin/avr-*",
         "lib/gcc/avr/**",
-        # "lib/avr/**",
         "avr/include/**",
     ]),
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "include",
+    srcs = glob(["avr/include/**"]),
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "lib",
+    srcs = glob(["lib/gcc/avr/**"]),
     visibility = ["//visibility:public"],
 )
 

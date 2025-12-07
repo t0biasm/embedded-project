@@ -14,9 +14,9 @@ avr_cc_toolchain_config(
 
 # Filegroup for all compiler files
 filegroup(
-    name = "all_files",
+    name = "intrinsic_files",
     srcs = [
-        "@avr8_compiler//:compiler_files",
+        "@avr8_compiler//:intrinsic_files",
     ],
 )
 
@@ -25,13 +25,13 @@ filegroup(name = "empty")
 # CC Toolchain
 cc_toolchain(
     name = "avr_cc_toolchain",
-    all_files = ":all_files",
-    ar_files = ":all_files",
-    compiler_files = ":all_files",
+    all_files = ":intrinsic_files",
+    ar_files = ":intrinsic_files",
+    compiler_files = ":intrinsic_files",
     dwp_files = ":empty",
-    linker_files = ":all_files",
-    objcopy_files = ":all_files",
-    strip_files = ":all_files",
+    linker_files = ":intrinsic_files",
+    objcopy_files = ":intrinsic_files",
+    strip_files = ":intrinsic_files",
     supports_param_files = 0,
     toolchain_config = ":avr_toolchain_config",
     toolchain_identifier = "avr-toolchain",

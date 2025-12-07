@@ -2,3 +2,9 @@
 common --enable_bzlmod
 
 try-import %workspace%/user.bazelrc
+
+## ------ Platform Configurations ------
+# Texas instruments C2000 Toolchain Configuration
+build:c2000 --platforms=platforms/c2000/toolchain:c2000
+# Microchip/Atmel AVR 8-Bit Toolchain Configuration
+build:avr8 --platforms=platforms/avr8/toolchain:atmega32u4

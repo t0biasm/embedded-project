@@ -9,9 +9,9 @@ cc_library(
     ],
     deps = [
         "//platforms/c2000/mcal/f28p65:mcal_f28p65x_h",
-        "//platforms/os/freertos/include:free_rtos_c28x_include",
+        "//os/freertos/include:free_rtos_c28x_include",
         "//platforms/c2000/toolchain:c2000_builtin_directories",
     ],
     includes = ["."],
-    visibility = ["//platforms/os/freertos:__subpackages__"],
+    visibility = ["//os/freertos:__subpackages__"],
 )

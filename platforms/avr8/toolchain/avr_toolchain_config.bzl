@@ -13,6 +13,7 @@ load("@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
      "with_feature_set",
      "variable_with_value")
 load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
+load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
 load("//platforms/avr8/toolchain:avr8.bzl",
      "AVR_COMPILER_FLAGS",
      "AVR_LINKER_FLAGS_APP",
@@ -20,27 +21,19 @@ load("//platforms/avr8/toolchain:avr8.bzl",
      "AVR_ASSEMBLER_FLAGS")
 
 def _impl(ctx):
+    # Extract custom rule options
+    mcu = ctx.attr.mcu[BuildSettingInfo].value
+    p_arch = ctx.attr.p_arch[BuildSettingInfo].value
+    f_cpu = ctx.attr.f_cpu[BuildSettingInfo].value
+
     # Used tools are handled via action_config
     tool_paths = []
-    # Compiler sysroot needs to invoked via --include_path option of compiler
-    # No need to set specific values here
-    builtin_sysroot = None
+    # Compiler builtin directories
     cxx_builtin_include_directories = []
     # Adjust bazel default file formats/endings to TI specific formats/endings
-    artifact_name_patterns = [
-        # # Adjust .o to .obj
-        # artifact_name_pattern(
-        #     category_name = "object_file",
-        #     prefix = "",
-        #     extension = ".obj",
-        # ),
-        # # Adjust .a to .lib
-        # artifact_name_pattern(
-        #     category_name = "static_library",
-        #     prefix = "",
-        #     extension = ".lib",
-        # ),
-    ]
+    artifact_name_patterns = []
+    # Builtin sysroot
+    builtin_sysroot = None
     
     # Build tool pathes
     gcc = "../../../" + ctx.executable.gcc.path
@@ -76,9 +69,10 @@ def _impl(ctx):
     ]
 
     features = [
+        # Deactivate standard gcc features
         feature(name = "no_legacy_features", enabled = True),
+
         # Feature for compiling sources files to object files - .c/.h -> .o
-        # Used for cc_library/cc_binary
         feature(
             name = "avr_compiler",
             enabled = True,
@@ -92,28 +86,19 @@ def _impl(ctx):
                         flag_group(
                             flags = AVR_COMPILER_FLAGS,
                         ),
-                        # # ---------- Include Paths -------- #
-                        # # Compilers built in path
-                        # flag_group(
-                        #     flags = [
-                        #         "-I", Label("@ti_cgt_c2000//:include").workspace_root + "/include",
-                        #         "-I", Label("@ti_cgt_c2000//:lib").workspace_root + "/lib",
-                        #     ]
-                        # ),
-                        # # System include paths
-                        # flag_group(
-                        #     iterate_over = "system_include_paths",
-                        #     flags = ["-I", "%{system_include_paths}"],
-                        # ),
-                        # # Normal include paths
-                        # flag_group(
-                        #     iterate_over = "include_paths",
-                        #     flags = ["-I", "%{include_paths}"],
-                        # ),
+                        # ---------- Custom Flags -------- #
+                        flag_group(
+                            flags = [
+                                "-mmcu=" + mcu,
+                                "-DF_CPU=" + f_cpu,
+                            ]
+                        ),
                     ],
                 ),
             ],
         ),
+
+        # Assembler step to convert .asm files into libraries
         feature(
             name = "avr_assembler",
             enabled = True,
@@ -127,28 +112,18 @@ def _impl(ctx):
                         flag_group(
                             flags = AVR_ASSEMBLER_FLAGS,
                         ),
-                        # # ---------- Include Paths -------- #
-                        # # Compilers built in path
-                        # flag_group(
-                        #     flags = [
-                        #         "-I", Label("@ti_cgt_c2000//:include").workspace_root + "/include",
-                        #         "-I", Label("@ti_cgt_c2000//:lib").workspace_root + "/lib",
-                        #     ]
-                        # ),
-                        # # System include paths
-                        # flag_group(
-                        #     iterate_over = "system_include_paths",
-                        #     flags = ["-I", "%{system_include_paths}"],
-                        # ),
-                        # # Normal include paths
-                        # flag_group(
-                        #     iterate_over = "include_paths",
-                        #     flags = ["-I", "%{include_paths}"],
-                        # ),
+                        # ---------- Custom Flags -------- #
+                        flag_group(
+                            flags = [
+                                "-mmcu=" + mcu,
+                                "-DF_CPU=" + f_cpu,
+                            ]
+                        ),
                     ],
                 ),
             ],
         ),
+
         # Feature for archiving object files to static library - .o -> .lib
         # Used for cc_library
         # feature(
@@ -191,6 +166,7 @@ def _impl(ctx):
         #         ),
         #     ],
         # ),
+
         # Feature for linking object files/static libraries to final executable - .o/.lib -> .out
         # Used for cc_binary
         feature(
@@ -206,13 +182,13 @@ def _impl(ctx):
                         flag_group(
                             flags = AVR_LINKER_FLAGS_APP,
                         ),
+                        # ---------- Custom Flags -------- #
+                        flag_group(
+                            flags = [
+                                "-m", p_arch,
+                            ]
+                        ),
                         # # ----- Libraries to be linked ---- #
-                        # # Linker search path (This option must appear before the --library option.)
-                        # flag_group(
-                        #     flags = [
-                        #         "--search_path=" + Label("@ti_cgt_c2000//:lib").workspace_root + "/lib",
-                        #     ]
-                        # ),
                         # Add files to be linked
                         flag_group (
                             expand_if_available = "libraries_to_link",
@@ -244,22 +220,6 @@ def _impl(ctx):
                                 ),
                             ],
                         ),
-                        # # Flag for automatic run-time support
-                        # # Needed to define an entry point (if c_int00 is not resolved by any specified object file or library)
-                        # # See compiler user guide
-                        # flag_group(
-                        #     flags = [
-                        #         "--library=libc.a",
-                        #     ]
-                        # ),
-                        # Linker script add-on
-                        # flag_groups = [
-                        #     flag_group(
-                        #         expand_if_available = "user_link_flags",
-                        #         iterate_over = "user_link_flags",
-                        #         flags = ["%{user_link_flags}"],
-                        #     ),
-                        # ],
                     ],
                 ),
             ],
@@ -269,27 +229,27 @@ def _impl(ctx):
     return cc_common.create_cc_toolchain_config_info(
         ctx = ctx,
         features = features,
-        toolchain_identifier = "c2000-toolchain",
+        toolchain_identifier = "avr8-toolchain",
         host_system_name = "local",
         target_system_name = "local",
-        target_cpu = "TMS320F28P650DK9",
+        target_cpu = mcu,
         target_libc = "local",
-        compiler = "ti_cgt_c2000",
+        compiler = "avr-gcc",
         abi_version = "local",
         abi_libc_version = "local",
         tool_paths = tool_paths,
         builtin_sysroot = builtin_sysroot,
         cxx_builtin_include_directories = cxx_builtin_include_directories,
         action_configs = action_configs,
-        # artifact_name_patterns = artifact_name_patterns,
+        artifact_name_patterns = artifact_name_patterns,
     )
 
 avr_cc_toolchain_config = rule(
     implementation = _impl,
     attrs = {
-        "cpu": attr.string(mandatory = True),
-        "mcu": attr.string(mandatory = True),
-        "f_cpu": attr.string(mandatory = True),
+        "mcu": attr.label(mandatory = True),
+        "p_arch": attr.label(mandatory = True),
+        "f_cpu": attr.label(mandatory = True),
         "gcc": attr.label(
             default = Label("@avr8_compiler//:avr-gcc"),
             allow_single_file = True,

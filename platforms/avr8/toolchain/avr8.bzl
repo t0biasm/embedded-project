@@ -7,8 +7,6 @@ AVR_COMPILER_FLAGS = [
     "%{output_file}",
     ## Options
     "-MD",
-    "-mmcu=atmega32u4",
-    "-DF_CPU=16000000UL",
     "-Os",  # Optimize for size
     "-Wall",
     "-ffunction-sections",
@@ -19,8 +17,6 @@ AVR_COMPILER_FLAGS = [
 ]
 
 AVR_ASSEMBLER_FLAGS = [
-    "-mmcu=atmega32u4",
-    "-DF_CPU=16000000UL",
     "-Os",  # Optimize for size
     "-Wall",
     "-ffunction-sections",
@@ -38,7 +34,7 @@ AVR_ARCHIVER_FLAGS_APP = [
 ]
 
 AVR_LINKER_FLAGS_APP = [
-    "-m", "avr5",                       # Emulation mode for ATmega32U4 architecture (16-64KB flash devices)
+    # "-m", "avr5",                       # Emulation mode for ATmega32U4 architecture (16-64KB flash devices)
     "-o", "%{output_execpath}",         # Generate elf file"
     "-Map=%{output_execpath}.map",      # Generate map file"
     "-static",

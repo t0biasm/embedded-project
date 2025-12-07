@@ -34,8 +34,11 @@ http_archive(
     build_file = "//platforms/avr8/toolchain:avr8.BUILD",
 )
 
-# Toolchain Setup
+# Dependencies
 bazel_dep(name = "platforms", version = "0.0.10")
+bazel_dep(name = "bazel_skylib", version = "1.8.2")
+
+# Toolchain Setup
 register_toolchains(
     "//platforms/c2000/toolchain:c2000_toolchain_windows"
 )

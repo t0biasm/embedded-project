@@ -1,15 +1,34 @@
 """AVR Toolchain BUILD file"""
-
+load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 load(":avr_toolchain_config.bzl", "avr_cc_toolchain_config")
 
 package(default_visibility = ["//visibility:public"])
 
+# --------------- Configuration strings ---------------- #
+string_flag(
+    name = "mcu",
+    build_setting_default = "atmega32u4",
+    visibility = ["//visibility:public"],
+)
+
+string_flag(
+    name = "p_arch",
+    build_setting_default = "avr5",
+    visibility = ["//visibility:public"],
+)
+
+string_flag(
+    name = "f_cpu",
+    build_setting_default = "16000000UL",
+    visibility = ["//visibility:public"],
+)
+
 # Toolchain config
 avr_cc_toolchain_config(
     name = "avr_toolchain_config",
-    cpu = "avr",
-    mcu = "atmega32u4",
-    f_cpu = "16000000UL",
+    mcu = ":mcu",
+    p_arch = ":p_arch",
+    f_cpu = ":f_cpu",
 )
 
 # Filegroup for all compiler files
@@ -59,23 +78,9 @@ constraint_value(
     constraint_setting = ":cpu",
 )
 
-# Platform definition for ATmega328p
-platform(
-    name = "atmega328p",
-    constraint_values = [
-        "@platforms//os:windows",
-        "@platforms//cpu:x86_64",
-        ":avr",
-    ],
-    exec_properties = {
-        "mcu": "atmega328p",
-        "f_cpu": "16000000UL",
-    },
-)
-
 # Platform definition for ATmega32u4
 platform(
-    name = "atmega32u4",
+    name = "avr8",
     constraint_values = [
         "@platforms//os:windows",
         "@platforms//cpu:x86_64",

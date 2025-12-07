@@ -1,11 +1,21 @@
 load(":cc_toolchain_config.bzl", "cc_toolchain_config")
 
-platform(
+constraint_setting(
+    name = "cpu"
+)
+
+constraint_value(
     name = "c28",
+    constraint_setting = ":cpu",
+    visibility = ["//visibility:public"],
+)
+
+platform(
+    name = "c2000",
     constraint_values = [
         "@platforms//os:windows",
         "@platforms//cpu:x86_64",
-        "//constraints:c28",
+        ":c28",
     ],
     visibility = ["//visibility:public"],
 )
@@ -49,6 +59,6 @@ toolchain(
         "@platforms//cpu:x86_64",
     ],
     target_compatible_with = [
-        "//constraints:c28",
+        ":c28",
     ],
 )

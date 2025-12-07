@@ -5,6 +5,7 @@ Repository for embedded software development
 - Build SW project
 ```starlark
 bazel build --config=c28 //machine/evalBoard/tmdscncd28p65x/swe/app:app
+bazel build --config=atmega32u4 //machine/evalBoard/arduinoLeonardo:app
 ```
 
 ## Prerequisites

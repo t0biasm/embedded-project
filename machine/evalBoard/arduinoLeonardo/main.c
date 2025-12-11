@@ -7,15 +7,15 @@
 #include <util/delay.h>
 
 int main(void) {
-    // Set PB5 as output
-    DDRB |= (1 << DDB5);
+    // Set PC7 (pin 13 on Leonardo) as output
+    DDRC |= (1 << DDB5);
     
     while (1) {
         // Toggle LED
-        PORTB ^= (1 << PORTB5);
+        PORTC ^= (1 << PORTC7);
         
         // Wait 500ms
-        _delay_ms(500);
+        _delay_ms(1000);
     }
     
     return 0;

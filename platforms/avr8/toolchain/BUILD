@@ -1,6 +1,6 @@
 """AVR Toolchain BUILD file"""
 load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
-load(":avr_toolchain_config.bzl", "avr_cc_toolchain_config")
+load(":avr8_cc_toolchain_config.bzl", "avr_cc_toolchain_config")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -25,7 +25,7 @@ string_flag(
 
 # Toolchain config
 avr_cc_toolchain_config(
-    name = "avr_toolchain_config",
+    name = "avr8_cc_toolchain_config",
     mcu = ":mcu",
     p_arch = ":p_arch",
     f_cpu = ":f_cpu",
@@ -52,7 +52,7 @@ cc_toolchain(
     objcopy_files = ":intrinsic_files",
     strip_files = ":intrinsic_files",
     supports_param_files = 0,
-    toolchain_config = ":avr_toolchain_config",
+    toolchain_config = ":avr8_cc_toolchain_config",
     toolchain_identifier = "avr-toolchain",
 )
 

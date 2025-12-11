@@ -56,6 +56,12 @@ filegroup(
 )
 
 filegroup(
+    name = "avr-objcopy",
+    srcs = ["bin/avr-objcopy.exe"],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
     name = "avr-objdump",
     srcs = ["bin/avr-objdump.exe"],
     visibility = ["//visibility:public"],

@@ -1,4 +1,4 @@
-load(":cc_toolchain_config.bzl", "cc_toolchain_config")
+load(":cc_toolchain_config_c2000.bzl", "cc_toolchain_config_c2000")
 
 constraint_setting(
     name = "cpu"
@@ -33,7 +33,7 @@ cc_library(
     visibility = ["//visibility:public"],
 )
 
-cc_toolchain_config(
+cc_toolchain_config_c2000(
     name = "c2000_toolchain_config",
 )
 

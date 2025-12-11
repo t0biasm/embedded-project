@@ -1,5 +1,4 @@
 load("//platforms/c2000/toolchain:cc_binary_c2000.bzl", "cc_binary_c2000")
-load("//platforms/c2000/toolchain:debug.bzl", "debug_rule")
 
 # Application specific FreeRTOS configuration
 # Only allowed to be included within os/include
@@ -40,23 +39,4 @@ cc_binary_c2000(
     srcs = [
         ":app",
     ],
-)
-
-# cc_binary_c2000(
-#     name = "app",
-#     srcs = [
-#         "main.c",
-#     ],
-#     deps = [
-#         "//machine/evalBoard/tmdscncd28p65x/public:public_types_h"
-#     ],
-#     # linker_files = "//machine/evalBoard/tmdscncd28p65x/swe/linker:linker_scripts_app",
-#     # linker_flags = C2000_LINKER_FLAGS_APP,
-#     # output_name = "app",
-#     # target_compatible_with = [":c2000_f28p65"]
-# )
-
-debug_rule(
-    name = "check_libraries",
-    dep = ":app",
 )

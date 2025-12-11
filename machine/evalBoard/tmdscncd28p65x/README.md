@@ -3,7 +3,7 @@
 ## Build Commands
 - Build SW project
 ```starlark
-bazel build --config=c28 //machine/evalBoard/tmdscncd28p65x/swe/app:app
+bazel build --config=c2000 //machine/evalBoard/tmdscncd28p65x/swe/app
 ```
 
 ## Test Setup

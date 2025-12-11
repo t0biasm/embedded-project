@@ -290,7 +290,7 @@ def _impl(ctx):
         artifact_name_patterns = artifact_name_patterns,
     )
 
-cc_toolchain_config = rule(
+cc_toolchain_config_c2000 = rule(
     implementation = _impl,
     attrs = {
         "_archiver": attr.label(

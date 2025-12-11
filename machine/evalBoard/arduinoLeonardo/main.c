@@ -8,7 +8,7 @@
 
 int main(void) {
     // Set PC7 (pin 13 on Leonardo) as output
-    DDRC |= (1 << DDB5);
+    DDRC |= (1 << DDC7);
     
     while (1) {
         // Toggle LED

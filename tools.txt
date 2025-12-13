@@ -1,0 +1,4 @@
+- LLVM (clang-format and more)
+    - PATH (Environment variable)
+- Bazel
+- git ?

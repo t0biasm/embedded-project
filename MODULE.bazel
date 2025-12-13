@@ -34,6 +34,15 @@ http_archive(
     build_file = "//platforms/avr8/toolchain:avr8.BUILD",
 )
 
+# In WORKSPACE file
+http_archive(
+    name = "llvm_toolchain",
+    urls = ["https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.7/clang+llvm-21.1.7-x86_64-pc-windows-msvc.tar.xz"],
+    strip_prefix = "clang+llvm-21.1.7-x86_64-pc-windows-msvc",
+    sha256 = "70a2b73f2f14f787557f90abf380e7170b54e97b893218999144de5284b4f8f8",
+    build_file = "//tools/llvm:llvm.BUILD"
+)
+
 # Dependencies
 bazel_dep(name = "platforms", version = "0.0.10")
 bazel_dep(name = "bazel_skylib", version = "1.8.2")

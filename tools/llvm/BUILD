@@ -9,9 +9,9 @@ py_test(
         "manual",  # Don't run automatically in wildcard builds
         "external",  # Accesses files outside the sandbox
     ],
-    # Run outside the sandbox to access workspace files
-    local = True,
-    # data = ["//:.clang-format"],  # Optional: include .clang-format config
+    env = {
+        "BUILD_WORKSPACE_DIRECTORY": "C:/_git/embedded-project_v1/embedded-project",
+    },
 )
 
 py_binary(
@@ -25,5 +25,7 @@ py_binary(
         "manual",  # Don't run automatically in wildcard builds
         "external",  # Accesses files outside the sandbox
     ],
-    # data = ["//:.clang-format"],  # Optional: include .clang-format config
+    env = {
+        "BUILD_WORKSPACE_DIRECTORY": "C:/_git/embedded-project_v1/embedded-project",
+    },
 )

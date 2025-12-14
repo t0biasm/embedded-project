@@ -40,7 +40,7 @@ def find_source_files(root_path):
     
     for root, dirs, files in os.walk(root_path):
         # Skip common build/cache directories
-        dirs[:] = [d for d in dirs if d not in ['bazel-out', 'bazel-bin', 
+        dirs[:] = [d for d in dirs if d not in ['bazel-out', 'bazel-bin', 'bazel-embedded-project',
                                                   'bazel-testlogs', 'bazel-genfiles',
                                                   'bazel-workspace', '.git', 'output']]
         
@@ -97,7 +97,8 @@ def main():
     args = parser.parse_args()
     
     # Get workspace root
-    workspace_root = get_workspace_root()
+    # workspace_root = get_workspace_root()
+    workspace_root = Path(os.environ.get('BUILD_WORKSPACE_DIRECTORY'))
     print(f"Workspace root: {workspace_root}")
     
     # Determine the path to check

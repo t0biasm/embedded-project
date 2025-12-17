@@ -11,28 +11,6 @@ import argparse
 from pathlib import Path
 
 
-def get_workspace_root():
-    """Get the workspace root directory."""
-    # Bazel sets these environment variables
-    workspace = os.environ.get('BUILD_WORKSPACE_DIRECTORY')
-    if workspace:
-        return Path(workspace)
-    
-    # Fallback: try to find workspace root from TEST_SRCDIR
-    test_srcdir = os.environ.get('TEST_SRCDIR')
-    if test_srcdir:
-        # Look for _main or workspace name
-        for entry in Path(test_srcdir).iterdir():
-            if entry.is_dir() and entry.name != '_main':
-                continue
-            if entry.name == '_main':
-                return entry
-        return Path(test_srcdir)
-    
-    # Last fallback: current directory
-    return Path.cwd()
-
-
 def find_source_files(root_path):
     """Recursively find all .c and .h files in the given path."""
     source_files = []
@@ -40,9 +18,14 @@ def find_source_files(root_path):
     
     for root, dirs, files in os.walk(root_path):
         # Skip common build/cache directories
-        dirs[:] = [d for d in dirs if d not in ['bazel-out', 'bazel-bin', 'bazel-embedded-project',
-                                                  'bazel-testlogs', 'bazel-genfiles',
-                                                  'bazel-workspace', '.git', 'output']]
+        dirs[:] = [d for d in dirs if d not in ['bazel-out', 
+                                                'bazel-bin', 
+                                                'bazel-embedded-project',
+                                                'bazel-testlogs', 
+                                                'bazel-genfiles',
+                                                'bazel-workspace', 
+                                                '.git', 
+                                                'output']]
         
         for file in files:
             if file.endswith(extensions):
@@ -97,7 +80,6 @@ def main():
     args = parser.parse_args()
     
     # Get workspace root
-    # workspace_root = get_workspace_root()
     workspace_root = Path(os.environ.get('BUILD_WORKSPACE_DIRECTORY'))
     print(f"Workspace root: {workspace_root}")
     

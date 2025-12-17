@@ -23,7 +23,7 @@ AlignConsecutiveDeclarations:
   AcrossEmptyLines:                                                 true
   AcrossComments:                                                   true
   AlignCompound:                                                    true
-  AlignFunctionDeclarations:                                        true
+  AlignFunctionDeclarations:                                        false
   AlignFunctionPointers:                                            true
   PadOperators:                                                     true
 AlignConsecutiveMacros:
@@ -48,7 +48,7 @@ AlignConsecutiveTableGenBreakingDAGArgColons:
   AlignFunctionDeclarations:                                        true
   AlignFunctionPointers:                                            true
   PadOperators:                                                     true
-  AlignConsecutiveTableGenCondOperatorColons:
+AlignConsecutiveTableGenCondOperatorColons:
   Enabled:                                                          true
   AcrossEmptyLines:                                                 true
   AcrossComments:                                                   true
@@ -69,7 +69,6 @@ AlignOperands:                                                      Align
 AlignTrailingComments:
   Kind:                                                             Always
   OverEmptyLines:                                                   2
-  AlignPPAndNotPP:                                                  true
 AllowAllArgumentsOnNextLine:                                        false
 AllowAllParametersOfDeclarationOnNextLine:                          true
 AllowBreakBeforeNoexceptSpecifier:                                  Never
@@ -81,8 +80,7 @@ AllowShortEnumsOnASingleLine:                                       false
 AllowShortFunctionsOnASingleLine:                                   None
 AllowShortIfStatementsOnASingleLine:                                Never
 AllowShortLambdasOnASingleLine:                                     Inline
-AllowShortLoopsOnASingleLine:                                       false
-AllowShortLoopsOnASingleLine:                                       false
+AllowShortLoopsOnASingleLine:                                       true
 AlwaysBreakAfterDefinitionReturnType:                               None
 AlwaysBreakBeforeMultilineStrings:                                  true
 AttributeMacros:
@@ -117,11 +115,11 @@ BraceWrapping:
 BreakAdjacentStringLiterals:                                        true
 BreakAfterAttributes:                                               Never
 BreakAfterJavaFieldAnnotations:                                     false
-BreakAfterReturnType:                                               All
+BreakAfterReturnType:                                               None
 BreakArrays:                                                        true
 BreakBeforeBinaryOperators:                                         None
 BreakBeforeConceptDeclarations:                                     Always
-BreakBeforeBraces:                                                  Attach
+BreakBeforeBraces:                                                  Allman
 BreakBeforeInlineASMColon:                                          OnlyMultiline
 BreakBeforeTemplateCloser:                                          false
 BreakBeforeTernaryOperators:                                        false
@@ -136,7 +134,7 @@ CommentPragmas:                                                     '^ IWYU prag
 CompactNamespaces:                                                  true
 ConstructorInitializerIndentWidth:                                  4
 ContinuationIndentWidth:                                            4
-Cpp11BracedListStyle:                                               AlignFirstComment
+Cpp11BracedListStyle:                                               true
 DerivePointerAlignment:                                             false
 DisableFormat:                                                      false
 EmptyLineAfterAccessModifier:                                       Never
@@ -150,7 +148,7 @@ ForEachMacros:
   - BOOST_FOREACH
 IfMacros:
   - KJ_IF_MAYBE
-IncludeBlocks:                                                      Regroup
+IncludeBlocks:                                                      Preserve
 IncludeCategories:
   - Regex:                                                          '^<ext/.*\.h>'
     Priority:                                                       2
@@ -173,7 +171,6 @@ IncludeIsMainSourceRegex:                                           ''
 IndentAccessModifiers:                                              true
 IndentCaseBlocks:                                                   false
 IndentCaseLabels:                                                   true
-IndentExportBlock:                                                  true
 IndentExportBlock:                                                  true
 IndentGotoLabels:                                                   true
 IndentPPDirectives:                                                 BeforeHash
@@ -227,7 +224,6 @@ PenaltyReturnTypeOnItsOwnLine:                                      200
 PointerAlignment:                                                   Left
 PPIndentWidth:                                                      -1
 QualifierAlignment:                                                 Left
-QualifierOrder:                                                     [static, inline, const, volatile, type]
 RawStringFormats:
   - Language:                                                       Cpp
     Delimiters:
@@ -270,7 +266,7 @@ SeparateDefinitionBlocks:                                           Always
 ShortNamespaceLines:                                                1
 SkipMacroDefinitionBody:                                            false
 SortIncludes:
-  Enabled:                                                          true
+  Enabled:                                                          false
   IgnoreCase:                                                       false
 SortJavaStaticImport:                                               Before
 SortUsingDeclarations:                                              LexicographicNumeric
@@ -301,7 +297,6 @@ SpaceBeforeParensOptions:
 SpaceBeforeRangeBasedForLoopColon:                                  true
 SpaceBeforeSquareBrackets:                                          false
 SpaceInEmptyBlock:                                                  false
-SpaceInEmptyBraces:                                                 Never
 SpacesBeforeTrailingComments:                                       4
 SpacesInAngles:                                                     Never
 SpacesInContainerLiterals:                                          false

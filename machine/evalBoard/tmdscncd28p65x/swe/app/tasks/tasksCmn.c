@@ -3,29 +3,31 @@
 #include "tasksCmn.h"
 #include "semphr.h"
 
-#define STACK_SIZE_TASKIDLE   (256U)
+#define STACK_SIZE_TASKIDLE (256U)
 
-SemaphoreHandle_t xSemaphore = NULL;
+SemaphoreHandle_t        xSemaphore = NULL;
 static StaticSemaphore_t xSemaphoreBuffer;
 
-static StaticTask_t idleTaskBuffer;
-static StackType_t  idleTaskStack[STACK_SIZE_TASKIDLE];
+static StaticTask_t      idleTaskBuffer;
+static StackType_t       idleTaskStack[STACK_SIZE_TASKIDLE];
 
-interrupt void timer1_ISR( void )
+interrupt void timer1_ISR(void)
 {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
-    xSemaphoreGiveFromISR( xSemaphore, &xHigherPriorityTaskWoken );
+    xSemaphoreGiveFromISR(xSemaphore, &xHigherPriorityTaskWoken);
 
-    portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
 //-------------------------------------------------------------------------------------------------
-void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, configSTACK_DEPTH_TYPE *pulIdleTaskStackSize )
+void vApplicationGetIdleTaskMemory(StaticTask_t**          ppxIdleTaskTCBBuffer,
+                                   StackType_t**           ppxIdleTaskStackBuffer,
+                                   configSTACK_DEPTH_TYPE* pulIdleTaskStackSize)
 {
-    *ppxIdleTaskTCBBuffer = &idleTaskBuffer;
+    *ppxIdleTaskTCBBuffer   = &idleTaskBuffer;
     *ppxIdleTaskStackBuffer = idleTaskStack;
-    *pulIdleTaskStackSize = STACK_SIZE_TASKIDLE;
+    *pulIdleTaskStackSize   = STACK_SIZE_TASKIDLE;
 }
 
 void tasksCmn_init(void)
@@ -62,11 +64,9 @@ void tasksCmn_init(void)
     //
     CPUTimer_stopTimer(CPUTIMER1_BASE);
     CPUTimer_reloadTimerCounter(CPUTIMER1_BASE);
-    CPUTimer_setEmulationMode(CPUTIMER1_BASE,
-                              CPUTIMER_EMULATIONMODE_STOPAFTERNEXTDECREMENT);
+    CPUTimer_setEmulationMode(CPUTIMER1_BASE, CPUTIMER_EMULATIONMODE_STOPAFTERNEXTDECREMENT);
     CPUTimer_enableInterrupt(CPUTIMER1_BASE);
 
     Interrupt_enable(INT_TIMER1);
     CPUTimer_startTimer(CPUTIMER1_BASE);
 }
-

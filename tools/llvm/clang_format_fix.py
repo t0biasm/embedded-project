@@ -10,6 +10,10 @@ import subprocess
 import argparse
 from pathlib import Path
 
+class Colors:
+    RED = '\033[91m'
+    GREEN = '\033[92m'
+    RESET = '\033[0m'
 
 def find_source_files(root_path):
     """Recursively find all .c and .h files in the given path."""
@@ -50,7 +54,7 @@ def check_clang_format(file_path):
         )
         
         if result.returncode != 0:
-            print(f"FAIL: {file_path}")
+            print(f"{Colors.RED}FAIL:{Colors.RESET} {file_path}")
             if result.stderr:
                 print(f"  {result.stderr.strip()}")
             return False
@@ -125,7 +129,7 @@ def main():
     
     # Summary
     if failed_files:
-        print(f"\nFAILED: {len(failed_files)} file(s) need formatting:")
+        print(f"\n{Colors.RED}FAILED:{Colors.RESET} {len(failed_files)} file(s) need formatting:")
         for file_path in failed_files:
             # Show path relative to workspace for readability
             try:
@@ -137,7 +141,7 @@ def main():
         print("  clang-format -i <file>")
         sys.exit(1)
     else:
-        print(f"\nSUCCESS: All {len(source_files)} file(s) are properly formatted")
+        print(f"\n{Colors.GREEN}SUCCESS:{Colors.RESET} All {len(source_files)} file(s) are properly formatted")
         sys.exit(0)
 
 

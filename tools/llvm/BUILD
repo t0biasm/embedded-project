@@ -1,4 +1,4 @@
-py_test(
+py_binary(
     name = "clang_format_check",
     srcs = ["clang_format_check.py"],
     main = "clang_format_check.py",
@@ -9,9 +9,6 @@ py_test(
         "manual",  # Don't run automatically in wildcard builds
         "external",  # Accesses files outside the sandbox
     ],
-    env = {
-        "BUILD_WORKSPACE_DIRECTORY": "C:/_git/embedded-project_v1/embedded-project",
-    },
 )
 
 py_binary(
@@ -25,7 +22,4 @@ py_binary(
         "manual",  # Don't run automatically in wildcard builds
         "external",  # Accesses files outside the sandbox
     ],
-    env = {
-        "BUILD_WORKSPACE_DIRECTORY": "C:/_git/embedded-project_v1/embedded-project",
-    },
 )

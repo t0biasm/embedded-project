@@ -1,19 +1,28 @@
 # Embedded Project
 Repository for embedded software development
 
-## Checks
+## Prerequisites
+### Tools
+Necessary tools
+- Bazel version 8.1.1
+- python 3.x
 
-clang format check
+Recommended tools
+- LLVM (e.g. clang-format, clang-tidy)
+
+## Checks
+### Source File Format
+Checking Source files `.c/.h` format with clang-format
 ```
 bazel run //tools/llvm:clang_format_check
 bazel run //tools/llvm:clang_format_check -- machine/evalBoard/
 ```
 
-clang format fix
+Fixing Source files `.c/.h` format with clang-format
 ```
 bazel run //tools/llvm:clang_format_fix
 bazel run //tools/llvm:clang_format_fix -- machine/evalBoard/
 ```
 
-## Prerequisites
-- Bazel version 8.1.1
+### Source File Naming Convention
+

@@ -1,6 +1,10 @@
 # Embedded Project
 Repository for embedded software development
 
+## Overview
+Repository structure and overview of the software architecture
+![Overview](embedded-project.svg "Overview")
+
 ## Prerequisites
 ### Tools
 Necessary tools

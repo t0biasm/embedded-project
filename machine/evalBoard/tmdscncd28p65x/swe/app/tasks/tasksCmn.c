@@ -5,38 +5,41 @@
 
 #define STACK_SIZE_TASKIDLE (256U)
 
-SemaphoreHandle_t        xSemaphore = NULL;
-static StaticSemaphore_t xSemaphoreBuffer;
+SemaphoreHandle_t        gTasks_Semaphore = NULL;
+static StaticSemaphore_t gTasks_SemaphoreBuffer;
 
-static StaticTask_t      idleTaskBuffer;
-static StackType_t       idleTaskStack[STACK_SIZE_TASKIDLE];
+static StaticTask_t      gTasks_IdleTaskBuffer;
+static StackType_t       gTasks_IdleTaskStack[STACK_SIZE_TASKIDLE];
 
-interrupt void timer1_ISR(void)
+interrupt void gfInterrupts_Timer1(void)
 {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
-    xSemaphoreGiveFromISR(xSemaphore, &xHigherPriorityTaskWoken);
+    xSemaphoreGiveFromISR(gTasks_Semaphore, &xHigherPriorityTaskWoken);
 
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
 //-------------------------------------------------------------------------------------------------
+// NOLINTBEGIN(readability-identifier-naming)
 void vApplicationGetIdleTaskMemory(StaticTask_t**          ppxIdleTaskTCBBuffer,
-                                   StackType_t**           ppxIdleTaskStackBuffer,
-                                   configSTACK_DEPTH_TYPE* pulIdleTaskStackSize)
+                                   StackType_t**           ppxgTasks_IdleTaskStackBuffer,
+                                   configSTACK_DEPTH_TYPE* pulgTasks_IdleTaskStackSize)
 {
-    *ppxIdleTaskTCBBuffer   = &idleTaskBuffer;
-    *ppxIdleTaskStackBuffer = idleTaskStack;
-    *pulIdleTaskStackSize   = STACK_SIZE_TASKIDLE;
+    *ppxIdleTaskTCBBuffer          = &gTasks_IdleTaskBuffer;
+    *ppxgTasks_IdleTaskStackBuffer = gTasks_IdleTaskStack;
+    *pulgTasks_IdleTaskStackSize   = STACK_SIZE_TASKIDLE;
 }
 
-void tasksCmn_init(void)
+// NOLINTEND(readability-identifier-naming)
+
+void gfTasks_CmnInit(void)
 {
     // Create Semaphore
-    xSemaphore = xSemaphoreCreateBinaryStatic(&xSemaphoreBuffer);
+    gTasks_Semaphore = xSemaphoreCreateBinaryStatic(&gTasks_SemaphoreBuffer);
 
     /* ------------- Setup timer module -------------- */
-    Interrupt_register(INT_TIMER1, &timer1_ISR);
+    Interrupt_register(INT_TIMER1, &gfInterrupts_Timer1);
 
     CPUTimer_setPeriod(CPUTIMER1_BASE, 0xFFFFFFFF);
     CPUTimer_setPreScaler(CPUTIMER1_BASE, 0);

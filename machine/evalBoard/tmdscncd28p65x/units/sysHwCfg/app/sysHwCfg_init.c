@@ -11,7 +11,7 @@
 // Note that to reduce power, unused peripherals should be disabled.
 //
 //*****************************************************************************
-static inline void sysHwCfg_enableAllPeripherals(void)
+static inline void fSysHwCfg_EnableAllPeripherals(void)
 {
     SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_DMA);
     SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_TIMER0);
@@ -154,7 +154,7 @@ static inline void sysHwCfg_enableAllPeripherals(void)
 // Function to disable pin locks on GPIOs.
 //
 //*****************************************************************************
-void sysHwCfg_initGpio(void)
+void gfSysHwCfg_InitGpio(void)
 {
     //
     // Disable pin locks.
@@ -177,7 +177,7 @@ void sysHwCfg_initGpio(void)
     GPIO_writePin(DEVICE_GPIO_PIN_LED2, 1);
 }
 
-void sysHwCfg_init(void)
+void gfSysHwCfg_Init(void)
 {
     //
     // Disable the watchdog
@@ -211,8 +211,8 @@ void sysHwCfg_init(void)
     ASSERT(SysCtl_getAuxClock(DEVICE_OSCSRC_FREQ) == DEVICE_AUXCLK_FREQ);
 
     // Enable peripherals
-    sysHwCfg_enableAllPeripherals();
-    sysHwCfg_initGpio();
+    fSysHwCfg_EnableAllPeripherals();
+    gfSysHwCfg_InitGpio();
 
     // Initializes PIE and clears PIE registers. Disables CPU interrupts.
     Interrupt_initModule();

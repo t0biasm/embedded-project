@@ -6,7 +6,7 @@
 // Function to disable pin locks on GPIOs.
 //
 //*****************************************************************************
-void drvLedCtrl_cyclic(void)
+void gfDrvLedCtrl_10ms(void)
 {
     // Toggle LED
     //

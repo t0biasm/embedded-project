@@ -1,5 +1,5 @@
 #include "semphr.h"
 
-extern SemaphoreHandle_t xSemaphore;
+extern SemaphoreHandle_t gTasks_Semaphore;
 
-extern void tasksCmn_init(void);
+extern void gfTasks_CmnInit(void);

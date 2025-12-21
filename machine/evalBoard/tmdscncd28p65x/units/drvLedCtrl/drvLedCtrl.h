@@ -1,3 +1,3 @@
 #include "public_types.h"
 
-extern void drvLedCtrl_cyclic(void);
+extern void gfDrvLedCtrl_10ms(void);

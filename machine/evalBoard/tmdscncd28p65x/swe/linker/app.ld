@@ -93,10 +93,10 @@ SECTIONS
    #if defined(__TI_EABI__)
        .TI.ramfunc : {} LOAD = FLASH_BANK0,
                         RUN = RAMLS4,
-                        LOAD_START(RamfuncsLoadStart),
-                        LOAD_SIZE(RamfuncsLoadSize),
+                        LOAD_START(gRamfuncsLoadStart),
+                        LOAD_SIZE(gRamfuncsLoadSize),
                         LOAD_END(RamfuncsLoadEnd),
-                        RUN_START(RamfuncsRunStart),
+                        RUN_START(gRamfuncsRunStart),
                         RUN_SIZE(RamfuncsRunSize),
                         RUN_END(RamfuncsRunEnd),
                         ALIGN(8)
@@ -118,9 +118,9 @@ SECTIONS
     /* CLA specific sections */
     Cla1Prog        : LOAD = FLASH_BANK0,
                       RUN = RAMLS0,
-                      LOAD_START(Cla1ProgLoadStart),
-                      RUN_START(Cla1ProgRunStart),
-                      LOAD_SIZE(Cla1ProgLoadSize),
+                      LOAD_START(gCla1ProgLoadStart),
+                      RUN_START(gCla1ProgRunStart),
+                      LOAD_SIZE(gCla1ProgLoadSize),
                       ALIGN(4)
 #else
     /* CLA specific sections */

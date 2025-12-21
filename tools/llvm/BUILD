@@ -23,3 +23,9 @@ py_binary(
         "external",  # Accesses files outside the sandbox
     ],
 )
+
+py_binary(
+    name = "clang_tidy_check",
+    srcs = ["clang_tidy_check.py"],
+    visibility = ["//visibility:public"],
+)

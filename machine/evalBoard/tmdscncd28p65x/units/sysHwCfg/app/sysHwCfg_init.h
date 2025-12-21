@@ -8,4 +8,4 @@
 #define DEVICE_GPIO_CFG_LED1 GPIO_31_GPIO31    // "pinConfig" for LED1
 #define DEVICE_GPIO_CFG_LED2 GPIO_34_GPIO34    // "pinConfig" for LED2
 
-extern void sysHwCfg_init(void);
+extern void gfSysHwCfg_Init(void);

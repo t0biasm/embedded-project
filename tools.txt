@@ -1,5 +1,10 @@
+- VSCode
 - LLVM (clang-format and more)
     - PATH (Environment variable)
 - python 3(.8)
 - Bazel
 - git ?
+
+VS Code Extensions
+- doxygen
+- 

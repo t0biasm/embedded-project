@@ -1,0 +1,140 @@
+Checks: 'readability-identifier-naming'
+CheckOptions:
+  - key: readability-identifier-naming.ConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.ConstantIgnoredRegexp
+    value: 'k[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.ConstantPrefix
+    value: 'k'
+  - key: readability-identifier-naming.ConstantMember
+    value: CamelCase
+  - key: readability-identifier-naming.ConstantMemberIgnoredRegexp
+    value: 'k[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.ConstantMemberPrefix
+    value: 'k'
+  - key: readability-identifier-naming.ConstantParameterCase
+    value: CamelCase
+  - key: readability-identifier-naming.ConstantParameterIgnoredRegexp
+    value: 'k[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.ConstantParameterPrefix
+    value: 'k'
+  - key: readability-identifier-naming.ConstantPointerParameterCase
+    value: CamelCase
+  - key: readability-identifier-naming.ConstantPointerParameterIgnoredRegexp
+    value: 'kp[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.ConstantPointerParameterPrefix
+    value: 'kp'
+  - key: readability-identifier-naming.EnumCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumIgnoredRegexp
+    value: 'e[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.EnumPrefix
+    value: 'e'
+  - key: readability-identifier-naming.EnumConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumConstantIgnoredRegexp
+    value: 'ek[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.EnumConstantPrefix
+    value: 'ek'
+  - key: readability-identifier-naming.FunctionCase
+    value: CamelCase
+  - key: readability-identifier-naming.FunctionIgnoredRegexp
+    value: 'f[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.FunctionPrefix
+    value: 'f'
+  - key: readability-identifier-naming.GlobalConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.GlobalConstantIgnoredRegexp
+    value: 'gk[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.GlobalConstantPrefix
+    value: 'gk'
+  - key: readability-identifier-naming.GlobalConstantPointer
+    value: CamelCase
+  - key: readability-identifier-naming.GlobalConstantPointerIgnoredRegexp
+    value: 'gkp[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.GlobalConstantPointerPrefix
+    value: 'gkp'
+  - key: readability-identifier-naming.GlobalFunctionCase
+    value: CamelCase
+  - key: readability-identifier-naming.GlobalFunctionIgnoredRegexp
+    value: '^gf[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.GlobalFunctionPrefix
+    value: 'gf'
+  - key: readability-identifier-naming.GlobalPointerCase
+    value: CamelCase
+  - key: readability-identifier-naming.GlobalPointerIgnoredRegexp
+    value: 'gp[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.GlobalPointerPrefix
+    value: 'gp'
+  - key: readability-identifier-naming.GlobalVariableCase
+    value: CamelCase
+  - key: readability-identifier-naming.GlobalVariableIgnoredRegexp
+    value: 'g[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.GlobalVariablePrefix
+    value: 'g'
+  - key: readability-identifier-naming.LocalConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.LocalConstantIgnoredRegexp
+    value: 'lk[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.LocalConstantPrefix
+    value: 'lk'
+  - key: readability-identifier-naming.LocalConstantPointerCase
+    value: CamelCase
+  - key: readability-identifier-naming.LocalConstantPointerIgnoredRegexp
+    value: 'lkp[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.LocalConstantPointerPrefix
+    value: 'lkp'
+  - key: readability-identifier-naming.LocalPointerCase
+    value: CamelCase
+  - key: readability-identifier-naming.LocalPointerIgnoredRegexp
+    value: 'lp[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.LocalPointerPrefix
+    value: 'lp'
+  - key: readability-identifier-naming.LocalVariableCase
+    value: CamelCase
+  - key: readability-identifier-naming.LocalVariableIgnoredRegexp
+    value: 'l[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.LocalVariablePrefix
+    value: 'l'
+  - key: readability-identifier-naming.MacroCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.PointerParameterCase
+    value: CamelCase
+  - key: readability-identifier-naming.PointerParameterIgnoredRegexp
+    value: 'p[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.PointerParameterPrefix
+    value: 'p'
+  - key: readability-identifier-naming.StaticConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.StaticConstantIgnoredRegexp
+    value: 'sk[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.StaticConstantPrefix
+    value: 'sk'
+  - key: readability-identifier-naming.StaticVariableCase
+    value: CamelCase
+  - key: readability-identifier-naming.StaticVariableIgnoredRegexp
+    value: 's[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.StaticVariablePrefix
+    value: 's'
+  - key: readability-identifier-naming.StructCase
+    value: CamelCase
+  - key: readability-identifier-naming.StructIgnoredRegexp
+    value: 'x[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.StructPrefix
+    value: 'x'
+  - key: readability-identifier-naming.TypedefCase
+    value: CamelCase
+  - key: readability-identifier-naming.TypedefIgnoredRegexp
+    value: 't[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.TypedefPrefix
+    value: 't'
+  - key: readability-identifier-naming.UnionCase
+    value: CamelCase
+  - key: readability-identifier-naming.UnionIgnoredRegexp
+    value: 'u[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'
+  - key: readability-identifier-naming.UnionPrefix
+    value: 'u'
+  - key: readability-identifier-naming.VariableCase
+    value: CamelCase
+  - key: readability-identifier-naming.VariableIgnoredRegexp
+    value: '[A-Z][a-z0-9]*([A-Z][a-z0-9]*)*(_[A-Z0-9][a-z0-9]*([A-Z][a-z0-9]*)*)?$'

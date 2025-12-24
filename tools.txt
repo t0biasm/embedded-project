@@ -4,6 +4,8 @@
 - python 3(.8)
 - Bazel
 - git ?
+- graphviz
+    - dot (PATH)
 
 VS Code Extensions
 - doxygen

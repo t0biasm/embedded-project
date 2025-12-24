@@ -32,6 +32,7 @@ cc_binary_c2000(
     linkopts = [
         "--library=$(location //machine/evalBoard/tmdscncd28p65x/swe/linker:linker_cmd_app)",
     ],
+    visibility = ["//machine/evalBoard/tmdscncd28p65x:__subpackages__"],
 )
 
 cc_binary_c2000(

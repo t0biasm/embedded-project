@@ -44,8 +44,13 @@ http_archive(
 )
 
 # Dependencies
-bazel_dep(name = "platforms", version = "0.0.10")
+bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "bazel_skylib", version = "1.8.2")
+
+# Doxygen Integration
+bazel_dep(name = "rules_doxygen", version = "2.6.1")
+doxygen_extension = use_extension("@rules_doxygen//:extensions.bzl", "doxygen_extension")
+use_repo(doxygen_extension, "doxygen")
 
 # Toolchain Setup
 register_toolchains(

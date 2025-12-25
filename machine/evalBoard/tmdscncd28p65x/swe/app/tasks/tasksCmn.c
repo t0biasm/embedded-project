@@ -1,16 +1,72 @@
+/**
+ * @file tasksCmn.c
+ * @author Tobias Maier (maier-tobias@gmx.de)
+ * @brief Generic/Common code for tasks setup
+ * @version 0.1
+ * @date 2025-12-25
+ *
+ * @copyright Copyright (c) 2025
+ *
+ */
+
+/* ---------------------------------------- Includes ---------------------------------------------*/
+#if 1 /* Includes */
 #include "appDefines.h"
 #include "FreeRTOS.h"
 #include "tasksCmn.h"
 #include "semphr.h"
+#endif /* Includes */
 
+/* ----------------------------------------- Defines ---------------------------------------------*/
+#if 1  /* Defines */
 #define STACK_SIZE_TASKIDLE (256U)
+#endif /* Defines */
 
-SemaphoreHandle_t        gTasks_Semaphore = NULL;
+/* ------------------------------------ Type Definitions -----------------------------------------*/
+#if 1
+#if 1  /* Enumerations */
+
+#endif /* Enumerations */
+
+#if 1  /* Typedefs */
+
+#endif /* Typedefs */
+
+#if 1  /* Structs */
+
+#endif /* Structs */
+
+#if 1  /* Unions */
+
+#endif /* Unions */
+#endif /* Type Definitions */
+
+/* ---------------------------------- Variable Declarations --------------------------------------*/
+#if 1
+#if 1  /* Global Variables */
+SemaphoreHandle_t gTasks_Semaphore = NULL;
+#endif /* Global Variables */
+
+#if 1  /* File local (static) variables */
 static StaticSemaphore_t gTasks_SemaphoreBuffer;
-
 static StaticTask_t      gTasks_IdleTaskBuffer;
 static StackType_t       gTasks_IdleTaskStack[STACK_SIZE_TASKIDLE];
+#endif /* File local (static) variables */
+#endif /* Variable Declarations */
 
+/* ----------------------------------- Function Prototypes ---------------------------------------*/
+#if 1
+
+#endif /* Function Prototypes */
+
+/* ----------------------------------- Function Definitions --------------------------------------*/
+#if 1
+#if 1 /* Global functions */
+/**
+ * @brief Interrupt function executed when timer1 interrupt occures
+ *
+ * @return interrupt
+ */
 interrupt void gfInterrupts_Timer1(void)
 {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -20,19 +76,10 @@ interrupt void gfInterrupts_Timer1(void)
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
-//-------------------------------------------------------------------------------------------------
-// NOLINTBEGIN(readability-identifier-naming)
-void vApplicationGetIdleTaskMemory(StaticTask_t**          ppxIdleTaskTCBBuffer,
-                                   StackType_t**           ppxgTasks_IdleTaskStackBuffer,
-                                   configSTACK_DEPTH_TYPE* pulgTasks_IdleTaskStackSize)
-{
-    *ppxIdleTaskTCBBuffer          = &gTasks_IdleTaskBuffer;
-    *ppxgTasks_IdleTaskStackBuffer = gTasks_IdleTaskStack;
-    *pulgTasks_IdleTaskStackSize   = STACK_SIZE_TASKIDLE;
-}
-
-// NOLINTEND(readability-identifier-naming)
-
+/**
+ * @brief Function for generic/common task initialization
+ *
+ */
 void gfTasks_CmnInit(void)
 {
     // Create Semaphore
@@ -73,3 +120,24 @@ void gfTasks_CmnInit(void)
     Interrupt_enable(INT_TIMER1);
     CPUTimer_startTimer(CPUTIMER1_BASE);
 }
+
+#endif /* Global functions */
+
+#if 1  /* External functions */
+// NOLINTBEGIN(readability-identifier-naming)
+void vApplicationGetIdleTaskMemory(StaticTask_t**          ppxIdleTaskTCBBuffer,
+                                   StackType_t**           ppxgTasks_IdleTaskStackBuffer,
+                                   configSTACK_DEPTH_TYPE* pulgTasks_IdleTaskStackSize)
+{
+    *ppxIdleTaskTCBBuffer          = &gTasks_IdleTaskBuffer;
+    *ppxgTasks_IdleTaskStackBuffer = gTasks_IdleTaskStack;
+    *pulgTasks_IdleTaskStackSize   = STACK_SIZE_TASKIDLE;
+}
+
+// NOLINTEND(readability-identifier-naming)
+#endif /* External functions */
+
+#if 1  /* File local (static) functions */
+
+#endif /* File local (static) functions */
+#endif /* Function Definitions */

@@ -1,16 +1,159 @@
+/**
+ * @file sysHwCfg_init.c
+ * @author Tobias Maier (maier-tobias@gmx.de)
+ * @brief System HW Configuration Initialization Code
+ * @version 0.1
+ * @date 2025-12-25
+ *
+ * @copyright Copyright (c) 2025
+ *
+ */
+
+/* ---------------------------------------- Includes ---------------------------------------------*/
+#if 1 /* Includes */
 #include "appDefines.h"
 #include "gpio.h"
 #include "sysctl.h"
 #include "sysHwCfg_init.h"
+#endif /* Includes */
 
-//*****************************************************************************
-//
-// Function to turn on all peripherals, enabling reads and writes to the
-// peripherals' registers.
-//
-// Note that to reduce power, unused peripherals should be disabled.
-//
-//*****************************************************************************
+/* ----------------------------------------- Defines ---------------------------------------------*/
+#if 1  /* Defines */
+
+#endif /* Defines */
+
+/* ------------------------------------ Type Definitions -----------------------------------------*/
+#if 1
+#if 1  /* Enumerations */
+
+#endif /* Enumerations */
+
+#if 1  /* Typedefs */
+
+#endif /* Typedefs */
+
+#if 1  /* Structs */
+
+#endif /* Structs */
+
+#if 1  /* Unions */
+
+#endif /* Unions */
+#endif /* Type Definitions */
+
+/* ---------------------------------- Variable Declarations --------------------------------------*/
+#if 1
+#if 1  /* Global Variables */
+
+#endif /* Global Variables */
+
+#if 1  /* File local (static) variables */
+
+#endif /* File local (static) variables */
+#endif /* Variable Declarations */
+
+/* ----------------------------------- Function Prototypes ---------------------------------------*/
+#if 1
+static inline void fSysHwCfg_EnableAllPeripherals(void);
+#endif /* Function Prototypes */
+
+/* ----------------------------------- Function Definitions --------------------------------------*/
+#if 1
+#if 1 /* Global functions */
+/**
+ * @brief Function to disable pin locks on GPIOs
+ *
+ */
+void gfSysHwCfg_InitGpio(void)
+{
+    //
+    // Disable pin locks.
+    //
+    GPIO_unlockPortConfig(GPIO_PORT_A, 0xFFFFFFFF);
+    GPIO_unlockPortConfig(GPIO_PORT_B, 0xFFFFFFFF);
+    GPIO_unlockPortConfig(GPIO_PORT_C, 0xFFFFFFFF);
+    GPIO_unlockPortConfig(GPIO_PORT_D, 0xFFFFFFFF);
+    GPIO_unlockPortConfig(GPIO_PORT_E, 0xFFFFFFFF);
+    GPIO_unlockPortConfig(GPIO_PORT_F, 0xFFFFFFFF);
+    GPIO_unlockPortConfig(GPIO_PORT_H, 0xFFFFFFFF);
+
+    // Configure LEDs
+    GPIO_setPadConfig(DEVICE_GPIO_PIN_LED1, GPIO_PIN_TYPE_STD);
+    GPIO_setDirectionMode(DEVICE_GPIO_PIN_LED1, GPIO_DIR_MODE_OUT);
+    GPIO_setPadConfig(DEVICE_GPIO_PIN_LED2, GPIO_PIN_TYPE_STD);
+    GPIO_setDirectionMode(DEVICE_GPIO_PIN_LED2, GPIO_DIR_MODE_OUT);
+
+    GPIO_writePin(DEVICE_GPIO_PIN_LED1, 1);
+    GPIO_writePin(DEVICE_GPIO_PIN_LED2, 1);
+}
+
+/**
+ * @brief Function to initialize system peripherals
+ *
+ */
+void gfSysHwCfg_Init(void)
+{
+    //
+    // Disable the watchdog
+    //
+    SysCtl_disableWatchdog();
+
+    //
+    // Set up PLL control and clock dividers
+    //
+    SysCtl_setClock(DEVICE_SYSCLK_FREQ);
+    SysCtl_setPLLSysClk(0U);
+
+    //
+    // Make sure the LSPCLK divider is set to the default (divide by 4)
+    //
+    SysCtl_setLowSpeedClock(SYSCTL_LSPCLK_PRESCALE_1);
+
+    //
+    // Set up AUXPLL control and clock dividers needed for CMCLK
+    //
+    // SysCtl_setAuxClock(DEVICE_AUXSETCLOCK_CFG);
+
+    // These asserts will check that the #defines for the clock rates in
+    // device.h match the actual rates that have been configured. If they do
+    // not match, check that the calculations of DEVICE_SYSCLK_FREQ,
+    // DEVICE_LSPCLK_FREQ and DEVICE_AUXCLK_FREQ are accurate. Some
+    // examples will not perform as expected if these are not correct.
+    //
+    ASSERT(SysCtl_getClock(DEVICE_OSCSRC_FREQ) == DEVICE_SYSCLK_FREQ);
+    ASSERT(SysCtl_getLowSpeedClock(DEVICE_OSCSRC_FREQ) == DEVICE_LSPCLK_FREQ);
+    ASSERT(SysCtl_getAuxClock(DEVICE_OSCSRC_FREQ) == DEVICE_AUXCLK_FREQ);
+
+    // Enable peripherals
+    fSysHwCfg_EnableAllPeripherals();
+    gfSysHwCfg_InitGpio();
+
+    // Initializes PIE and clears PIE registers. Disables CPU interrupts.
+    Interrupt_initModule();
+    // Step 3. Clear all interrupts and initialize PIE vector table:
+    // Disable CPU interrupts
+    DINT;
+    // Disable CPU interrupts and clear all CPU interrupt flags:
+    IER = 0x0000;
+    IFR = 0x0000;
+    //
+    // Initializes the PIE vector table with pointers to the shell Interrupt
+    // Service Routines (ISR).
+    //
+    Interrupt_initVectorTable();
+}
+#endif /* Global functions */
+
+#if 1  /* External functions */
+
+#endif /* External functions */
+
+#if 1  /* File local (static) functions */
+/**
+ * @brief Function to turn on all peripherals, enabling reads and writes to the
+ * peripherals' registers. Note that to reduce power, unused peripherals should be disabled.
+ *
+ */
 static inline void fSysHwCfg_EnableAllPeripherals(void)
 {
     SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_DMA);
@@ -148,83 +291,5 @@ static inline void fSysHwCfg_EnableAllPeripherals(void)
     SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ADCCHECKER8);
     SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ADCSEAGGRCPU1);
 }
-
-//*****************************************************************************
-//
-// Function to disable pin locks on GPIOs.
-//
-//*****************************************************************************
-void gfSysHwCfg_InitGpio(void)
-{
-    //
-    // Disable pin locks.
-    //
-    GPIO_unlockPortConfig(GPIO_PORT_A, 0xFFFFFFFF);
-    GPIO_unlockPortConfig(GPIO_PORT_B, 0xFFFFFFFF);
-    GPIO_unlockPortConfig(GPIO_PORT_C, 0xFFFFFFFF);
-    GPIO_unlockPortConfig(GPIO_PORT_D, 0xFFFFFFFF);
-    GPIO_unlockPortConfig(GPIO_PORT_E, 0xFFFFFFFF);
-    GPIO_unlockPortConfig(GPIO_PORT_F, 0xFFFFFFFF);
-    GPIO_unlockPortConfig(GPIO_PORT_H, 0xFFFFFFFF);
-
-    // Configure LEDs
-    GPIO_setPadConfig(DEVICE_GPIO_PIN_LED1, GPIO_PIN_TYPE_STD);
-    GPIO_setDirectionMode(DEVICE_GPIO_PIN_LED1, GPIO_DIR_MODE_OUT);
-    GPIO_setPadConfig(DEVICE_GPIO_PIN_LED2, GPIO_PIN_TYPE_STD);
-    GPIO_setDirectionMode(DEVICE_GPIO_PIN_LED2, GPIO_DIR_MODE_OUT);
-
-    GPIO_writePin(DEVICE_GPIO_PIN_LED1, 1);
-    GPIO_writePin(DEVICE_GPIO_PIN_LED2, 1);
-}
-
-void gfSysHwCfg_Init(void)
-{
-    //
-    // Disable the watchdog
-    //
-    SysCtl_disableWatchdog();
-
-    //
-    // Set up PLL control and clock dividers
-    //
-    SysCtl_setClock(DEVICE_SYSCLK_FREQ);
-    SysCtl_setPLLSysClk(0U);
-
-    //
-    // Make sure the LSPCLK divider is set to the default (divide by 4)
-    //
-    SysCtl_setLowSpeedClock(SYSCTL_LSPCLK_PRESCALE_1);
-
-    //
-    // Set up AUXPLL control and clock dividers needed for CMCLK
-    //
-    // SysCtl_setAuxClock(DEVICE_AUXSETCLOCK_CFG);
-
-    // These asserts will check that the #defines for the clock rates in
-    // device.h match the actual rates that have been configured. If they do
-    // not match, check that the calculations of DEVICE_SYSCLK_FREQ,
-    // DEVICE_LSPCLK_FREQ and DEVICE_AUXCLK_FREQ are accurate. Some
-    // examples will not perform as expected if these are not correct.
-    //
-    ASSERT(SysCtl_getClock(DEVICE_OSCSRC_FREQ) == DEVICE_SYSCLK_FREQ);
-    ASSERT(SysCtl_getLowSpeedClock(DEVICE_OSCSRC_FREQ) == DEVICE_LSPCLK_FREQ);
-    ASSERT(SysCtl_getAuxClock(DEVICE_OSCSRC_FREQ) == DEVICE_AUXCLK_FREQ);
-
-    // Enable peripherals
-    fSysHwCfg_EnableAllPeripherals();
-    gfSysHwCfg_InitGpio();
-
-    // Initializes PIE and clears PIE registers. Disables CPU interrupts.
-    Interrupt_initModule();
-    // Step 3. Clear all interrupts and initialize PIE vector table:
-    // Disable CPU interrupts
-    DINT;
-    // Disable CPU interrupts and clear all CPU interrupt flags:
-    IER = 0x0000;
-    IFR = 0x0000;
-    //
-    // Initializes the PIE vector table with pointers to the shell Interrupt
-    // Service Routines (ISR).
-    //
-    Interrupt_initVectorTable();
-}
+#endif /* File local (static) functions */
+#endif /* Function Definitions */

@@ -1,3 +1,16 @@
+/**
+ * @file main.c
+ * @author Tobias Maier (maier-tobias@gmx.de)
+ * @brief Main entrance for TMDSCNCD28P65X PCB SW
+ * @version 0.1
+ * @date 2025-12-25
+ *
+ * @copyright Copyright (c) 2025
+ *
+ */
+
+/* ---------------------------------------- Includes ---------------------------------------------*/
+#if 1 /* Includes */
 #include "appDefines.h"
 #include "flash.h"
 #include "gpio.h"
@@ -6,31 +19,62 @@
 #include "task10msQm.h"
 #include "tasksCmn.h"
 #include "task.h"
+#endif /* Includes */
 
+/* ----------------------------------------- Defines ---------------------------------------------*/
+#if 1  /* Defines */
 #define DEVICE_FLASH_WAITSTATES 3U
+#endif /* Defines */
 
-extern uint16_t gRamfuncsRunStart;
-extern uint16_t gRamfuncsLoadStart;
-extern uint16_t gRamfuncsLoadSize;
-extern uint16_t gCla1ProgRunStart;
-extern uint16_t gCla1ProgLoadStart;
-extern uint16_t gCla1ProgLoadSize;
+/* ------------------------------------ Type Definitions -----------------------------------------*/
+#if 1
+#if 1  /* Enumerations */
 
-//-------------------------------------------------------------------------------------------------
-// NOLINTBEGIN(readability-identifier-naming)
-void vApplicationStackOverflowHook(TaskHandle_t xTask, char* pcTaskName)
-{
-    while (1);
-}
+#endif /* Enumerations */
 
-void vApplicationTickHook(void)
-{
-    ;
-}
+#if 1  /* Typedefs */
 
-// NOLINTEND(readability-identifier-naming)
+#endif /* Typedefs */
 
-//-------------------------------------------------------------------------------------------------
+#if 1  /* Structs */
+
+#endif /* Structs */
+
+#if 1  /* Unions */
+
+#endif /* Unions */
+#endif /* Type Definitions */
+
+/* ---------------------------------- Variable Declarations --------------------------------------*/
+#if 1
+#if 1 /* Global Variables */
+extern uint16 gRamfuncsRunStart;
+extern uint16 gRamfuncsLoadStart;
+extern uint16 gRamfuncsLoadSize;
+extern uint16 gCla1ProgRunStart;
+extern uint16 gCla1ProgLoadStart;
+extern uint16 gCla1ProgLoadSize;
+#endif /* Global Variables */
+
+#if 1  /* File local (static) variables */
+
+#endif /* File local (static) variables */
+#endif /* Variable Declarations */
+
+/* ----------------------------------- Function Prototypes ---------------------------------------*/
+#if 1
+
+#endif /* Function Prototypes */
+
+/* ----------------------------------- Function Definitions --------------------------------------*/
+#if 1
+#if 1 /* Global functions */
+
+/**
+ * @brief Main function of whole Software
+ *
+ * @return int
+ */
 void main(void)
 {
 #ifdef _FLASH
@@ -82,3 +126,25 @@ void main(void)
 
     vTaskStartScheduler();
 }
+
+#endif /* Global functions */
+
+#if 1  /* External functions */
+// NOLINTBEGIN(readability-identifier-naming)
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char* pcTaskName)
+{
+    while (1);
+}
+
+void vApplicationTickHook(void)
+{
+    ;
+}
+
+// NOLINTEND(readability-identifier-naming)
+#endif /* External functions */
+
+#if 1  /* File local (static) functions */
+
+#endif /* File local (static) functions */
+#endif /* Function Definitions */

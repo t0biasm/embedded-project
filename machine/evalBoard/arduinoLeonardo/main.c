@@ -90,4 +90,4 @@ int main(void)
 #if 1  /* File local (static) functions */
 
 #endif /* File local (static) functions */
-#endif /* Function Prototypes */
+#endif /* Function Definitions */

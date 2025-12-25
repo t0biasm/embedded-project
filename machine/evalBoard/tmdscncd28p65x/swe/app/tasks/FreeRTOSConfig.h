@@ -23,6 +23,13 @@
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
+/* ---------------------------------------- Includes --------------------------------------------*/
+#if 1  /* Includes */
+
+#endif /* Includes */
+
+/* ----------------------------------------- Defines --------------------------------------------*/
+#if 1 /* Defines */
 //--------------------------------------------------------------------------------------------------
 // Application specific definitions.
 //
@@ -71,5 +78,39 @@
 #define INCLUDE_vTaskDelayUntil             0
 #define INCLUDE_vTaskDelay                  1
 #define INCLUDE_uxTaskGetStackHighWaterMark 0
+#endif /* Defines */
+
+/* --------------------------------- Global Type Definitions ------------------------------------*/
+#if 1
+#if 1  /* Enumerations */
+
+#endif /* Enumerations */
+
+#if 1  /* Typedefs */
+
+#endif /* Typedefs */
+
+#if 1  /* Structs */
+
+#endif /* Structs */
+
+#if 1  /* Unions */
+
+#endif /* Unions */
+#endif /* Global Type Definitions */
+
+/* ------------------------------ Global Variable Declarations ----------------------------------*/
+#if 1
+
+#endif /* Global Variable Declarations */
+
+/* ----------------------------------- Function Prototypes ------------------------------------- */
+#if 1  /* Global Function Prototypes */
+
+#endif /* Global Function Prototypes */
+
+#if 1  /* External Function Prototypes */
+
+#endif /* External Function Prototypes */
 
 #endif /* FREERTOS_CONFIG_H */

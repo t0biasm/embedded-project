@@ -1,9 +1,9 @@
 cc_library(
-    name = "public_types_h",
+    name = "platform_types_h",
     srcs = [],
     hdrs = glob(["*.h"]),
     deps = [
-        "//platforms/c2000:platform_types_h",
+        "//platforms/c2000/toolchain:c2000_builtin_directories",
     ],
     includes = ["."],
     visibility = ["//machine/evalBoard/tmdscncd28p65x:__subpackages__"],

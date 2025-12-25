@@ -1,7 +1,7 @@
 /**
- * @file public_types.h
+ * @file platform_types.h
  * @author Tobias Maier (maier-tobias@gmx.de)
- * @brief Public types and defines for C2000 platform
+ * @brief C2000 platform types and defines
  * @version 0.1
  * @date 2025-12-25
  *
@@ -9,12 +9,13 @@
  *
  */
 
-#ifndef PUBLIC_TYPES_H
-#define PUBLIC_TYPES_H
+#ifndef PLATFORM_TYPES_H
+#define PLATFORM_TYPES_H
 
 /* ---------------------------------------- Includes --------------------------------------------*/
 #pragma region
-#include "platform_types.h"
+#include <stdint.h>
+#include <hw_types.h>
 #pragma endregion /* Includes */
 
 /* ----------------------------------------- Defines --------------------------------------------*/
@@ -29,7 +30,14 @@
 #pragma endregion /* Enumerations */
 
 #pragma region    /* Typedefs */
-
+typedef int8_t    int8;
+typedef int16_t   int16;
+typedef int32_t   int32;
+typedef uint8_t   uint8;
+typedef uint16_t  uint16;
+typedef uint32_t  uint32;
+typedef float32_t float32;
+typedef float64_t float64;
 #pragma endregion /* Typedefs */
 
 #pragma region    /* Structs */
@@ -48,11 +56,11 @@
 
 /* ----------------------------------- Function Prototypes ------------------------------------- */
 #pragma region    /* Global Function Prototypes */
-extern void gfDrvLedCtrl_10ms(void);
+
 #pragma endregion /* Global Function Prototypes */
 
 #pragma region    /* External Function Prototypes */
 
 #pragma endregion /* External Function Prototypes */
 
-#endif            /* PUBLIC_TYPES_H */
+#endif            /* PLATFORM_TYPES_H */

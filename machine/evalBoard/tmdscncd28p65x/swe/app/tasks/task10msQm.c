@@ -12,7 +12,7 @@ StaticTask_t gTasks_10msQmBuffer;
 //-------------------------------------------------------------------------------------------------
 void gfTasks_10msQm(void* pParameters)
 {
-    uint32_t counter = 0U;
+    uint32 counter = 0U;
     for (;;)
     {
         // if(gTasks_SemaphoreTake( gTasks_Semaphore, portMAX_DELAY ) == pdTRUE)

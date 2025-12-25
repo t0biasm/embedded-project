@@ -13,23 +13,23 @@
 #define PLATFORM_TYPES_H
 
 /* ---------------------------------------- Includes --------------------------------------------*/
-#pragma region
+#if 1  /* Includes */
 #include <stdint.h>
 #include <hw_types.h>
-#pragma endregion /* Includes */
+#endif /* Includes */
 
 /* ----------------------------------------- Defines --------------------------------------------*/
-#pragma region
+#if 1  /* Defines */
 
-#pragma endregion /* Defines */
+#endif /* Defines */
 
 /* ---------------------- ---------- Global Type Definitions ------------------------------------*/
-#pragma region
-#pragma region    /* Enumerations */
+#if 1
+#if 1  /* Enumerations */
 
-#pragma endregion /* Enumerations */
+#endif /* Enumerations */
 
-#pragma region    /* Typedefs */
+#if 1  /* Typedefs */
 typedef int8_t    int8;
 typedef int16_t   int16;
 typedef int32_t   int32;
@@ -38,29 +38,29 @@ typedef uint16_t  uint16;
 typedef uint32_t  uint32;
 typedef float32_t float32;
 typedef float64_t float64;
-#pragma endregion /* Typedefs */
+#endif /* Typedefs */
 
-#pragma region    /* Structs */
+#if 1  /* Structs */
 
-#pragma endregion /* Structs */
+#endif /* Structs */
 
-#pragma region    /* Unions */
+#if 1  /* Unions */
 
-#pragma endregion /* Unions */
-#pragma endregion /* Global Type Definitions */
+#endif /* Unions */
+#endif /* Global Type Definitions */
 
 /* ------------------------------ Global Variable Declarations ----------------------------------*/
-#pragma region
+#if 1
 
-#pragma endregion /* Global Variable Declarations */
+#endif /* Global Variable Declarations */
 
 /* ----------------------------------- Function Prototypes ------------------------------------- */
-#pragma region    /* Global Function Prototypes */
+#if 1  /* Global Function Prototypes */
 
-#pragma endregion /* Global Function Prototypes */
+#endif /* Global Function Prototypes */
 
-#pragma region    /* External Function Prototypes */
+#if 1  /* External Function Prototypes */
 
-#pragma endregion /* External Function Prototypes */
+#endif /* External Function Prototypes */
 
-#endif            /* PLATFORM_TYPES_H */
+#endif /* PLATFORM_TYPES_H */

@@ -33,7 +33,7 @@ void vApplicationTickHook(void)
 void main(void)
 {
 #ifdef _FLASH
-    #ifndef CMDTOOL
+#ifndef CMDTOOL
     //
     // Copy time critical code and flash setup code to RAM. This includes the
     // following functions: InitFlash();
@@ -42,14 +42,14 @@ void main(void)
     // are created by the linker. Refer to the device .cmd file.
     //
     memcpy(&gRamfuncsRunStart, &gRamfuncsLoadStart, (size_t)&gRamfuncsLoadSize);
-    #endif
+#endif
 
-    #ifdef _COPY_CLA_SECTIONS
+#ifdef _COPY_CLA_SECTIONS
     //
     // Copy time critical code and flash setup code to RAM.
     //
     (void)memcpy(&gCla1ProgRunStart, &gCla1ProgLoadStart, (size_t)&gCla1ProgLoadSize);
-    #endif
+#endif
 
     //
     // Call Flash Initialization to setup flash waitstates. This function must

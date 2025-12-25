@@ -10,54 +10,54 @@
  */
 
 /* ---------------------------------------- Includes ---------------------------------------------*/
-#pragma region
+#if 1  /* Includes */
 #include <avr/io.h>
 #include <util/delay.h>
-#pragma endregion /* Includes */
+#endif /* Includes */
 
 /* ----------------------------------------- Defines ---------------------------------------------*/
-#pragma region
+#if 1  /* Defines */
 
-#pragma endregion /* Defines */
+#endif /* Defines */
 
 /* ------------------------------------ Type Definitions -----------------------------------------*/
-#pragma region
-#pragma region    /* Enumerations */
+#if 1
+#if 1  /* Enumerations */
 
-#pragma endregion /* Enumerations */
+#endif /* Enumerations */
 
-#pragma region    /* Typedefs */
+#if 1  /* Typedefs */
 
-#pragma endregion /* Typedefs */
+#endif /* Typedefs */
 
-#pragma region    /* Structs */
+#if 1  /* Structs */
 
-#pragma endregion /* Structs */
+#endif /* Structs */
 
-#pragma region    /* Unions */
+#if 1  /* Unions */
 
-#pragma endregion /* Unions */
-#pragma endregion /* Type Definitions */
+#endif /* Unions */
+#endif /* Type Definitions */
 
 /* ---------------------------------- Variable Declarations --------------------------------------*/
-#pragma region
-#pragma region    /* Global Variables */
+#if 1
+#if 1  /* Global Variables */
 
-#pragma endregion /* Global Variables */
+#endif /* Global Variables */
 
-#pragma region    /* File local (static) variables */
+#if 1  /* File local (static) variables */
 
-#pragma endregion /* File local (static) variables */
-#pragma endregion /* Variable Declarations */
+#endif /* File local (static) variables */
+#endif /* Variable Declarations */
 
 /* ----------------------------------- Function Prototypes ---------------------------------------*/
-#pragma region
+#if 1
 
-#pragma endregion /* Function Prototypes */
+#endif /* Function Prototypes */
 
 /* ----------------------------------- Function Definitions --------------------------------------*/
-#pragma region
-#pragma region /* Global functions */
+#if 1
+#if 1 /* Global functions */
 
 /**
  * @brief Main function of whole Software
@@ -81,13 +81,13 @@ int main(void)
     return 0;
 }
 
-#pragma endregion /* Global functions */
+#endif /* Global functions */
 
-#pragma region    /* External functions */
+#if 1  /* External functions */
 
-#pragma endregion /* External functions */
+#endif /* External functions */
 
-#pragma region    /* File local (static) functions */
+#if 1  /* File local (static) functions */
 
-#pragma endregion /* File local (static) functions */
-#pragma endregion /* Function Prototypes */
+#endif /* File local (static) functions */
+#endif /* Function Prototypes */

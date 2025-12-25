@@ -4,6 +4,7 @@
 #include "public_types.h"
 #include "sysHwCfg_init.h"
 #include "task10msQm.h"
+#include "tasksCmn.h"
 #include "task.h"
 
 #define DEVICE_FLASH_WAITSTATES 3U

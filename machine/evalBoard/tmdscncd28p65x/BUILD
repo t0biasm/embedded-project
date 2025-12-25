@@ -31,9 +31,6 @@ doxygen(
     # The output of the genrule will be included in the documentation.
     # The genrule will be executed when the documentation is generated.
     srcs = [
-        "README.md",  # file
-        # ":section",  # genrule
-
         # WARNING: By adding this, the main target will be built
         # and only the output files `libmain.so` and `libmain.a`
         # will be passed to Doxygen, which is likely not what you want.

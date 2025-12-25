@@ -41,6 +41,7 @@ doxygen(
         "INTERACTIVE_SVG = YES",
         "DOT_GRAPH_MAX_NODES = 150",
         "MAX_DOT_GRAPH_DEPTH = 0",
+        "JAVADOC_BANNER = YES",
     ],
 
     # The output of the genrule will be included in the documentation.

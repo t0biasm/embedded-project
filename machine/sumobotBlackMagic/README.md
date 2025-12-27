@@ -5,17 +5,17 @@
 @startuml
 title Software Architecture (Static Overview)
 
-skinparam componentStyle rectangle
-skinparam packageStyle rectangle
+'skinparam componentStyle rectangle
+'skinparam packageStyle rectangle
 skinparam shadowing false
 skinparam defaultTextAlignment center
 
 ' === Top-Level Layers ===
-rectangle "Microcontroller (MCU)" as MCU {
-    rectangle "Software (SW)" as SW {
-        package "Application Software (Sumo)" as Sumo {
-            component "State Machine" as STM {
-                [FreeRTOS] as RTOS
+component "Microcontroller (MCU)" as MCU {
+    package "Software (SW)" as SW {
+        package "Application Software (Sumo)" as Sumo <<dashed>> {
+            component "State Machine (SumoStm)" as SumoStm {
+                rectangle SumoStm_10ms as SumoStm_10ms
             }
 
             package "Motion (SumoMn)" as Mn {
@@ -43,40 +43,62 @@ rectangle "Microcontroller (MCU)" as MCU {
         }
 
         package "Driver (Drv)" as Drv {
-            package "Powertrain (Pwt)" as Pwt {
-                component "Motor" as MT {
+            package "Powertrain (DrvPwt)" as DrvPwt {
+                component "Motor (DrvPwtMt)" as DrvPwtMt {
                 
                 }
             }
 
-            package "Environment (Env)" as ENV {
-                component "Line Detection (Ld)" as LD {
+            package "Environment (DrvEnv)" as DrvEnv {
+                component "Line Detection (DrvEnvLd)" as DrvEnvLd {
                 
                 }
 
-                component "Opponent (Opp)" as OPP {
+                component "Opponent (DrvEnvOpp)" as DrvEnvOpp {
                 
                 }
             }
         }
-
-        package "Microcontroller Abstraction" as MCAL {
-            component "CPUTimer" as CPUTimer
-        }
     }
 
-    package "Peripherals" as PER {
-        component "PORT" as PORT
+    package "Peripherals" as Per {
+        rectangle "ADC" as ADC
+        rectangle "PORTB" as PORTB
+        rectangle "PORTC" as PORTC
+        rectangle "PORTD" as PORTD
+        rectangle "PORTE" as PORTE
+        rectangle "PORTF" as PORTF
     }
+
+    'portin PB0
+    'portin PB1
+    'portin PB2
+    'portin PB3
+    'portin PB4
+    'portin PB5
+    'portin PB6
+    'portin PB7
+    'portin PC6
+    'portin PC7
+    'portin PD0
+    'portin PD1
+    'portin PD2
+    'portin PD3
+    'portin PD4
+    'portin PD5
+    'portin PD6
+    'portin PD7
 }
 
 ' === Relationships ===
 Sumo -[hidden]-> Drv
 Sumo -[hidden]-> BSW
-OS -[hidden]-> MCAL
-SysHwCfg_Init -[hidden]-> MCAL
-Drv -[hidden]-> MCAL
-MCAL -[hidden]-> PER : Test
+Per -[hidden]-> Drv
+Per -[hidden]-> BSW
+
+'PB0 -up-> PORTB
+'PORTB -up-> DrvEnvLd
+'DrvEnvLd -up-> SumoMnOdm
 
 ' === Notes ===
 'note left of MCAL
@@ -90,5 +112,5 @@ MCAL -[hidden]-> PER : Test
 ## Build Commands
 - Build SW project
 ```starlark
-bazel build --config=atmega32u4 //machine/evalBoard/sumobotBlackMagic:app
+bazel build --config=atmega32u4 //machine/sumobotBlackMagic:app
 ```

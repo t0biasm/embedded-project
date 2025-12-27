@@ -18,7 +18,7 @@ doxygen(
         "PROJECT_NAME = Arduino Leonardo SW",
         "GENERATE_HTML = YES",
         "GENERATE_LATEX = NO",
-        "USE_MDFILE_AS_MAINPAGE = machine/evalBoard/sumobotBlackMagic/README.md",
+        "USE_MDFILE_AS_MAINPAGE = machine/sumobotBlackMagic/README.md",
         "EXTRACT_ALL = YES",
         "EXTRACT_PRIVATE = YES",
         "EXTRACT_STATIC = YES",
@@ -52,6 +52,6 @@ doxygen(
     # The sources of the main target and its dependencies will be included.
     # No compilation will be performed, so compile error won't be reported.
     deps = [
-        "//machine/evalBoard/sumobotBlackMagic:app"
+        "//machine/sumobotBlackMagic:app"
     ],
 )

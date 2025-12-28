@@ -12,7 +12,7 @@
 /* ---------------------------------------- Includes ---------------------------------------------*/
 #if 1  /* Includes */
 #include "gpio.h"
-#include "sysHwCfg_init.h"
+// #include "sysHwCfg_init.h"
 #endif /* Includes */
 
 /* ----------------------------------------- Defines ---------------------------------------------*/
@@ -66,7 +66,7 @@ void gfDrvLedCtrl_10ms(void)
 {
     // Toggle LED
     //
-    GPIO_togglePin(DEVICE_GPIO_PIN_LED1);
+    GPIO_togglePin(31U);
 }
 
 #endif /* Global functions */

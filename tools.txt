@@ -1,9 +1,13 @@
 - VSCode
+- Git via MSYS2 (MSYS2 via winget)
+- Bazelisk (Bazel)
+    - Installed via winget (added to PATH automatically)
+    - copy/paste bazelisk.exe into same folder with bazel.exe name
+    - Add bazel(-isk) path to git bash path export PATH="/c/path/to/bazel:$PATH"
+- GCC via MSYS2 (MSYS2 via winget)
 - LLVM (clang-format and more)
     - PATH (Environment variable)
 - python 3(.8)
-- Bazel
-- git ?
 - graphviz
     - dot (PATH)
 

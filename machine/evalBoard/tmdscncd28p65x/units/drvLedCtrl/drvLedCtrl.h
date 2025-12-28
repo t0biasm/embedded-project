@@ -14,8 +14,12 @@
 
 /* ---------------------------------------- Includes --------------------------------------------*/
 #if 1  /* Includes */
-#include "public_types.h"
+// #include "public_types.h"
 #endif /* Includes */
+
+// #ifdef __cplusplus
+// extern "C" {
+// #endif
 
 /* ----------------------------------------- Defines --------------------------------------------*/
 #if 1  /* Defines */
@@ -54,5 +58,9 @@ extern void gfDrvLedCtrl_10ms(void);
 #if 1  /* External Function Prototypes */
 
 #endif /* External Function Prototypes */
+
+// #ifdef __cplusplus
+// }
+// #endif
 
 #endif /* DRVLEDCTRL_H */

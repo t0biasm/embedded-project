@@ -43,9 +43,20 @@ http_archive(
     build_file = "//tools/llvm:llvm.BUILD"
 )
 
+http_archive(
+    name = "gcc_toolchain",
+    urls = ["https://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-15.2.0/gcc-15.2.0.tar.xz"],
+    strip_prefix = "gcc-15.2.0",
+    sha256 = "438fd996826b0c82485a29da03a72d71d6e3541a83ec702df4271f6fe025d24e",
+    build_file = "//platforms/gcc/toolchain:gcc.BUILD"
+)
+
 # Dependencies
 bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "bazel_skylib", version = "1.8.2")
+
+# Google Test
+bazel_dep(name = "googletest", version = "1.17.0")
 
 # Doxygen Integration
 bazel_dep(name = "rules_doxygen", version = "2.6.1")
@@ -53,10 +64,6 @@ doxygen_extension = use_extension("@rules_doxygen//:extensions.bzl", "doxygen_ex
 use_repo(doxygen_extension, "doxygen")
 
 # Toolchain Setup
-register_toolchains(
-    "//platforms/c2000/toolchain:c2000_toolchain_windows"
-)
-
-register_toolchains(
-    "//platforms/avr8/toolchain:avr8_toolchain_windows"
-)
+register_toolchains("//platforms/c2000/toolchain:c2000_toolchain_windows")
+register_toolchains("//platforms/avr8/toolchain:avr8_toolchain_windows")
+register_toolchains("//platforms/gcc/toolchain:gcc_toolchain_windows")

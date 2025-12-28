@@ -19,7 +19,7 @@ cc_binary_c2000(
     ],
     deps = [
         ":app_defines",
-        "//platforms/c2000/mcal/f28p65:mcal_f28p65x",
+        "//platforms/c2000/mcal/f28p65/code:mcal_f28p65x",
         "//machine/evalBoard/tmdscncd28p65x/public:public_types_h",
         "//machine/evalBoard/tmdscncd28p65x/swe/app/tasks:tasks",
         "//machine/evalBoard/tmdscncd28p65x/units:units_app",

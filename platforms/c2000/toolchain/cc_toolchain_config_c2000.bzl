@@ -16,16 +16,6 @@ load("//platforms/c2000/toolchain:c2000.bzl",
      "C2000_ARCHIVER_FLAGS_APP",
      "C2000_ASSEMBLER_FLAGS")
 
-all_compile_actions = [ # NEW
-    ACTION_NAMES.c_compile,
-]
-
-all_link_actions = [ # NEW
-    ACTION_NAMES.cpp_link_executable,
-    ACTION_NAMES.cpp_link_dynamic_library,
-    ACTION_NAMES.cpp_link_nodeps_dynamic_library,
-]
-
 def _impl(ctx):
     # Used tools are handled via action_config
     tool_paths = []

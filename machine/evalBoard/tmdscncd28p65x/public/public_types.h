@@ -48,7 +48,7 @@
 
 /* ----------------------------------- Function Prototypes ------------------------------------- */
 #if 1  /* Global Function Prototypes */
-extern void gfDrvLedCtrl_10ms(void);
+
 #endif /* Global Function Prototypes */
 
 #if 1  /* External Function Prototypes */

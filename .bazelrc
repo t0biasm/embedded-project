@@ -11,3 +11,7 @@ build:atmega32u4 --platforms=platforms/avr8/toolchain:avr8
 build:atmega32u4 --//platforms/avr8/toolchain:mcu=atmega32u4
 build:atmega32u4 --//platforms/avr8/toolchain:p_arch=avr5
 build:atmega32u4 --//platforms/avr8/toolchain:f_cpu=16000000UL
+
+## ------ Unit Test Configurations ------
+# GCC configuration for Windows (MinGW)
+build:gcc --platforms=platforms/gcc/toolchain:gcc_windows

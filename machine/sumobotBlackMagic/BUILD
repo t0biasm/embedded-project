@@ -5,10 +5,12 @@ load("@doxygen//:doxygen.bzl", "doxygen")
 cc_binary_avr8(
     name = "app",
     srcs = ["main.c"],
-    linkopts = [
-        "-mmcu=atmega32u4",
+    # linkopts = [
+    #     "-mmcu=atmega32u4",
+    # ],
+    deps = [
+        "//machine/sumobotBlackMagic/components/sysHwCfg:sysHwCfg_init",
     ],
-    deps = [],
 )
 
 doxygen(

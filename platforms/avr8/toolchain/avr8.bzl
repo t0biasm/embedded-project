@@ -27,10 +27,12 @@ AVR_ASSEMBLER_FLAGS = [
 ]
 
 AVR_ARCHIVER_FLAGS_APP = [
-    "-mmcu=atmega32u4",
-    # # "-a", # Adds the specified files to the library
-    # "-r", # Replaces the specified members in the library.
-    # "%{output_execpath}",
+    # r - Replace/insert object files into the archive (creates if doesn't exist)
+    # c - Create the archive without warning if it doesn't exist
+    # s - Create/update symbol index (equivalent to running avr-ranlib)
+    "rcs", # Adds the specified files to the library
+    # Path including .a filename
+    "%{output_execpath}",
 ]
 
 AVR_LINKER_FLAGS_APP = [

@@ -1,7 +1,7 @@
 /**
- * @file main.c
+ * @file sysHwCfg_init.c
  * @author Tobias Maier (maier-tobias@gmx.de)
- * @brief Main entrance for Arduino Leonardo PCB SW
+ * @brief System HW Configuration Initialization Code
  * @version 0.1
  * @date 2025-12-25
  *
@@ -10,10 +10,9 @@
  */
 
 /* ---------------------------------------- Includes ---------------------------------------------*/
-#if 1  /* Includes */
-#include <avr/io.h>
-#include <util/delay.h>
+#if 1 /* Includes */
 #include "sysHwCfg_init.h"
+#include <avr/io.h>
 #endif /* Includes */
 
 /* ----------------------------------------- Defines ---------------------------------------------*/
@@ -59,30 +58,15 @@
 /* ----------------------------------- Function Definitions --------------------------------------*/
 #if 1
 #if 1 /* Global functions */
-
 /**
- * @brief Main function of whole Software
+ * @brief Function to initialize system peripherals
  *
- * @return int
  */
-int main(void)
+void gfSysHwCfg_Init(void)
 {
-    // Initialization
-    gfSysHwCfg_Init();
-
-    // Task
-    while (1)
-    {
-        // Toggle LED
-        PORTC ^= (1 << PORTC7);
-
-        // Wait 500ms
-        _delay_ms(1000);
-    }
-
-    return 0;
+    // Set PC7 (pin 13 on Leonardo) as output
+    DDRC |= (1 << DDC7);
 }
-
 #endif /* Global functions */
 
 #if 1  /* External functions */

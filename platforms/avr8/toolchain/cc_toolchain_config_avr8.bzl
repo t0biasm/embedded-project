@@ -93,6 +93,16 @@ def _impl(ctx):
                                 "-DF_CPU=" + f_cpu,
                             ]
                         ),
+                        # System include paths
+                        flag_group(
+                            iterate_over = "system_include_paths",
+                            flags = ["-I", "%{system_include_paths}"],
+                        ),
+                        # Normal include paths
+                        flag_group(
+                            iterate_over = "include_paths",
+                            flags = ["-I", "%{include_paths}"],
+                        ),
                     ],
                 ),
             ],
@@ -124,50 +134,50 @@ def _impl(ctx):
             ],
         ),
 
-        # Feature for archiving object files to static library - .o -> .lib
+        # Feature for archiving object files to static library - .o -> .a
         # Used for cc_library
-        # feature(
-        #     name = "avr_archiver",
-        #     enabled = True,
-        #     flag_sets = [
-        #         flag_set(
-        #             actions = [
-        #                 ACTION_NAMES.cpp_link_static_library,
-        #             ],
-        #             flag_groups = [
-        #                 # ---------- Linker flags --------- #
-        #                 flag_group(
-        #                     flags = AVR_ARCHIVER_FLAGS_APP,
-        #                 ),
-        #                 # # ----- Libraries to be linked ---- #
-        #                 # flag_group (
-        #                 #     expand_if_available = "libraries_to_link",
-        #                 #     iterate_over = "libraries_to_link",
-        #                 #     flag_groups = [
-        #                 #         # All object files .o
-        #                 #         flag_group(
-        #                 #             expand_if_equal = variable_with_value(
-        #                 #                 name = "libraries_to_link.type",
-        #                 #                 value = "object_file",
-        #                 #             ),
-        #                 #             flag_groups = [flag_group(flags = ["%{libraries_to_link.name}"])],
-        #                 #         ),
-        #                 #     ],
-        #                 # ),
-        #                 # Linker script add-on
-        #                 # flag_groups = [
-        #                 #     flag_group(
-        #                 #         expand_if_available = "user_link_flags",
-        #                 #         iterate_over = "user_link_flags",
-        #                 #         flags = ["%{user_link_flags}"],
-        #                 #     ),
-        #                 # ],
-        #             ],
-        #         ),
-        #     ],
-        # ),
+        feature(
+            name = "avr_archiver",
+            enabled = True,
+            flag_sets = [
+                flag_set(
+                    actions = [
+                        ACTION_NAMES.cpp_link_static_library,
+                    ],
+                    flag_groups = [
+                        # ---------- Linker flags --------- #
+                        flag_group(
+                            flags = AVR_ARCHIVER_FLAGS_APP,
+                        ),
+                        # ----- Libraries to be linked ---- #
+                        flag_group (
+                            expand_if_available = "libraries_to_link",
+                            iterate_over = "libraries_to_link",
+                            flag_groups = [
+                                # All object files .o
+                                flag_group(
+                                    expand_if_equal = variable_with_value(
+                                        name = "libraries_to_link.type",
+                                        value = "object_file",
+                                    ),
+                                    flag_groups = [flag_group(flags = ["%{libraries_to_link.name}"])],
+                                ),
+                            ],
+                        ),
+                        # Linker script add-on
+                        # flag_groups = [
+                        #     flag_group(
+                        #         expand_if_available = "user_link_flags",
+                        #         iterate_over = "user_link_flags",
+                        #         flags = ["%{user_link_flags}"],
+                        #     ),
+                        # ],
+                    ],
+                ),
+            ],
+        ),
 
-        # Feature for linking object files/static libraries to final executable - .o/.lib -> .out
+        # Feature for linking object files/static libraries to final executable - .o/.a -> .out
         # Used for cc_binary
         feature(
             name = "avr_linker",

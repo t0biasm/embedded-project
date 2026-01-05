@@ -44,7 +44,7 @@
 #endif /* Global Type Definitions */
 
 /* ------------------------------ Global Variable Declarations ----------------------------------*/
-#if 1  /* Global Variable Declarations */
+#if 1 /* Global Variable Declarations */
 extern uint8_t mock_ddrc;
 extern uint8_t mock_ddc6;
 extern uint8_t mock_ddc7;

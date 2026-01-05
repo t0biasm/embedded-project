@@ -13,14 +13,14 @@
 #define GPIO_H
 
 /* ---------------------------------------- Includes --------------------------------------------*/
-#if 1  /* Includes */
+#if 1 /* Includes */
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <cstdint>
 #endif /* Includes */
 
 /* ----------------------------------------- Defines --------------------------------------------*/
-#if 1 /* Defines */
+#if 1  /* Defines */
 
 #endif /* Defines */
 
@@ -35,9 +35,10 @@
 #endif /* Typedefs */
 
 #if 1  /* Structs and Classes*/
-class Gpio {
+class Gpio
+{
 public:
-    MOCK_METHOD(void, GPIO_togglePin, (uint32_t pin));
+    MOCK_METHOD(void, GPIO_togglePin, uint32_t pin);
 };
 #endif /* Structs and Classes*/
 
@@ -52,11 +53,12 @@ extern Gpio* gpio_m;
 #endif /* Global Variable Declarations */
 
 /* ----------------------------------- Function Prototypes ------------------------------------- */
-#if 1  /* Global Function Prototypes */
+#if 1 /* Global Function Prototypes */
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
-extern void GPIO_togglePin(uint32_t pin);
+    extern void GPIO_togglePin(uint32_t pin);
 #ifdef __cplusplus
 }
 #endif

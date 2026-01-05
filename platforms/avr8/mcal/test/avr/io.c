@@ -10,7 +10,7 @@
  */
 
 /* ---------------------------------------- Includes ---------------------------------------------*/
-#if 1 /* Includes */
+#if 1  /* Includes */
 #include <cstdint>
 #endif /* Includes */
 
@@ -40,7 +40,7 @@
 
 /* ---------------------------------- Variable Declarations --------------------------------------*/
 #if 1
-#if 1  /* Global Variables */
+#if 1 /* Global Variables */
 uint8_t mock_ddrc = 0U;
 uint8_t mock_ddc6 = 6U;
 uint8_t mock_ddc7 = 7U;
@@ -58,7 +58,7 @@ uint8_t mock_ddc7 = 7U;
 
 /* ----------------------------------- Function Definitions --------------------------------------*/
 #if 1
-#if 1 /* Global functions */
+#if 1  /* Global functions */
 
 #endif /* Global functions */
 

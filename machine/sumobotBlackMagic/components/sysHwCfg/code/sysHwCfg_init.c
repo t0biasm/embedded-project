@@ -10,7 +10,7 @@
  */
 
 /* ---------------------------------------- Includes ---------------------------------------------*/
-#if 1 /* Includes */
+#if 1  /* Includes */
 #include "sysHwCfg_init.h"
 #include <avr/io.h>
 #endif /* Includes */

@@ -10,7 +10,7 @@
  */
 
 /* ---------------------------------------- Includes ---------------------------------------------*/
-#if 1 /* Includes */
+#if 1  /* Includes */
 #include <cstdint>
 #include "gpio.h"
 #endif /* Includes */
@@ -58,8 +58,10 @@ Gpio* gpio_m = nullptr;
 /* ----------------------------------- Function Definitions --------------------------------------*/
 #if 1
 #if 1 /* Global functions */
-void GPIO_togglePin(uint32_t pin) {
-    if (gpio_m) {
+void GPIO_togglePin(uint32_t pin)
+{
+    if (gpio_m)
+    {
         gpio_m->GPIO_togglePin(pin);
     }
 }

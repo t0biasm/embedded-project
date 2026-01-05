@@ -9,7 +9,7 @@ cc_binary_avr8(
     #     "-mmcu=atmega32u4",
     # ],
     deps = [
-        "//machine/sumobotBlackMagic/components/sysHwCfg:sysHwCfg_init",
+        "//machine/sumobotBlackMagic/components/sysHwCfg/code:sysHwCfg_init",
     ],
 )
 

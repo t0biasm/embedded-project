@@ -35,9 +35,9 @@
 
 #endif /* Typedefs */
 
-#if 1  /* Structs */
+#if 1  /* Structs and Classes*/
 
-#endif /* Structs */
+#endif /* Structs and Classes*/
 
 #if 1  /* Unions */
 

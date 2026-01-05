@@ -1,7 +1,7 @@
 /**
- * @file main.c
+ * @file sysHwCfg_init_test.cc
  * @author Tobias Maier (maier-tobias@gmx.de)
- * @brief Main entrance for Arduino Leonardo PCB SW
+ * @brief Test module: System HW Configuration Initialization Code
  * @version 0.1
  * @date 2025-12-25
  *
@@ -10,10 +10,13 @@
  */
 
 /* ---------------------------------------- Includes ---------------------------------------------*/
-#if 1  /* Includes */
-#include <avr/io.h>
-#include <util/delay.h>
+#if 1 /* Includes */
+// Googletest setup
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+// SW unit header includes
 #include "sysHwCfg_init.h"
+#include "avr/io.h"
 #endif /* Includes */
 
 /* ----------------------------------------- Defines ---------------------------------------------*/
@@ -32,7 +35,20 @@
 #endif /* Typedefs */
 
 #if 1  /* Structs and Classes*/
-
+// Class definition for test case setup and closure (entry/exit conditions)
+class SysHwCfgInitTest : public ::testing::Test {
+protected:
+    /* -------------------------------------- Test Case Setup ------------------------------- */
+    void SetUp() override {
+        // Define initialization for each test module
+        DDRC = 0U;
+    }
+    
+    /* ------------------------------------- Test Case Closure ------------------------------ */
+    void TearDown() override {
+        // Reset
+    }
+};
 #endif /* Structs and Classes*/
 
 #if 1  /* Unions */
@@ -51,37 +67,14 @@
 #endif /* File local (static) variables */
 #endif /* Variable Declarations */
 
-/* ----------------------------------- Function Prototypes ---------------------------------------*/
+/* ----------------------------------- Function Prototypes -------------------------------------- */
 #if 1
 
 #endif /* Function Prototypes */
 
-/* ----------------------------------- Function Definitions --------------------------------------*/
+/* ----------------------------------- Function Definitions ------------------------------------- */
 #if 1
 #if 1 /* Global functions */
-
-/**
- * @brief Main function of whole Software
- *
- * @return int
- */
-int main(void)
-{
-    // Initialization
-    gfSysHwCfg_Init();
-
-    // Task
-    while (1)
-    {
-        // Toggle LED
-        PORTC ^= (1 << PORTC7);
-
-        // Wait 500ms
-        _delay_ms(1000);
-    }
-
-    return 0;
-}
 
 #endif /* Global functions */
 
@@ -90,6 +83,15 @@ int main(void)
 #endif /* External functions */
 
 #if 1  /* File local (static) functions */
+TEST_F(SysHwCfgInitTest, GpioConfiguration) {
+    /* -------------------------------------- Preparation ----------------------------------- */
 
+    /* -------------------------------------- Call SW Unit ---------------------------------- */
+    gfSysHwCfg_Init();
+    
+    /* -------------------------------------- Verification ---------------------------------- */
+    EXPECT_EQ(DDRC, 0b1000'0000);
+}
 #endif /* File local (static) functions */
 #endif /* Function Definitions */
+

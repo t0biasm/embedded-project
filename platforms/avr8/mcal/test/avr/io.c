@@ -1,7 +1,7 @@
 /**
- * @file task10msQm.c
+ * @file sysHwCfg_init.c
  * @author Tobias Maier (maier-tobias@gmx.de)
- * @brief Task 10 milliseconds QM
+ * @brief System HW Configuration Initialization Code
  * @version 0.1
  * @date 2025-12-25
  *
@@ -11,17 +11,12 @@
 
 /* ---------------------------------------- Includes ---------------------------------------------*/
 #if 1 /* Includes */
-#include "drvLedCtrl.h"
-#include "FreeRTOS.h"
-#include "tasksCmn.h"
-#include "task10msQm.h"
-#include "semphr.h"
+#include <cstdint>
 #endif /* Includes */
 
 /* ----------------------------------------- Defines ---------------------------------------------*/
-#if 1 /* Defines */
-/// 100 millisecond cycle time
-#define TASK10MSQM_CYCLE_TIME_MS (100U)
+#if 1  /* Defines */
+
 #endif /* Defines */
 
 /* ------------------------------------ Type Definitions -----------------------------------------*/
@@ -46,8 +41,9 @@
 /* ---------------------------------- Variable Declarations --------------------------------------*/
 #if 1
 #if 1  /* Global Variables */
-StackType_t  gTasks_10msQmStack[STACK_SIZE_TASK10MSQM];
-StaticTask_t gTasks_10msQmBuffer;
+uint8_t mock_ddrc = 0U;
+uint8_t mock_ddc6 = 6U;
+uint8_t mock_ddc7 = 7U;
 #endif /* Global Variables */
 
 #if 1  /* File local (static) variables */
@@ -63,24 +59,6 @@ StaticTask_t gTasks_10msQmBuffer;
 /* ----------------------------------- Function Definitions --------------------------------------*/
 #if 1
 #if 1 /* Global functions */
-/**
- * @brief 10 milliseconds QM Task
- *
- * @param pParameters
- */
-void gfTasks_10msQm(void* pParameters)
-{
-    uint32 counter = 0U;
-    for (;;)
-    {
-        // if(gTasks_SemaphoreTake( gTasks_Semaphore, portMAX_DELAY ) == pdTRUE)
-        // {
-        counter++;
-        gfDrvLedCtrl_10ms();
-        vTaskDelay(TASK10MSQM_CYCLE_TIME_MS / portTICK_PERIOD_MS);
-        // }
-    }
-}
 
 #endif /* Global functions */
 

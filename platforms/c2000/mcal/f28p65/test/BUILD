@@ -1,6 +1,7 @@
 cc_library(
     name = "mcal_f28p65x_h",
-    srcs = glob(["*.h"]),
+    srcs = glob(["*.c"]),
+    hdrs = glob(["*.h"]),
     deps = [
         # "//platforms/c2000/toolchain:c2000_builtin_directories",
         "@googletest//:gtest",

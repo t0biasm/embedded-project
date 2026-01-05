@@ -14,7 +14,4 @@ cc_test(
     includes = [
         "../code",
     ],
-    linkopts = [
-        # "-Wl,--wrap=GPIO_togglePin",
-    ]
 )

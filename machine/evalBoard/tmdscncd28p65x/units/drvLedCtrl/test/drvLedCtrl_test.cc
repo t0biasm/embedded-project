@@ -16,7 +16,7 @@
 #include <gmock/gmock.h>
 // SW unit header includes
 #include "drvLedCtrl.h"
-#include "gpio_mock.h"
+#include "gpio.h"
 #endif /* Includes */
 
 /* ----------------------------------------- Defines ---------------------------------------------*/
@@ -38,18 +38,18 @@
 // Class definition for test case setup and closure (entry/exit conditions)
 class DrvLedCtrlTest : public ::testing::Test {
 protected:
-    Gpio gpio_mock; // Mock instance for the test
+    Gpio gpio; // Mock instance for the test
     
     /* -------------------------------------- Test Case Setup ------------------------------- */
     void SetUp() override {
         // Assign the global mock pointer to the test's mock
-        gpio = &gpio_mock;
+        gpio_m = &gpio;
     }
 
     /* ------------------------------------- Test Case Closure ------------------------------ */
     void TearDown() override {
         // Reset the global mock pointer to avoid leaks between tests
-        gpio = nullptr;
+        gpio_m = nullptr;
     }
 };
 #endif /* Structs and Classes*/
@@ -88,12 +88,12 @@ protected:
 #if 1  /* File local (static) functions */
 TEST_F(DrvLedCtrlTest, TogglesCorrectPin) {
     /* -------------------------------------- Preparation ----------------------------------- */
-
-    /* -------------------------------------- Call SW Unit ---------------------------------- */
-    EXPECT_CALL(gpio_mock, GPIO_togglePin(31U)).Times(1);
-
-    /* -------------------------------------- Verification ---------------------------------- */    
+    EXPECT_CALL(gpio, GPIO_togglePin(31U)).Times(1);
+    
+    /* -------------------------------------- Call SW Unit ---------------------------------- */    
     gfDrvLedCtrl_10ms();  // Your function that calls GPIO_togglePin(5)
+
+    /* -------------------------------------- Verification ---------------------------------- */
 }
 #endif /* File local (static) functions */
 #endif /* Function Definitions */

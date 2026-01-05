@@ -1,9 +1,9 @@
 /**
- * @file io.c
+ * @file gpio.c
  * @author Tobias Maier (maier-tobias@gmx.de)
- * @brief AVR Input/Output Test Module
+ * @brief C2000 General Purpose Input/Output Test Module
  * @version 0.1
- * @date 2026-01-05
+ * @date 2026-01-06
  *
  * @copyright Copyright (c) 2026
  *
@@ -12,6 +12,7 @@
 /* ---------------------------------------- Includes ---------------------------------------------*/
 #if 1 /* Includes */
 #include <cstdint>
+#include "gpio.h"
 #endif /* Includes */
 
 /* ----------------------------------------- Defines ---------------------------------------------*/
@@ -41,9 +42,7 @@
 /* ---------------------------------- Variable Declarations --------------------------------------*/
 #if 1
 #if 1  /* Global Variables */
-uint8_t mock_ddrc = 0U;
-uint8_t mock_ddc6 = 6U;
-uint8_t mock_ddc7 = 7U;
+Gpio* gpio_m = nullptr;
 #endif /* Global Variables */
 
 #if 1  /* File local (static) variables */
@@ -59,7 +58,11 @@ uint8_t mock_ddc7 = 7U;
 /* ----------------------------------- Function Definitions --------------------------------------*/
 #if 1
 #if 1 /* Global functions */
-
+void GPIO_togglePin(uint32_t pin) {
+    if (gpio_m) {
+        gpio_m->GPIO_togglePin(pin);
+    }
+}
 #endif /* Global functions */
 
 #if 1  /* External functions */

@@ -12,6 +12,8 @@ AVR_COMPILER_FLAGS = [
     "-ffunction-sections",
     "-fdata-sections",
     "-fno-exceptions",
+    "-no-canonical-prefixes",
+    "-fno-canonical-system-headers",
     "-std=c99",  # For C files
     "-O2",  # For C files
 ]

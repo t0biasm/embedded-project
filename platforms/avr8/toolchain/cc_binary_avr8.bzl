@@ -5,8 +5,9 @@ def _cc_binary_avr8_impl(ctx):
     ## Declare executable
     executable = ctx.actions.declare_file(ctx.attr.name)
 
-    # Get tool for object dump
-    objcopy = ctx.file.objcopy.dirname + "/" + ctx.file.objcopy.basename
+    # # Get tool for object dump
+    # objcopy = ctx.file.objcopy.dirname + "/" + ctx.file.objcopy.basename
+    # objcopy = ctx.file.objcopy.path
 
     ## Fetch toolchain
     cc_toolchain = find_cpp_toolchain(ctx)
@@ -87,7 +88,7 @@ def _cc_binary_avr8_impl(ctx):
     ctx.actions.run(
         inputs = [linking_outputs.executable],
         outputs = [elfdmp],
-        executable = objcopy,
+        executable = ctx.file.objcopy,
         arguments =
             ["-O"] + ["ihex"] +
             ["-R"] + [".eeprom"] +

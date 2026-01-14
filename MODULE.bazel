@@ -4,18 +4,8 @@
 #
 # For more details, please check https://github.com/bazelbuild/bazel/issues/18958
 ###############################################################################
-# # External Dependencies
-# # bazel fetch @ti_cgt_c2000//...
-# http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-# http_archive(
-#     name = "ti_cgt_c2000",
-#     urls = ["https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-xqxJ05PLfM/22.6.2.LTS/ti_cgt_c2000_22.6.2.LTS_osx_installer.app.zip"],
-#     strip_prefix = "ti_cgt_c2000_22.6.2.LTS_osx_installer.app",
-#     sha256 = "b71dfc35247a84cc6a81f70dfdc4bea3ecb70dcd9c409eb61768c915cd7c94f7",
-#     build_file = "//platforms/c2000/toolchain:c2000.BUILD",
-# )
 
-# External Dependencies
+# --------------------- External Dependencies ---------------------- #
 # bazel fetch @ti_cgt_c2000//...
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 http_archive(
@@ -26,15 +16,11 @@ http_archive(
     build_file = "//platforms/c2000/toolchain:c2000.BUILD",
 )
 
-http_archive(
-    name = "avr8_compiler",
-    urls = ["https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/avr8-gnu-toolchain-4.0.0.52-win32.any.x86_64.zip"],
-    strip_prefix = "avr8-gnu-toolchain-win32_x86_64",
-    sha256 = "ccc9712ca20edc713dcf101013f80ba245b418ebfb02fc98e9f44f7733fe086a",
-    build_file = "//platforms/avr8/toolchain:avr8.BUILD",
-)
+# AVR8 Toolchain Dependency
+avr8_toolchain = use_extension("//platforms/avr8/toolchain:extension.bzl", "avr8_toolchain_extension")
+use_repo(avr8_toolchain, "avr8_compiler")
 
-# In WORKSPACE file
+# LLVM Toolchain Dependency
 http_archive(
     name = "llvm_toolchain",
     urls = ["https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.7/clang+llvm-21.1.7-x86_64-pc-windows-msvc.tar.xz"],
@@ -43,6 +29,7 @@ http_archive(
     build_file = "//tools/llvm:llvm.BUILD"
 )
 
+# GCC Toolchain Dependency
 http_archive(
     name = "gcc_toolchain",
     urls = ["https://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-15.2.0/gcc-15.2.0.tar.xz"],
@@ -51,7 +38,7 @@ http_archive(
     build_file = "//platforms/gcc/toolchain:gcc.BUILD"
 )
 
-# Dependencies
+# General Dependencies
 bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "bazel_skylib", version = "1.8.2")
 
@@ -63,7 +50,13 @@ bazel_dep(name = "rules_doxygen", version = "2.6.1")
 doxygen_extension = use_extension("@rules_doxygen//:extensions.bzl", "doxygen_extension")
 use_repo(doxygen_extension, "doxygen")
 
-# Toolchain Setup
+# --------------- Register Execution Platforms ---------------- #
+register_execution_platforms(
+    "//platforms:linux_x86_64_exec",
+    "//platforms:windows_x86_64_exec",
+)
+
+# ------------------ Toolchain Registration ------------------- #
 register_toolchains("//platforms/c2000/toolchain:c2000_toolchain_windows")
-register_toolchains("//platforms/avr8/toolchain:avr8_toolchain_windows")
+register_toolchains("//platforms/avr8/toolchain:avr8_toolchain")
 register_toolchains("//platforms/gcc/toolchain:gcc_toolchain_windows")

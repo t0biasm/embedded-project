@@ -31,11 +31,15 @@ avr_cc_toolchain_config(
     f_cpu = ":f_cpu",
 )
 
-# Filegroup for all compiler files
 filegroup(
-    name = "intrinsic_files",
+    name = "compiler_binaries",
     srcs = [
-        "@avr8_compiler//:intrinsic_files",
+        "@avr8_compiler//:avr-gcc",
+        "@avr8_compiler//:avr-ar",
+        "@avr8_compiler//:avr-ld",
+        "@avr8_compiler//:avr-cpp",
+        "@avr8_compiler//:avr-objcopy",
+        "@avr8_compiler//:all_files",  # Also include all other files
     ],
 )
 
@@ -44,13 +48,13 @@ filegroup(name = "empty")
 # CC Toolchain
 cc_toolchain(
     name = "avr_cc_toolchain",
-    all_files = ":intrinsic_files",
-    ar_files = ":intrinsic_files",
-    compiler_files = ":intrinsic_files",
+    all_files = ":compiler_binaries",
+    ar_files = ":compiler_binaries",
+    compiler_files = ":compiler_binaries",
     dwp_files = ":empty",
-    linker_files = ":intrinsic_files",
-    objcopy_files = ":intrinsic_files",
-    strip_files = ":intrinsic_files",
+    linker_files = ":compiler_binaries",
+    objcopy_files = ":compiler_binaries",
+    strip_files = ":compiler_binaries",
     supports_param_files = 0,
     toolchain_config = ":cc_toolchain_config_avr8",
     toolchain_identifier = "avr-toolchain",
@@ -58,9 +62,10 @@ cc_toolchain(
 
 # Toolchain type
 toolchain(
-    name = "avr8_toolchain_windows",
+    name = "avr8_toolchain",
     exec_compatible_with = [
-        "@platforms//os:windows",
+        # "@platforms//os:linux",
+        # "@platforms//os:windows",
         "@platforms//cpu:x86_64",
     ],
     target_compatible_with = [
@@ -82,7 +87,6 @@ constraint_value(
 platform(
     name = "avr8",
     constraint_values = [
-        "@platforms//os:windows",
         "@platforms//cpu:x86_64",
         ":avr",
     ],

@@ -1,0 +1,46 @@
+name: Bazel Incremental Build
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: [self-hosted, linux, x64]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build all targets with atmega32u4
+        run: |
+          bazel build //machine/... --config=atmega32u4
+      
+      - name: Upload artifacts with date/time
+        env:
+          ARTIFACTORY_URL: ${{ secrets.ARTIFACTORY_URL }}
+          ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }}
+          ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
+        run: |
+          # Create timestamp
+          TIMESTAMP=$(date +%Y-%m-%d_%H-%M-%S)
+          
+          # Upload all built artifacts
+          for config in atmega32u4 stm32l476 esp32; do
+            find bazel-bin/machine -name "app" -o -name "*.elf" -o -name "*.hex" | while read artifact; do
+              if [ -f "$artifact" ]; then
+                # Extract machine name from path
+                MACHINE=$(echo "$artifact" | cut -d/ -f3)
+                
+                # Create artifact name: machine_config_timestamp
+                ARTIFACT_NAME="${MACHINE}-${config}-${TIMESTAMP}"
+                
+                echo "Uploading $artifact as $ARTIFACT_NAME"
+                
+                curl -u ${ARTIFACTORY_USER}:${ARTIFACTORY_API_KEY} \
+                  -T "$artifact" \
+                  "${ARTIFACTORY_URL}/builds-local/${ARTIFACT_NAME}"
+              fi
+            done
+          done
+          
+          echo "✅ All artifacts uploaded with timestamp: $TIMESTAMP"

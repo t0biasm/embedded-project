@@ -1,0 +1,21 @@
+name: Test Artifactory
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: FUJITSU-ESPRIMO-D556-2  # Name of self-hosted runner
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Upload test artifact to Artifactory
+        env:
+          ARTIFACTORY_URL: ${{ secrets.ARTIFACTORY_URL }}
+          ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }}
+          ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
+        run: |
+          echo "test-content" > test.txt
+          curl -H "X-JFrog-Art-Api:${ARTIFACTORY_API_KEY}" \
+            -T test.txt \
+            "${ARTIFACTORY_URL}/builds-local/test-${GITHUB_RUN_ID}.txt"
+          echo "✅ Upload successful!"

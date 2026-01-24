@@ -1,4 +1,0 @@
-Build options: --enable_bzlmod --config=atmega32u4 --platforms=platforms/avr8/toolchain:avr8 --explain=explain.txt
-Executing action 'BazelWorkspaceStatusAction stable-status.txt': unconditional execution is requested.
-Executing action 'Compiling machine/sumobotBlackMagic/main.c': no entry in the cache (action is new).
-Executing action 'Compiling machine/sumobotBlackMagic/components/sysHwCfg/code/sysHwCfg_init.c': no entry in the cache (action is new).

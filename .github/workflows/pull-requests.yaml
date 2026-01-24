@@ -13,7 +13,7 @@ jobs:
       
       - name: Build all targets with atmega32u4
         run: |
-          bazel build //machine/... --config=atmega32u4
+          bazel build --config=atmega32u4 //machine/sumobotBlackMagic:app
       
       - name: Upload artifacts with date/time
         env:

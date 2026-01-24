@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   test:
-    runs-on: [self-hosted, linux, x64] # Runner labels
+    runs-on: [self-hosted, linux, x64]
     steps:
       - uses: actions/checkout@v4
       
@@ -15,7 +15,7 @@ jobs:
           ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
         run: |
           echo "test-content" > test.txt
-          curl -H "X-JFrog-Art-Api:${ARTIFACTORY_API_KEY}" \
+          curl -v -u ${ARTIFACTORY_USER}:${ARTIFACTORY_API_KEY} \
             -T test.txt \
             "${ARTIFACTORY_URL}/builds-local/test-${GITHUB_RUN_ID}.txt"
           echo "✅ Upload successful!"

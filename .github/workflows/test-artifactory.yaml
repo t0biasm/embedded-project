@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   test:
-    runs-on: FUJITSU-ESPRIMO-D556-2  # Name of self-hosted runner
+    runs-on: [self-hosted, linux, x64] # Runner labels
     steps:
       - uses: actions/checkout@v4
       

@@ -23,30 +23,43 @@ jobs:
         run: |
           bazel build --config=atmega32u4 //machine/sumobotBlackMagic:app
       
-      - name: Setup JFrog CLI
-        uses: jfrog/setup-jfrog-cli@v3
+      - name: List build outputs
+        run: |
+          echo "Build outputs:"
+          find bazel-bin/machine/sumobotBlackMagic -type f
+      
+      - name: Copy artifacts to staging directory
+        run: |
+          mkdir -p artifacts
+          # Copy all build outputs
+          find bazel-bin/machine/sumobotBlackMagic -type f \( -name "*.hex" -o -name "*.elf" -o -name "*.bin" -o -name "app" \) -exec cp {} artifacts/ \;
+          echo "Artifacts to upload:"
+          ls -lh artifacts/
+      
+      - name: Upload to Artifactory with curl
         env:
-          JF_URL: ${{ secrets.ARTIFACTORY_URL }}
-          JF_USER: ${{ secrets.ARTIFACTORY_USER }}
-          JF_ACCESS_TOKEN: ${{ secrets.ARTIFACTORY_API_KEY }}
-      
-      - name: Upload artifacts to Artifactory
+          ARTIFACTORY_URL: ${{ secrets.ARTIFACTORY_URL }}
+          ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }}
+          ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
         run: |
-          # Create timestamp folder name
           TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
-
-          # Upload the built artifacts
-          jfrog rt upload \
-            "bazel-bin/machine/sumobotBlackMagic/app*" \
-            "builds-local/sumobotBlackMagic/${TIMESTAMP}/" \
-            --flat=true \
-            --build-name=sumobotBlackMagic \
-            --build-number=${{ github.run_number }}
           
-          # Publish build info
-          jfrog rt build-publish sumobotBlackMagic ${{ github.run_number }}
-      
-      - name: List uploaded artifacts
-        run: |
-          echo "Artifacts uploaded to:"
-          echo "${{ secrets.ARTIFACTORY_URL }}/sumobotBlackMagic/${TIMESTAMP}/"
+          for file in artifacts/*; do
+            if [ -f "$file" ]; then
+              filename=$(basename "$file")
+              echo "Uploading $filename..."
+              curl -u $ARTIFACTORY_USER:$ARTIFACTORY_API_KEY \
+                -X PUT \
+                -T "$file" \
+                "$ARTIFACTORY_URL/builds-local/sumobotBlackMagic/${TIMESTAMP}/$filename"
+              
+              if [ $? -eq 0 ]; then
+                echo "✓ Successfully uploaded $filename"
+              else
+                echo "✗ Failed to upload $filename"
+                exit 1
+              fi
+            fi
+          done
+          
+          echo "All artifacts uploaded to: $ARTIFACTORY_URL/builds-local/sumobotBlackMagic/${TIMESTAMP}/"

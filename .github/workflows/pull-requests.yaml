@@ -39,7 +39,7 @@ jobs:
           jfrog rt upload \
             "bazel-bin/machine/sumobotBlackMagic/app*" \
             "builds-local/sumobotBlackMagic/${TIMESTAMP}/" \
-            --flat=false \
+            --flat=true \
             --build-name=sumobotBlackMagic \
             --build-number=${{ github.run_number }}
           

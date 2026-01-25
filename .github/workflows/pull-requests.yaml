@@ -28,7 +28,7 @@ jobs:
         env:
           JF_URL: ${{ secrets.ARTIFACTORY_URL }}
           JF_USER: ${{ secrets.ARTIFACTORY_USER }}
-          JF_PASSWORD: ${{ secrets.ARTIFACTORY_API_KEY }}
+          JF_ACCESS_TOKEN: ${{ secrets.ARTIFACTORY_API_KEY }}
       
       - name: Upload artifacts to Artifactory
         run: |

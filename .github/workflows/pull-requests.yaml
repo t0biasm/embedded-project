@@ -32,10 +32,13 @@ jobs:
       
       - name: Upload artifacts to Artifactory
         run: |
+          # Create timestamp folder name
+          TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+
           # Upload the built artifacts
           jfrog rt upload \
             "bazel-bin/machine/sumobotBlackMagic/app*" \
-            "builds-local/sumobotBlackMagic/${{ github.sha::7 }}/" \
+            "builds-local/sumobotBlackMagic/${TIMESTAMP}/" \
             --flat=false \
             --build-name=sumobotBlackMagic \
             --build-number=${{ github.run_number }}
@@ -46,4 +49,4 @@ jobs:
       - name: List uploaded artifacts
         run: |
           echo "Artifacts uploaded to:"
-          echo "${{ secrets.ARTIFACTORY_URL }}/sumobotBlackMagic/${{ github.sha::7 }}/"
+          echo "${{ secrets.ARTIFACTORY_URL }}/sumobotBlackMagic/${TIMESTAMP}/"

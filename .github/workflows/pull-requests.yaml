@@ -44,6 +44,14 @@ jobs:
         run: |
           TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
           
+          # Determine if this is a PR or push to main
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            PR_NUMBER="${{ github.event.pull_request.number }}"
+            UPLOAD_PATH="builds-local/sumobotBlackMagic/pull/${PR_NUMBER}/${TIMESTAMP}"
+          else
+            UPLOAD_PATH="builds-local/sumobotBlackMagic/main/${TIMESTAMP}"
+          fi
+          
           for file in artifacts/*; do
             if [ -f "$file" ]; then
               filename=$(basename "$file")
@@ -51,7 +59,7 @@ jobs:
               curl -u $ARTIFACTORY_USER:$ARTIFACTORY_API_KEY \
                 -X PUT \
                 -T "$file" \
-                "$ARTIFACTORY_URL/builds-local/sumobotBlackMagic/${TIMESTAMP}/$filename"
+                "$ARTIFACTORY_URL/${UPLOAD_PATH}/$filename"
               
               if [ $? -eq 0 ]; then
                 echo "✓ Successfully uploaded $filename"
@@ -62,4 +70,4 @@ jobs:
             fi
           done
           
-          echo "All artifacts uploaded to: $ARTIFACTORY_URL/builds-local/sumobotBlackMagic/${TIMESTAMP}/"
+          echo "All artifacts uploaded to: $ARTIFACTORY_URL/${UPLOAD_PATH}/"

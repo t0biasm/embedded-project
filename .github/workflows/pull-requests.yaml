@@ -1,46 +1,73 @@
-name: Bazel Incremental Build
+name: sumobotBlackMagic
 
 on:
-  pull_request:
   push:
-    branches: [main]
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  build:
+  build-and-upload:
     runs-on: [self-hosted, linux, x64]
+    
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
       
-      - name: Build all targets with atmega32u4
+      - name: Set up Bazel
+        uses: bazel-contrib/setup-bazel@0.8.1
+        with:
+          bazelisk-cache: true
+      
+      - name: Build with Bazel
         run: |
           bazel build --config=atmega32u4 //machine/sumobotBlackMagic:app
       
-      - name: Upload artifacts with date/time
+      - name: List build outputs
+        run: |
+          echo "Build outputs:"
+          find bazel-bin/machine/sumobotBlackMagic -type f
+      
+      - name: Copy artifacts to staging directory
+        run: |
+          mkdir -p artifacts
+          # Copy all build outputs
+          find bazel-bin/machine/sumobotBlackMagic -type f \( -name "*.hex" -o -name "*.elf" -o -name "*.bin" -o -name "app" \) -exec cp {} artifacts/ \;
+          echo "Artifacts to upload:"
+          ls -lh artifacts/
+      
+      - name: Upload to Artifactory with curl
         env:
           ARTIFACTORY_URL: ${{ secrets.ARTIFACTORY_URL }}
           ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }}
           ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
         run: |
-          # Create timestamp
-          TIMESTAMP=$(date +%Y-%m-%d_%H-%M-%S)
+          TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
           
-          # Upload all built artifacts
-          for config in atmega32u4 stm32l476 esp32; do
-            find bazel-bin/machine -name "app" -o -name "*.elf" -o -name "*.hex" | while read artifact; do
-              if [ -f "$artifact" ]; then
-                # Extract machine name from path
-                MACHINE=$(echo "$artifact" | cut -d/ -f3)
-                
-                # Create artifact name: machine_config_timestamp
-                ARTIFACT_NAME="${MACHINE}-${config}-${TIMESTAMP}"
-                
-                echo "Uploading $artifact as $ARTIFACT_NAME"
-                
-                curl -u ${ARTIFACTORY_USER}:${ARTIFACTORY_API_KEY} \
-                  -T "$artifact" \
-                  "${ARTIFACTORY_URL}/builds-local/${ARTIFACT_NAME}"
+          # Determine if this is a PR or push to main
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            PR_NUMBER="${{ github.event.pull_request.number }}"
+            UPLOAD_PATH="builds-local/sumobotBlackMagic/pull/${PR_NUMBER}/${TIMESTAMP}"
+          else
+            UPLOAD_PATH="builds-local/sumobotBlackMagic/main/${TIMESTAMP}"
+          fi
+          
+          for file in artifacts/*; do
+            if [ -f "$file" ]; then
+              filename=$(basename "$file")
+              echo "Uploading $filename..."
+              curl -u $ARTIFACTORY_USER:$ARTIFACTORY_API_KEY \
+                -X PUT \
+                -T "$file" \
+                "$ARTIFACTORY_URL/${UPLOAD_PATH}/$filename"
+              
+              if [ $? -eq 0 ]; then
+                echo "✓ Successfully uploaded $filename"
+              else
+                echo "✗ Failed to upload $filename"
+                exit 1
               fi
-            done
+            fi
           done
           
-          echo "✅ All artifacts uploaded with timestamp: $TIMESTAMP"
+          echo "All artifacts uploaded to: $ARTIFACTORY_URL/${UPLOAD_PATH}/"

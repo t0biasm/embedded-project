@@ -1,4 +1,4 @@
-name: Build and Upload to Artifactory (JFrog CLI)
+name: sumobotBlackMagic
 
 on:
   push:

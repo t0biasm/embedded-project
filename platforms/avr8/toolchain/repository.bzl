@@ -1,23 +1,24 @@
 # toolchains/arm_toolchain_repository.bzl
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "read_user_netrc", "use_netrc")
 
-def _avr8_toolchain_repository_impl(repository_ctx):
+def _avr8_toolchain_repository_impl(ctx):
     """
     Lädt ARM-GCC Toolchain und generiert plattformspezifische BUILD-Datei.
     """
     
-    os_name = repository_ctx.os.name
-    os_arch = repository_ctx.os.arch
+    os_name = ctx.os.name
+    os_arch = ctx.os.arch
     
     # Platform-Erkennung und Download (wie vorher)       
     if os_name.startswith("windows"):
-        url = "https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/avr8-gnu-toolchain-4.0.0.52-win32.any.x86_64.zip"
+        url = "https://artifactory.maierei.synology.me/artifactory/tools-local/compiler/avr8/windows/avr8-gnu-toolchain-4.0.0.52-win32.any.x86_64.zip"
         sha256 = "ccc9712ca20edc713dcf101013f80ba245b418ebfb02fc98e9f44f7733fe086a"
         strip_prefix = "avr8-gnu-toolchain-win32_x86_64"
         platform_type = "windows"
         binary_extension = ".exe"
 
     elif os_name == "linux":
-        url = "https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/avr8-gnu-toolchain-4.0.0.52-linux.any.x86_64.tar.gz"
+        url = "https://artifactory.maierei.synology.me/artifactory/tools-local/compiler/avr8/linux/avr8-gnu-toolchain-4.0.0.52-linux.any.x86_64.tar.gz"
         sha256 = "cc8682bb15f26428597499bf6e120832624a25b1062034a49fe0c77e4731cd33"
         strip_prefix = "avr8-gnu-toolchain-linux_x86_64"
         platform_type = "linux"
@@ -25,11 +26,17 @@ def _avr8_toolchain_repository_impl(repository_ctx):
         
     else:
         fail("Unsupported OS: %s" % os_name)
+
+    # Get .netrc authentification
+    netrc = read_user_netrc(ctx)
+    auth = use_netrc(netrc, [url], ctx.attr.auth_patterns)
     
-    repository_ctx.download_and_extract(
+    # Download artifact
+    ctx.download_and_extract(
         url = url,
         sha256 = sha256,
         stripPrefix = strip_prefix,
+        auth = auth,
     )
     
     # Plattformspezifische BUILD-Datei generieren
@@ -233,10 +240,10 @@ filegroup(
 
 """
     
-    repository_ctx.file("BUILD.bazel", build_content)
+    ctx.file("BUILD.bazel", build_content)
     
     # Platform-Info für Debugging
-    repository_ctx.file("PLATFORM_INFO.txt", """
+    ctx.file("PLATFORM_INFO.txt", """
 Host OS: {os}
 Host Architecture: {arch}
 Platform Type: {platform}
@@ -254,4 +261,8 @@ avr8_toolchain_repository = repository_rule(
     implementation = _avr8_toolchain_repository_impl,
     local = False,
     environ = ["PATH"],
+    attrs = {
+        "auth_patterns": attr.string_dict(
+        ),
+    },
 )

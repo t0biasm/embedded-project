@@ -10,14 +10,14 @@ def _avr8_toolchain_repository_impl(repository_ctx):
     
     # Platform-Erkennung und Download (wie vorher)       
     if os_name.startswith("windows"):
-        url = "https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/avr8-gnu-toolchain-4.0.0.52-win32.any.x86_64.zip"
+        url = "https://artifactory.maierei.synology.me/artifactory/tools-local/compiler/avr8/windows/avr8-gnu-toolchain-4.0.0.52-win32.any.x86_64.zip"
         sha256 = "ccc9712ca20edc713dcf101013f80ba245b418ebfb02fc98e9f44f7733fe086a"
         strip_prefix = "avr8-gnu-toolchain-win32_x86_64"
         platform_type = "windows"
         binary_extension = ".exe"
 
     elif os_name == "linux":
-        url = "https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/avr8-gnu-toolchain-4.0.0.52-linux.any.x86_64.tar.gz"
+        url = "https://artifactory.maierei.synology.me/artifactory/tools-local/compiler/avr8/linux/avr8-gnu-toolchain-4.0.0.52-linux.any.x86_64.tar.gz"
         sha256 = "cc8682bb15f26428597499bf6e120832624a25b1062034a49fe0c77e4731cd33"
         strip_prefix = "avr8-gnu-toolchain-linux_x86_64"
         platform_type = "linux"

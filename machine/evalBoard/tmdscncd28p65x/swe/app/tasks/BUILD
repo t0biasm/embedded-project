@@ -8,7 +8,7 @@ cc_library(
     deps = [
         "//machine/evalBoard/tmdscncd28p65x/public:public_types_h",
         "//machine/evalBoard/tmdscncd28p65x/swe/app:app_defines",
-        "//machine/evalBoard/tmdscncd28p65x/units/drvLedCtrl",
+        "//machine/evalBoard/tmdscncd28p65x/units/drvLedCtrl/code:drvLedCtrl",
         "//os/freertos:free_rtos_c28x_app",
     ],
     includes = ["."],

@@ -10,7 +10,7 @@
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 http_archive(
     name = "ti_cgt_c2000",
-    urls = ["file:///C:/tools/cl2000.zip"],
+    urls = ["https://artifactory.maierei.synology.me/artifactory/tools-local/compiler/cl2000/windows/cl2000.zip"],
     strip_prefix = "",
     sha256 = "37dc48e3b040f439b52c189a043af652b51792e513e47585f3e4973c6909ca08",
     build_file = "//platforms/c2000/toolchain:c2000.BUILD",

@@ -13,21 +13,36 @@ cc_library(
     visibility = ["//visibility:public"],
 )
 
+
+filegroup(
+    name = "compiler_binaries",
+    srcs = [
+        "@ti_cgt_c2000//:ar2000",
+        "@ti_cgt_c2000//:cl2000",
+        "@ti_cgt_c2000//:include",
+        "@ti_cgt_c2000//:lib",
+        "@ti_cgt_c2000//:lnk2000",
+        "@ti_cgt_c2000//:ofd2000",  # Also include all other files
+        "@ti_cgt_c2000//:strip2000",
+        "@ti_cgt_c2000//:all_files",
+    ],
+)
+
 cc_toolchain_config_c2000(
     name = "c2000_toolchain_config",
 )
 
 cc_toolchain(
     name = "c2000_cc_toolchain",
-    toolchain_identifier = "c2000-toolchain",
-    toolchain_config = ":c2000_toolchain_config",
-    all_files = ":empty",
-    compiler_files = ":empty",
+    all_files = ":compiler_binaries",
+    compiler_files = ":compiler_binaries",
     dwp_files = ":empty",
-    linker_files = ":empty",
-    objcopy_files = ":empty",
-    strip_files = ":empty",
+    linker_files = ":compiler_binaries",
+    objcopy_files = ":compiler_binaries",
+    strip_files = ":compiler_binaries",
     supports_param_files = 0,
+    toolchain_config = ":c2000_toolchain_config",
+    toolchain_identifier = "c2000-toolchain",
 )
 
 # Toolchain type

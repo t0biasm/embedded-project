@@ -39,10 +39,10 @@ def _impl(ctx):
         ),
     ]
     # Build tool pathes
-    archiver = "../../../" + ctx.file._archiver.dirname + "/" + ctx.file._archiver.basename
-    compiler = "../../../" + ctx.file._compiler.dirname + "/" + ctx.file._compiler.basename
-    linker = "../../../" + ctx.file._linker.dirname + "/" + ctx.file._linker.basename
-    strip = "../../../" + ctx.file._strip.dirname + "/" + ctx.file._strip.basename
+    archiver = "../../../" + ctx.file._archiver.path
+    compiler = "../../../" + ctx.file._compiler.path
+    linker = "../../../" + ctx.file._linker.path
+    strip = "../../../" + ctx.file._strip.path
 
     action_configs = [
         action_config (

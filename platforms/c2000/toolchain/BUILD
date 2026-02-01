@@ -1,25 +1,5 @@
 load(":cc_toolchain_config_c2000.bzl", "cc_toolchain_config_c2000")
 
-constraint_setting(
-    name = "cpu"
-)
-
-constraint_value(
-    name = "c28",
-    constraint_setting = ":cpu",
-    visibility = ["//visibility:public"],
-)
-
-platform(
-    name = "c2000",
-    constraint_values = [
-        "@platforms//os:windows",
-        "@platforms//cpu:x86_64",
-        ":c28",
-    ],
-    visibility = ["//visibility:public"],
-)
-
 filegroup(name = "empty")
 
 cc_library(
@@ -38,7 +18,7 @@ cc_toolchain_config_c2000(
 )
 
 cc_toolchain(
-    name = "c2000_toolchain",
+    name = "c2000_cc_toolchain",
     toolchain_identifier = "c2000-toolchain",
     toolchain_config = ":c2000_toolchain_config",
     all_files = ":empty",
@@ -50,15 +30,36 @@ cc_toolchain(
     supports_param_files = 0,
 )
 
+# Toolchain type
 toolchain(
-    name = "c2000_toolchain_windows",
-    toolchain = ":c2000_toolchain",
-    toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+    name = "c2000_toolchain",
     exec_compatible_with = [
-        "@platforms//os:windows",
         "@platforms//cpu:x86_64",
     ],
     target_compatible_with = [
         ":c28",
     ],
+    toolchain = ":c2000_cc_toolchain",
+    toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+)
+
+# Constraint for c28 CPU
+constraint_setting(
+    name = "cpu"
+)
+
+constraint_value(
+    name = "c28",
+    constraint_setting = ":cpu",
+    visibility = ["//visibility:public"],
+)
+
+# Platform definition for c2000
+platform(
+    name = "c2000",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+        ":c28",
+    ],
+    visibility = ["//visibility:public"],
 )

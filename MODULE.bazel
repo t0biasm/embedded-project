@@ -4,17 +4,12 @@
 #
 # For more details, please check https://github.com/bazelbuild/bazel/issues/18958
 ###############################################################################
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 # --------------------- External Dependencies ---------------------- #
-# bazel fetch @ti_cgt_c2000//...
-http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-http_archive(
-    name = "ti_cgt_c2000",
-    urls = ["file:///C:/tools/cl2000.zip"],
-    strip_prefix = "",
-    sha256 = "37dc48e3b040f439b52c189a043af652b51792e513e47585f3e4973c6909ca08",
-    build_file = "//platforms/c2000/toolchain:c2000.BUILD",
-)
+# AVR8 Toolchain Dependency
+c2000_toolchain = use_extension("//platforms/c2000/toolchain:extension.bzl", "c2000_toolchain_extension")
+use_repo(c2000_toolchain, "ti_cgt_c2000")
 
 # AVR8 Toolchain Dependency
 avr8_toolchain = use_extension("//platforms/avr8/toolchain:extension.bzl", "avr8_toolchain_extension")
@@ -57,6 +52,6 @@ register_execution_platforms(
 )
 
 # ------------------ Toolchain Registration ------------------- #
-register_toolchains("//platforms/c2000/toolchain:c2000_toolchain_windows")
+register_toolchains("//platforms/c2000/toolchain:c2000_toolchain")
 register_toolchains("//platforms/avr8/toolchain:avr8_toolchain")
 register_toolchains("//platforms/gcc/toolchain:gcc_toolchain_windows")

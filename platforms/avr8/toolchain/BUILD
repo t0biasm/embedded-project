@@ -64,8 +64,6 @@ cc_toolchain(
 toolchain(
     name = "avr8_toolchain",
     exec_compatible_with = [
-        # "@platforms//os:linux",
-        # "@platforms//os:windows",
         "@platforms//cpu:x86_64",
     ],
     target_compatible_with = [

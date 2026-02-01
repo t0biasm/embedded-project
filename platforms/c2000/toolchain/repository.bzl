@@ -18,9 +18,9 @@ def _c2000_toolchain_repository_impl(ctx):
         binary_extension = ".exe"
 
     elif os_name == "linux":
-        url = "https://artifactory.maierei.synology.me/artifactory/tools-local/compiler/avr8/linux/avr8-gnu-toolchain-4.0.0.52-linux.any.x86_64.tar.gz"
-        sha256 = "cc8682bb15f26428597499bf6e120832624a25b1062034a49fe0c77e4731cd33"
-        strip_prefix = "avr8-gnu-toolchain-linux_x86_64"
+        url = "https://artifactory.maierei.synology.me/artifactory/tools-local/compiler/cl2000/linux/ti-cgt-c2000_25.11.0.LTS.tar.gz"
+        sha256 = "90c9f281f91ccf6ebc712d445f0fa31e4460fad2b3268693842a79fbec2bf82a"
+        strip_prefix = "ti-cgt-c2000_25.11.0.LTS"
         platform_type = "linux"
         binary_extension = ""
         

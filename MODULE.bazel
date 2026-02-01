@@ -52,6 +52,6 @@ register_execution_platforms(
 )
 
 # ------------------ Toolchain Registration ------------------- #
-register_toolchains("//platforms/c2000/toolchain:c2000_toolchain_windows")
+register_toolchains("//platforms/c2000/toolchain:c2000_toolchain")
 register_toolchains("//platforms/avr8/toolchain:avr8_toolchain")
 register_toolchains("//platforms/gcc/toolchain:gcc_toolchain_windows")

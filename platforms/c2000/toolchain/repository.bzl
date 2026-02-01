@@ -131,6 +131,12 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
+filegroup(
+    name = "all_files",
+    srcs = glob(["**/*"]),
+    visibility = ["//visibility:public"],
+)
+
 """
     
     else:  # Should not appear

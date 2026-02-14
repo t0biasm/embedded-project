@@ -79,13 +79,19 @@ jobs:
         if: steps.detect_changes.outputs.targets != ''
         run: |
           echo "Build outputs:"
-          find bazel-bin -type f \( -name "*.hex" -o -name "*.elf" -o -name "*.bin" -o -name "app" \)
+          find . -path ./bazel-bin -prune -o -type f \( -name "*.hex" -o -name "*.elf" -o -name "*.bin" \) -print
+          echo "Looking in bazel-bin:"
+          ls -la bazel-bin/machine/sumobotBlackMagic/ 2>/dev/null || echo "Directory not found"
       
       - name: Copy artifacts to staging directory
         if: steps.detect_changes.outputs.targets != ''
         run: |
           mkdir -p artifacts
-          find bazel-bin -type f \( -name "*.hex" -o -name "*.elf" -o -name "*.bin" -o -name "app" \) -exec cp {} artifacts/ \;
+          # Copy from actual bazel output paths
+          find bazel-bin -name "*.hex" -o -name "*.elf" -o -name "*.bin" | while read file; do
+            echo "Copying: $file"
+            cp "$file" artifacts/
+          done
           echo "Artifacts to upload:"
           ls -lh artifacts/
       

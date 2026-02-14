@@ -88,10 +88,7 @@ jobs:
         run: |
           mkdir -p artifacts
           # Copy from actual bazel output paths
-          find bazel-bin -name "*.hex" -o -name "*.elf" -o -name "*.bin" | while read file; do
-            echo "Copying: $file"
-            cp "$file" artifacts/
-          done
+          find bazel-bin -type f \( -name "*.hex" -o -name "*.elf" -o -name "*.bin" -o -name "app" \) -exec cp {} artifacts/ \;
           echo "Artifacts to upload:"
           ls -lh artifacts/
       

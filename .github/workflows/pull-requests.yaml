@@ -41,6 +41,11 @@ jobs:
             config=$(echo "$config" | xargs)
             target=$(echo "$target" | xargs)
             
+            # Skip if path is still empty after trimming
+            [[ -z "$path" ]] && continue
+            [[ -z "$config" ]] && continue
+            [[ -z "$target" ]] && continue
+            
             if echo "$CHANGED_FILES" | grep -q "$path"; then
               BUILD_TARGETS="$BUILD_TARGETS --config=$config $target"
               echo "Detected change in '$path', adding target: --config=$config $target"

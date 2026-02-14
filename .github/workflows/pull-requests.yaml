@@ -114,6 +114,9 @@ jobs:
             CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
             if echo "$CHANGED_FILES" | grep -q "$path"; then
               UPLOAD_PATH="builds-local/${path}/pull/${PR_NUMBER}/${TIMESTAMP}"
+              echo "================================"
+              echo "Uploading artifacts to: $ARTIFACTORY_URL/${UPLOAD_PATH}/"
+              echo "================================"
               
               for file in artifacts/*; do
                 if [ -f "$file" ]; then

@@ -11,6 +11,54 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Detect changed files and build targets
+        id: detect_changes
+        run: |
+          # Get list of changed files in this PR
+          CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+          
+          # Read targets from configuration file
+          BUILD_TARGETS=""
+          
+          if [ ! -f ".github/workflows/targets.conf" ]; then
+            echo "Error: targets.conf not found"
+            exit 1
+          fi
+          
+          # Parse targets.conf and check if paths changed
+          while IFS='|' read -r path config target; do
+            # Skip comments and empty lines
+            [[ "$path" =~ ^#.*$ ]] && continue
+            [[ -z "$path" ]] && continue
+            
+            # Trim whitespace
+            path=$(echo "$path" | xargs)
+            config=$(echo "$config" | xargs)
+            target=$(echo "$target" | xargs)
+            
+            # Skip if path is still empty after trimming
+            [[ -z "$path" ]] && continue
+            [[ -z "$config" ]] && continue
+            [[ -z "$target" ]] && continue
+            
+            if echo "$CHANGED_FILES" | grep -q "$path"; then
+              BUILD_TARGETS="$BUILD_TARGETS --config=$config $target"
+              echo "Detected change in '$path', adding target: --config=$config $target"
+            fi
+          done < ".github/workflows/targets.conf"
+          
+          # Only set output if we have targets
+          if [ -z "$BUILD_TARGETS" ]; then
+            echo "targets=" >> $GITHUB_OUTPUT
+          else
+            BUILD_TARGETS=$(echo "$BUILD_TARGETS" | xargs)
+            echo "targets=$BUILD_TARGETS" >> $GITHUB_OUTPUT
+          fi
       
       - name: Set up Bazel
         uses: bazel-contrib/setup-bazel@0.8.1
@@ -18,54 +66,79 @@ jobs:
           bazelisk-cache: true
       
       - name: Build with Bazel
+        if: steps.detect_changes.outputs.targets != ''
         run: |
-          bazel build --config=atmega32u4 //machine/sumobotBlackMagic:app
+          bazel build ${{ steps.detect_changes.outputs.targets }}
+      
+      - name: Skip build if no changes
+        if: steps.detect_changes.outputs.targets == ''
+        run: |
+          echo "No relevant changes detected. Skipping build."
       
       - name: List build outputs
+        if: steps.detect_changes.outputs.targets != ''
         run: |
           echo "Build outputs:"
-          find bazel-bin/machine/sumobotBlackMagic -type f
+          find . -path ./bazel-bin -prune -o -type f \( -name "*.hex" -o -name "*.elf" -o -name "*.bin" \) -print
+          echo "Looking in bazel-bin:"
+          ls -la bazel-bin/machine/sumobotBlackMagic/ 2>/dev/null || echo "Directory not found"
       
       - name: Copy artifacts to staging directory
+        if: steps.detect_changes.outputs.targets != ''
         run: |
           mkdir -p artifacts
           # Copy all build outputs
-          find bazel-bin/machine/sumobotBlackMagic -type f \( -name "*.hex" -o -name "*.elf" -o -name "*.bin" -o -name "app" \) -exec cp {} artifacts/ \;
+          find bazel-bin -type f \( -name "*.hex" -o -name "*.elf" -o -name "*.bin" -o -name "app" \) -exec cp {} artifacts/ \;
           echo "Artifacts to upload:"
           ls -lh artifacts/
       
       - name: Upload to Artifactory with curl
+        if: steps.detect_changes.outputs.targets != ''
         env:
           ARTIFACTORY_URL: ${{ secrets.ARTIFACTORY_URL }}
           ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }}
           ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
         run: |
           TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+          PR_NUMBER="${{ github.event.pull_request.number }}"
           
-          # Determine if this is a PR or push to main
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            PR_NUMBER="${{ github.event.pull_request.number }}"
-            UPLOAD_PATH="builds-local/sumobotBlackMagic/pull/${PR_NUMBER}/${TIMESTAMP}"
-          else
-            UPLOAD_PATH="builds-local/sumobotBlackMagic/main/${TIMESTAMP}"
-          fi
-          
-          for file in artifacts/*; do
-            if [ -f "$file" ]; then
-              filename=$(basename "$file")
-              echo "Uploading $filename..."
-              curl -u $ARTIFACTORY_USER:$ARTIFACTORY_API_KEY \
-                -X PUT \
-                -T "$file" \
-                "$ARTIFACTORY_URL/${UPLOAD_PATH}/$filename"
+          # Read targets.conf and build upload paths
+          while IFS='|' read -r path config target; do
+            # Skip comments and empty lines
+            [[ "$path" =~ ^#.*$ ]] && continue
+            [[ -z "$path" ]] && continue
+            
+            # Trim whitespace
+            path=$(echo "$path" | xargs)
+            config=$(echo "$config" | xargs)
+            target=$(echo "$target" | xargs)
+            
+            # Check if this target was built
+            CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
+            if echo "$CHANGED_FILES" | grep -q "$path"; then
+              UPLOAD_PATH="builds-local/${path}/pull/${PR_NUMBER}/${TIMESTAMP}"
+              echo "================================"
+              echo "Uploading artifacts to: $ARTIFACTORY_URL/${UPLOAD_PATH}/"
+              echo "================================"
               
-              if [ $? -eq 0 ]; then
-                echo "✓ Successfully uploaded $filename"
-              else
-                echo "✗ Failed to upload $filename"
-                exit 1
-              fi
+              for file in artifacts/*; do
+                if [ -f "$file" ]; then
+                  filename=$(basename "$file")
+                  echo "Uploading $filename to ${UPLOAD_PATH}..."
+                  curl -u $ARTIFACTORY_USER:$ARTIFACTORY_API_KEY \
+                    -X PUT \
+                    -T "$file" \
+                    "$ARTIFACTORY_URL/${UPLOAD_PATH}/$filename"
+                  
+                  if [ $? -eq 0 ]; then
+                    echo "✓ Successfully uploaded $filename"
+                  else
+                    echo "✗ Failed to upload $filename"
+                    exit 1
+                  fi
+                fi
+              done
             fi
-          done
+          done < ".github/workflows/targets.conf"
           
-          echo "All artifacts uploaded to: $ARTIFACTORY_URL/${UPLOAD_PATH}/"
+          echo "All artifacts uploaded to Artifactory"

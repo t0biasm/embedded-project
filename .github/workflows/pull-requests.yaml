@@ -87,10 +87,8 @@ jobs:
         if: steps.detect_changes.outputs.targets != ''
         run: |
           mkdir -p artifacts
-          # Copy specific artifacts from bazel-bin
-          cp bazel-bin/**/*.hex artifacts/ 2>/dev/null || true
-          cp bazel-bin/**/*.elf artifacts/ 2>/dev/null || true
-          cp bazel-bin/**/*.bin artifacts/ 2>/dev/null || true
+          # Copy all build outputs
+          find bazel-bin -type f \( -name "*.hex" -o -name "*.elf" -o -name "*.bin" -o -name "app" \) -exec cp {} artifacts/ \;
           echo "Artifacts to upload:"
           ls -lh artifacts/
       

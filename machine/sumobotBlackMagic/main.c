@@ -77,7 +77,7 @@ int main(void)
         PORTC ^= (1 << PORTC7);
 
         // Wait 500ms
-        _delay_ms(1000);
+        _delay_ms(10000);
     }
 
     return 0;

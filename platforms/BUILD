@@ -9,11 +9,11 @@ platform(
     visibility = ["//visibility:public"],
 )
 
-# Linux x86 x64 Platform
+# Windows x86 x64 Platform
 platform(
     name = "windows_x86_64_exec",
     constraint_values = [
-        "@platforms//os:linux",
+        "@platforms//os:windows",
         "@platforms//cpu:x86_64",
     ],
     visibility = ["//visibility:public"],

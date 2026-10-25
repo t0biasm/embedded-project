@@ -15,14 +15,9 @@ use_repo(c2000_toolchain, "ti_cgt_c2000")
 avr8_toolchain = use_extension("//platforms/avr8/toolchain:extension.bzl", "avr8_toolchain_extension")
 use_repo(avr8_toolchain, "avr8_compiler")
 
-# LLVM Toolchain Dependency
-http_archive(
-    name = "llvm_toolchain",
-    urls = ["https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.7/clang+llvm-21.1.7-x86_64-pc-windows-msvc.tar.xz"],
-    strip_prefix = "clang+llvm-21.1.7-x86_64-pc-windows-msvc",
-    sha256 = "70a2b73f2f14f787557f90abf380e7170b54e97b893218999144de5284b4f8f8",
-    build_file = "//tools/llvm:llvm.BUILD"
-)
+# LLVM Toolchain Dependency (host-aware: Windows / Linux x86_64)
+llvm_toolchain_ext = use_extension("//tools/llvm:extension.bzl", "llvm_toolchain_extension")
+use_repo(llvm_toolchain_ext, "llvm_toolchain")
 
 # GCC Toolchain Dependency
 http_archive(

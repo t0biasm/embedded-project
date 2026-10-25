@@ -83,3 +83,6 @@ dkms.conf
 user.bazelrc
 # CCS specific configuration
 .theia
+
+# Local logs
+full_error.log
